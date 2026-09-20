@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3018",
+  "insured_name": "Dev Shetty",
+  "phone": "4612004711",
+  "address": "75, Saini Circle, Vijayanagaram-796405",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR29GO4878",
+  "vehicle_age_years": 4.8,
+  "idv": 546000,
+  "deductible": 1000,
+  "policy_start": "2026-07-11",
+  "policy_end": "2027-07-10",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

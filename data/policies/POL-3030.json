@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3030",
+  "insured_name": "Chavvi Walla",
+  "phone": "+918299229959",
+  "address": "H.No. 094, Saha Ganj, Mehsana 473647",
+  "make": "Hyundai",
+  "model": "i20 Sportz",
+  "registration": "HR89CW3496",
+  "vehicle_age_years": 8.5,
+  "idv": 390000,
+  "deductible": 1000,
+  "policy_start": "2026-01-06",
+  "policy_end": "2027-01-05",
+  "zero_depreciation": true,
+  "ncb_percent": 35
+}

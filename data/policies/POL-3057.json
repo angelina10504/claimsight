@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3057",
+  "insured_name": "Mitesh Bhagat",
+  "phone": "00614973103",
+  "address": "H.No. 714, Sinha Marg, Bilaspur-862565",
+  "make": "Maruti Suzuki",
+  "model": "Swift VXi",
+  "registration": "HR41FO3063",
+  "vehicle_age_years": 0.4,
+  "idv": 595000,
+  "deductible": 1000,
+  "policy_start": "2026-03-27",
+  "policy_end": "2027-03-26",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

@@ -1,0 +1,53 @@
+{
+  "claim_id": "CLM-5020",
+  "policy_no": "POL-3020",
+  "incident_date": "2026-06-23",
+  "invoice_date": "2026-06-26",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5020.pdf",
+  "invoice_subtotal": 11570,
+  "invoice_total": 13653,
+  "line_items": [
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4730,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 3070,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 2080,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1690,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "door glass",
+      "grille"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 12652.6
+  },
+  "split": "test"
+}

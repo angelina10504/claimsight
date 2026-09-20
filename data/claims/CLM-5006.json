@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5006",
+  "policy_no": "POL-3006",
+  "incident_date": "2026-06-05",
+  "invoice_date": "2026-06-07",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5006.pdf",
+  "invoice_subtotal": 19800,
+  "invoice_total": 23364,
+  "line_items": [
+    {
+      "description": "Front Door - replacement",
+      "material": "metal",
+      "amount": 12600,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 4510,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 2690,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "front door"
+    ],
+    "fault_type": "date_outside_policy",
+    "is_covered": false,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 0.0
+  },
+  "split": "dev"
+}

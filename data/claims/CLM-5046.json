@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5046",
+  "policy_no": "POL-3046",
+  "incident_date": "2026-02-27",
+  "invoice_date": "2026-02-28",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5046.pdf",
+  "invoice_subtotal": 6920,
+  "invoice_total": 8166,
+  "line_items": [
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4540,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 1390,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 990,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "door glass"
+    ],
+    "fault_type": "date_outside_policy",
+    "is_covered": false,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 0.0
+  },
+  "split": "test"
+}

@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3025",
+  "insured_name": "Sachi Mane",
+  "phone": "7383473597",
+  "address": "88, Edwin Marg, Mahbubnagar-407581",
+  "make": "Hyundai",
+  "model": "i20 Sportz",
+  "registration": "HR68WQ3184",
+  "vehicle_age_years": 8.5,
+  "idv": 390000,
+  "deductible": 1000,
+  "policy_start": "2026-02-01",
+  "policy_end": "2027-01-31",
+  "zero_depreciation": false,
+  "ncb_percent": 25
+}

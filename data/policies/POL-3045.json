@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3045",
+  "insured_name": "Tanvi Comar",
+  "phone": "07859696915",
+  "address": "24/99, Desai Zila, Kochi 412528",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR68MN3369",
+  "vehicle_age_years": 3.4,
+  "idv": 692000,
+  "deductible": 1000,
+  "policy_start": "2026-03-04",
+  "policy_end": "2027-03-03",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

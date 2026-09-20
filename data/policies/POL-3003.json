@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3003",
+  "insured_name": "Ekansh Balay",
+  "phone": "01834738299",
+  "address": "63, Chatterjee Zila, Raichur-670106",
+  "make": "Tata",
+  "model": "Nexon XZ+",
+  "registration": "HR95XK5374",
+  "vehicle_age_years": 2.5,
+  "idv": 705000,
+  "deductible": 1000,
+  "policy_start": "2026-02-23",
+  "policy_end": "2027-02-22",
+  "zero_depreciation": false,
+  "ncb_percent": 0
+}

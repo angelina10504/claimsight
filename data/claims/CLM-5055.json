@@ -1,0 +1,68 @@
+{
+  "claim_id": "CLM-5055",
+  "policy_no": "POL-3055",
+  "incident_date": "2026-04-09",
+  "invoice_date": "2026-04-13",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5055.pdf",
+  "invoice_subtotal": 60840,
+  "invoice_total": 71791,
+  "line_items": [
+    {
+      "description": "Headlight - replacement",
+      "material": "plastic",
+      "amount": 7010,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4800,
+      "admitted": false,
+      "reason": "billed part not visible in damage evidence"
+    },
+    {
+      "description": "Bonnet - replacement",
+      "material": "metal",
+      "amount": 13620,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Front Door - replacement",
+      "material": "metal",
+      "amount": 14550,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 12500,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 8360,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "headlight",
+      "bonnet",
+      "front door"
+    ],
+    "fault_type": "phantom_part",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": "door glass",
+    "expected_payout": 65127.2
+  },
+  "split": "test"
+}

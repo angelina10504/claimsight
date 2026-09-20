@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3017",
+  "insured_name": "Chandran Taneja",
+  "phone": "03953394210",
+  "address": "H.No. 952, Merchant Zila, Vijayanagaram 328588",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR64IF1158",
+  "vehicle_age_years": 3.4,
+  "idv": 758000,
+  "deductible": 1000,
+  "policy_start": "2026-05-22",
+  "policy_end": "2027-05-21",
+  "zero_depreciation": true,
+  "ncb_percent": 20
+}

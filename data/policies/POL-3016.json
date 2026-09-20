@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3016",
+  "insured_name": "Gautam Saraf",
+  "phone": "+911724005045",
+  "address": "386, Gole, Akola 969379",
+  "make": "Maruti Suzuki",
+  "model": "Swift VXi",
+  "registration": "HR80EH3546",
+  "vehicle_age_years": 0.4,
+  "idv": 595000,
+  "deductible": 1000,
+  "policy_start": "2026-07-10",
+  "policy_end": "2027-07-09",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

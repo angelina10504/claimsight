@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3026",
+  "insured_name": "Liam Singh",
+  "phone": "09010432898",
+  "address": "H.No. 34, Batta Zila, Gurgaon-117980",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR66UQ2269",
+  "vehicle_age_years": 1.2,
+  "idv": 1012000,
+  "deductible": 1000,
+  "policy_start": "2026-03-12",
+  "policy_end": "2027-03-11",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

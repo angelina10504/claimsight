@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5034",
+  "policy_no": "POL-3034",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-22",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5034.pdf",
+  "invoice_subtotal": 64253,
+  "invoice_total": 75819,
+  "line_items": [
+    {
+      "description": "Front Bumper - replacement",
+      "material": "plastic",
+      "amount": 23153,
+      "admitted": false,
+      "reason": "line item priced far above market rate"
+    },
+    {
+      "description": "Rear Door - replacement",
+      "material": "metal",
+      "amount": 13780,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Taillight - replacement",
+      "material": "plastic",
+      "amount": 4290,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 14570,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 8460,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "front bumper",
+      "rear door",
+      "taillight"
+    ],
+    "fault_type": "inflated_amount",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": null,
+    "expected_payout": 40378.76
+  },
+  "split": "test"
+}

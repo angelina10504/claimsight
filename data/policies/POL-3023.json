@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3023",
+  "insured_name": "Peter Tak",
+  "phone": "09979955271",
+  "address": "44/905, Borah Circle, Surendranagar Dudhrej-005411",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR20TT5649",
+  "vehicle_age_years": 1.2,
+  "idv": 1012000,
+  "deductible": 1000,
+  "policy_start": "2026-06-18",
+  "policy_end": "2027-06-17",
+  "zero_depreciation": false,
+  "ncb_percent": 25
+}

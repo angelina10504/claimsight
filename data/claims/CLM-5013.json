@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5013",
+  "policy_no": "POL-3013",
+  "incident_date": "2026-07-07",
+  "invoice_date": "2026-07-12",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5013.pdf",
+  "invoice_subtotal": 10710,
+  "invoice_total": 12638,
+  "line_items": [
+    {
+      "description": "Fender - replacement",
+      "material": "metal",
+      "amount": 6760,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 2620,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1330,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "fender"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 11251.35
+  },
+  "split": "dev"
+}

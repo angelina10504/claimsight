@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3013",
+  "insured_name": "Ekavir Kaur",
+  "phone": "09361832421",
+  "address": "H.No. 99, Sarna Road, Bhind 648877",
+  "make": "Hyundai",
+  "model": "i20 Sportz",
+  "registration": "HR79CT1998",
+  "vehicle_age_years": 0.4,
+  "idv": 748000,
+  "deductible": 1000,
+  "policy_start": "2026-05-29",
+  "policy_end": "2027-05-28",
+  "zero_depreciation": false,
+  "ncb_percent": 0
+}

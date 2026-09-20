@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5028",
+  "policy_no": "POL-3028",
+  "incident_date": "2026-06-26",
+  "invoice_date": "2026-07-02",
+  "narrative": "Vehicle was hit by another car while parked outside a market.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5028.pdf",
+  "invoice_subtotal": 41930,
+  "invoice_total": 49477,
+  "line_items": [
+    {
+      "description": "Headlight - replacement",
+      "material": "plastic",
+      "amount": 7890,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Front Door - replacement",
+      "material": "metal",
+      "amount": 14090,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 5190,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 9200,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 5560,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "headlight",
+      "front door",
+      "door glass"
+    ],
+    "fault_type": "duplicate_claim",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": null,
+    "expected_payout": 38308.75
+  },
+  "split": "test"
+}

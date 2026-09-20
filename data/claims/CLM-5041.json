@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5041",
+  "policy_no": "POL-3041",
+  "incident_date": "2026-05-27",
+  "invoice_date": "2026-06-02",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5041.pdf",
+  "invoice_subtotal": 19220,
+  "invoice_total": 22680,
+  "line_items": [
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 2530,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Fender - replacement",
+      "material": "metal",
+      "amount": 6430,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3200,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 4600,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 2460,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "grille",
+      "fender",
+      "side mirror"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 14964.81
+  },
+  "split": "test"
+}

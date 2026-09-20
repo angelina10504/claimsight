@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5014",
+  "policy_no": "POL-3014",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-22",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5014.pdf",
+  "invoice_subtotal": 49076,
+  "invoice_total": 57910,
+  "line_items": [
+    {
+      "description": "Fender - replacement",
+      "material": "metal",
+      "amount": 16056,
+      "admitted": false,
+      "reason": "line item priced far above market rate"
+    },
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4570,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Door - replacement",
+      "material": "metal",
+      "amount": 13640,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 9930,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 4880,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "fender",
+      "door glass",
+      "rear door"
+    ],
+    "fault_type": "inflated_amount",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": null,
+    "expected_payout": 36498.92
+  },
+  "split": "dev"
+}

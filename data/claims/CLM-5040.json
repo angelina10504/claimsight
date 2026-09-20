@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5040",
+  "policy_no": "POL-3040",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-22",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5040.pdf",
+  "invoice_subtotal": 21970,
+  "invoice_total": 25925,
+  "line_items": [
+    {
+      "description": "Headlight - replacement",
+      "material": "plastic",
+      "amount": 6580,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 2890,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4610,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 5100,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 2790,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "headlight",
+      "side mirror",
+      "door glass"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 18585.05
+  },
+  "split": "test"
+}

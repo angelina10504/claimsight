@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5059",
+  "policy_no": "POL-3059",
+  "incident_date": "2026-04-03",
+  "invoice_date": "2026-04-07",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5059.pdf",
+  "invoice_subtotal": 42100,
+  "invoice_total": 49678,
+  "line_items": [
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 10900,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Door - replacement",
+      "material": "metal",
+      "amount": 14420,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 2820,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 9050,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 4910,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "windshield",
+      "rear door",
+      "side mirror"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 48678.0
+  },
+  "split": "test"
+}

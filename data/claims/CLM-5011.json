@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5011",
+  "policy_no": "POL-3011",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-19",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5011.pdf",
+  "invoice_subtotal": 4680,
+  "invoice_total": 5522,
+  "line_items": [
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3070,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 1170,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 440,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "side mirror"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 2538.52
+  },
+  "split": "dev"
+}

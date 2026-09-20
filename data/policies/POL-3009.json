@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3009",
+  "insured_name": "Vinaya Kanda",
+  "phone": "06706562729",
+  "address": "90/16, Shenoy Street, Dhanbad 653755",
+  "make": "Maruti Suzuki",
+  "model": "Swift VXi",
+  "registration": "HR18YM6539",
+  "vehicle_age_years": 1.2,
+  "idv": 545000,
+  "deductible": 1000,
+  "policy_start": "2026-02-27",
+  "policy_end": "2027-02-26",
+  "zero_depreciation": true,
+  "ncb_percent": 20
+}

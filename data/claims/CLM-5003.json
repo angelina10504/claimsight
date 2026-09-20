@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5003",
+  "policy_no": "POL-3003",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-20",
+  "narrative": "Vehicle was hit by another car while parked outside a market.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5003.pdf",
+  "invoice_subtotal": 50040,
+  "invoice_total": 59047,
+  "line_items": [
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 11500,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Headlight - replacement",
+      "material": "plastic",
+      "amount": 6710,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Door - replacement",
+      "material": "metal",
+      "amount": 12880,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 12380,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 6570,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "windshield",
+      "headlight",
+      "rear door"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 49982.49
+  },
+  "split": "dev"
+}

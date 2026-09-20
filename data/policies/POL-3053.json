@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3053",
+  "insured_name": "Girindra Shere",
+  "phone": "+912100323651",
+  "address": "H.No. 137, Chanda Street, Bhilai 702966",
+  "make": "Maruti Suzuki",
+  "model": "Baleno Zeta",
+  "registration": "HR74PA5465",
+  "vehicle_age_years": 2.5,
+  "idv": 607000,
+  "deductible": 1000,
+  "policy_start": "2026-05-16",
+  "policy_end": "2027-05-15",
+  "zero_depreciation": false,
+  "ncb_percent": 25
+}

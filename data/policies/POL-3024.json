@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3024",
+  "insured_name": "Hamsini Ben",
+  "phone": "5151864492",
+  "address": "25/46, Chad Street, Karaikudi 528168",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR99LA7291",
+  "vehicle_age_years": 4.8,
+  "idv": 598000,
+  "deductible": 1000,
+  "policy_start": "2026-02-19",
+  "policy_end": "2027-02-18",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3006",
+  "insured_name": "Mohammed Khalsa",
+  "phone": "+912602563421",
+  "address": "33, Palla Chowk, Ambattur-036541",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR44YI6573",
+  "vehicle_age_years": 4.8,
+  "idv": 598000,
+  "deductible": 1000,
+  "policy_start": "2026-07-12",
+  "policy_end": "2027-07-11",
+  "zero_depreciation": true,
+  "ncb_percent": 35
+}

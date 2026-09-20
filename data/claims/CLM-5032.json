@@ -1,0 +1,53 @@
+{
+  "claim_id": "CLM-5032",
+  "policy_no": "POL-3032",
+  "incident_date": "2026-09-07",
+  "invoice_date": "2026-09-09",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5032.pdf",
+  "invoice_subtotal": 35130,
+  "invoice_total": 41453,
+  "line_items": [
+    {
+      "description": "Rear Bumper - replacement",
+      "material": "plastic",
+      "amount": 9280,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Bonnet - replacement",
+      "material": "metal",
+      "amount": 12830,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 8270,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 4750,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "rear bumper",
+      "bonnet"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 40453.4
+  },
+  "split": "test"
+}

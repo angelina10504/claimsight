@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3028",
+  "insured_name": "Ojas Sawhney",
+  "phone": "07059640165",
+  "address": "970, Bhavsar Street, Ambarnath-690927",
+  "make": "Tata",
+  "model": "Nexon XZ+",
+  "registration": "HR13LL7371",
+  "vehicle_age_years": 3.4,
+  "idv": 620000,
+  "deductible": 1000,
+  "policy_start": "2026-05-05",
+  "policy_end": "2027-05-04",
+  "zero_depreciation": false,
+  "ncb_percent": 35
+}

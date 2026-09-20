@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3004",
+  "insured_name": "Alka Sha",
+  "phone": "06872343098",
+  "address": "H.No. 097, Wali Circle, Howrah 219136",
+  "make": "Tata",
+  "model": "Nexon XZ+",
+  "registration": "HR18DS4456",
+  "vehicle_age_years": 3.4,
+  "idv": 620000,
+  "deductible": 1000,
+  "policy_start": "2026-03-10",
+  "policy_end": "2027-03-09",
+  "zero_depreciation": false,
+  "ncb_percent": 25
+}

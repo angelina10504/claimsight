@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5021",
+  "policy_no": "POL-3021",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-22",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5021.pdf",
+  "invoice_subtotal": 21930,
+  "invoice_total": 25877,
+  "line_items": [
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 2890,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Fender - replacement",
+      "material": "metal",
+      "amount": 6280,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 5180,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 4670,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 2910,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "grille",
+      "fender",
+      "door glass"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 19519.31
+  },
+  "split": "test"
+}

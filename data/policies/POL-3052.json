@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3052",
+  "insured_name": "Yashasvi Deol",
+  "phone": "6199062344",
+  "address": "55/743, Jain Zila, Bhimavaram 212775",
+  "make": "Tata",
+  "model": "Nexon XZ+",
+  "registration": "HR34ND5106",
+  "vehicle_age_years": 1.2,
+  "idv": 827000,
+  "deductible": 1000,
+  "policy_start": "2026-06-12",
+  "policy_end": "2027-06-11",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

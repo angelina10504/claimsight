@@ -1,0 +1,52 @@
+{
+  "claim_id": "CLM-5045",
+  "policy_no": "POL-3045",
+  "incident_date": "2026-07-28",
+  "invoice_date": "2026-07-29",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5045.pdf",
+  "invoice_subtotal": 26100,
+  "invoice_total": 30798,
+  "line_items": [
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3260,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Front Door - replacement",
+      "material": "metal",
+      "amount": 14000,
+      "admitted": false,
+      "reason": "billed part not visible in damage evidence"
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 5190,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 3650,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "side mirror"
+    ],
+    "fault_type": "phantom_part",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": "front door",
+    "expected_payout": 10589.07
+  },
+  "split": "test"
+}

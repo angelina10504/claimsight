@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5044",
+  "policy_no": "POL-3044",
+  "incident_date": "2026-08-01",
+  "invoice_date": "2026-08-05",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5044.pdf",
+  "invoice_subtotal": 50876,
+  "invoice_total": 60034,
+  "line_items": [
+    {
+      "description": "Headlight - replacement",
+      "material": "plastic",
+      "amount": 18646,
+      "admitted": false,
+      "reason": "line item priced far above market rate"
+    },
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3040,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Door - replacement",
+      "material": "metal",
+      "amount": 12470,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 9120,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 7600,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "headlight",
+      "side mirror",
+      "rear door"
+    ],
+    "fault_type": "inflated_amount",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": null,
+    "expected_payout": 28006.76
+  },
+  "split": "test"
+}

@@ -1,0 +1,53 @@
+{
+  "claim_id": "CLM-5018",
+  "policy_no": "POL-3018",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-21",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5018.pdf",
+  "invoice_subtotal": 26470,
+  "invoice_total": 31235,
+  "line_items": [
+    {
+      "description": "Front Bumper - replacement",
+      "material": "plastic",
+      "amount": 9420,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Headlight - replacement",
+      "material": "plastic",
+      "amount": 6950,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 6370,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 3730,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "front bumper",
+      "headlight"
+    ],
+    "fault_type": "duplicate_claim",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": null,
+    "expected_payout": 19636.72
+  },
+  "split": "dev"
+}

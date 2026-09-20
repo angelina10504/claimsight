@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3049",
+  "insured_name": "Avi Mitra",
+  "phone": "+918983640376",
+  "address": "91, Arora Circle, Ratlam 696582",
+  "make": "Maruti Suzuki",
+  "model": "Swift VXi",
+  "registration": "HR17YP5806",
+  "vehicle_age_years": 0.4,
+  "idv": 595000,
+  "deductible": 1000,
+  "policy_start": "2026-03-25",
+  "policy_end": "2027-03-24",
+  "zero_depreciation": false,
+  "ncb_percent": 35
+}

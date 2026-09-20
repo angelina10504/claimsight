@@ -1,0 +1,52 @@
+{
+  "claim_id": "CLM-5057",
+  "policy_no": "POL-3057",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-20",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5057.pdf",
+  "invoice_subtotal": 28370,
+  "invoice_total": 33477,
+  "line_items": [
+    {
+      "description": "Rear Door - replacement",
+      "material": "metal",
+      "amount": 12420,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Clutch plate wear - replacement",
+      "material": "metal",
+      "amount": 6500,
+      "admitted": false,
+      "reason": "wear and tear excluded under Section I"
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 5340,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 4110,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "rear door"
+    ],
+    "fault_type": "excluded_wear_tear",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 24018.95
+  },
+  "split": "test"
+}

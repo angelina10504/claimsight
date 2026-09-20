@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5038",
+  "policy_no": "POL-3038",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-21",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5038.pdf",
+  "invoice_subtotal": 45890,
+  "invoice_total": 54150,
+  "line_items": [
+    {
+      "description": "Bonnet - replacement",
+      "material": "metal",
+      "amount": 13220,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Fender - replacement",
+      "material": "metal",
+      "amount": 6420,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 11040,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 9740,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 5470,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "bonnet",
+      "fender",
+      "windshield"
+    ],
+    "fault_type": "duplicate_claim",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": null,
+    "expected_payout": 42443.47
+  },
+  "split": "test"
+}

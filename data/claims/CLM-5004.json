@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5004",
+  "policy_no": "POL-3004",
+  "incident_date": "2026-05-30",
+  "invoice_date": "2026-06-01",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5004.pdf",
+  "invoice_subtotal": 47816,
+  "invoice_total": 56423,
+  "line_items": [
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 31956,
+      "admitted": false,
+      "reason": "line item priced far above market rate"
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 11070,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 4790,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "windshield"
+    ],
+    "fault_type": "inflated_amount",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": null,
+    "expected_payout": 16081.97
+  },
+  "split": "dev"
+}

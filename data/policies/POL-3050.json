@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3050",
+  "insured_name": "William Bhardwaj",
+  "phone": "+911617990421",
+  "address": "02/758, Lad Circle, Serampore 410564",
+  "make": "Hyundai",
+  "model": "i20 Sportz",
+  "registration": "HR91QC5161",
+  "vehicle_age_years": 1.2,
+  "idv": 686000,
+  "deductible": 1000,
+  "policy_start": "2026-04-29",
+  "policy_end": "2027-04-28",
+  "zero_depreciation": false,
+  "ncb_percent": 0
+}

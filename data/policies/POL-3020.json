@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3020",
+  "insured_name": "Tanveer Sani",
+  "phone": "03657661565",
+  "address": "711, Chander Zila, Jalandhar 280988",
+  "make": "Maruti Suzuki",
+  "model": "Swift VXi",
+  "registration": "HR32KV5349",
+  "vehicle_age_years": 0.4,
+  "idv": 595000,
+  "deductible": 1000,
+  "policy_start": "2026-03-08",
+  "policy_end": "2027-03-07",
+  "zero_depreciation": true,
+  "ncb_percent": 35
+}

@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3007",
+  "insured_name": "Jeet Mital",
+  "phone": "4656482366",
+  "address": "80, Mangat Road, Chinsurah-777387",
+  "make": "Hyundai",
+  "model": "i20 Sportz",
+  "registration": "HR30ZZ9837",
+  "vehicle_age_years": 1.2,
+  "idv": 686000,
+  "deductible": 1000,
+  "policy_start": "2026-04-06",
+  "policy_end": "2027-04-05",
+  "zero_depreciation": false,
+  "ncb_percent": 0
+}

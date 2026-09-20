@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3051",
+  "insured_name": "Yuvraj Saha",
+  "phone": "5419518023",
+  "address": "H.No. 744, Chadha Path, Bangalore 349493",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR23OL4886",
+  "vehicle_age_years": 8.5,
+  "idv": 525000,
+  "deductible": 1000,
+  "policy_start": "2026-05-04",
+  "policy_end": "2027-05-03",
+  "zero_depreciation": false,
+  "ncb_percent": 25
+}

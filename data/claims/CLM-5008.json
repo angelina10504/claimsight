@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5008",
+  "policy_no": "POL-3008",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-24",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5008.pdf",
+  "invoice_subtotal": 21710,
+  "invoice_total": 25618,
+  "line_items": [
+    {
+      "description": "Rear Door - replacement",
+      "material": "metal",
+      "amount": 13870,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 4900,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 2940,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "rear door"
+    ],
+    "fault_type": "duplicate_claim",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": null,
+    "expected_payout": 22258.39
+  },
+  "split": "dev"
+}

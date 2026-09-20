@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5031",
+  "policy_no": "POL-3031",
+  "incident_date": "2026-06-22",
+  "invoice_date": "2026-06-27",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5031.pdf",
+  "invoice_subtotal": 8000,
+  "invoice_total": 9440,
+  "line_items": [
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 5060,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 1910,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1030,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "door glass"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 8158.27
+  },
+  "split": "test"
+}

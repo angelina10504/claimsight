@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3021",
+  "insured_name": "Dayamai Nori",
+  "phone": "00229612018",
+  "address": "75, Pingle Street, Anantapur-022901",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR95IO4228",
+  "vehicle_age_years": 6.0,
+  "idv": 575000,
+  "deductible": 1000,
+  "policy_start": "2026-07-09",
+  "policy_end": "2027-07-08",
+  "zero_depreciation": false,
+  "ncb_percent": 0
+}

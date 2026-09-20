@@ -1,0 +1,53 @@
+{
+  "claim_id": "CLM-5026",
+  "policy_no": "POL-3026",
+  "incident_date": "2026-02-26",
+  "invoice_date": "2026-03-04",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5026.pdf",
+  "invoice_subtotal": 10660,
+  "invoice_total": 12579,
+  "line_items": [
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 3020,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4390,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 2020,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1230,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "grille",
+      "door glass"
+    ],
+    "fault_type": "date_outside_policy",
+    "is_covered": false,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 0.0
+  },
+  "split": "test"
+}

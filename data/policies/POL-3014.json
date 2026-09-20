@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3014",
+  "insured_name": "Bhavya Rattan",
+  "phone": "0715451680",
+  "address": "H.No. 385, Tara, Faridabad-482477",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR41DA1651",
+  "vehicle_age_years": 0.4,
+  "idv": 1008000,
+  "deductible": 1000,
+  "policy_start": "2026-05-26",
+  "policy_end": "2027-05-25",
+  "zero_depreciation": false,
+  "ncb_percent": 35
+}

@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5054",
+  "policy_no": "POL-3054",
+  "incident_date": "2026-07-10",
+  "invoice_date": "2026-07-16",
+  "narrative": "Vehicle was hit by another car while parked outside a market.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5054.pdf",
+  "invoice_subtotal": 72663,
+  "invoice_total": 85742,
+  "line_items": [
+    {
+      "description": "Bonnet - replacement",
+      "material": "metal",
+      "amount": 33493,
+      "admitted": false,
+      "reason": "line item priced far above market rate"
+    },
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 10410,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 2530,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 15510,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 10720,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "bonnet",
+      "windshield",
+      "grille"
+    ],
+    "fault_type": "inflated_amount",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": null,
+    "expected_payout": 41440.17
+  },
+  "split": "test"
+}

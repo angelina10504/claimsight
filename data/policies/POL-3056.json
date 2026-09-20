@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3056",
+  "insured_name": "Inaya Kunda",
+  "phone": "+910067626765",
+  "address": "93, Seth Street, Visakhapatnam-054115",
+  "make": "Maruti Suzuki",
+  "model": "Swift VXi",
+  "registration": "HR37FM8264",
+  "vehicle_age_years": 6.0,
+  "idv": 310000,
+  "deductible": 1000,
+  "policy_start": "2026-04-05",
+  "policy_end": "2027-04-04",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

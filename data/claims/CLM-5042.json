@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5042",
+  "policy_no": "POL-3042",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-21",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5042.pdf",
+  "invoice_subtotal": 41510,
+  "invoice_total": 48982,
+  "line_items": [
+    {
+      "description": "Front Door - replacement",
+      "material": "metal",
+      "amount": 13570,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Bumper - replacement",
+      "material": "plastic",
+      "amount": 8210,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4960,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 10120,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 4650,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "front door",
+      "rear bumper",
+      "door glass"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 35240.16
+  },
+  "split": "test"
+}

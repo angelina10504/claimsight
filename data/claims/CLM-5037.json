@@ -1,0 +1,60 @@
+{
+  "claim_id": "CLM-5037",
+  "policy_no": "POL-3037",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-19",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5037.pdf",
+  "invoice_subtotal": 38070,
+  "invoice_total": 44923,
+  "line_items": [
+    {
+      "description": "Front Door - replacement",
+      "material": "metal",
+      "amount": 13550,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Clutch plate wear - replacement",
+      "material": "metal",
+      "amount": 6500,
+      "admitted": false,
+      "reason": "wear and tear excluded under Section I"
+    },
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 5240,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 7280,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 5500,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "front door",
+      "door glass"
+    ],
+    "fault_type": "excluded_wear_tear",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 28783.2
+  },
+  "split": "test"
+}

@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3037",
+  "insured_name": "Mohammed Majumdar",
+  "phone": "+911069033119",
+  "address": "03/06, Kaur Chowk, Pimpri-Chinchwad 843959",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR72TY2680",
+  "vehicle_age_years": 8.5,
+  "idv": 575000,
+  "deductible": 1000,
+  "policy_start": "2026-07-12",
+  "policy_end": "2027-07-11",
+  "zero_depreciation": false,
+  "ncb_percent": 25
+}

@@ -1,0 +1,362 @@
+[
+  {
+    "claim_id": "CLM-5000",
+    "policy_no": "POL-3000",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5001",
+    "policy_no": "POL-3001",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5002",
+    "policy_no": "POL-3002",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5003",
+    "policy_no": "POL-3003",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5004",
+    "policy_no": "POL-3004",
+    "fault_type": "inflated_amount",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5005",
+    "policy_no": "POL-3005",
+    "fault_type": "phantom_part",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5006",
+    "policy_no": "POL-3006",
+    "fault_type": "date_outside_policy",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5007",
+    "policy_no": "POL-3007",
+    "fault_type": "excluded_wear_tear",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5008",
+    "policy_no": "POL-3008",
+    "fault_type": "duplicate_claim",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5009",
+    "policy_no": "POL-3009",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5010",
+    "policy_no": "POL-3010",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5011",
+    "policy_no": "POL-3011",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5012",
+    "policy_no": "POL-3012",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5013",
+    "policy_no": "POL-3013",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5014",
+    "policy_no": "POL-3014",
+    "fault_type": "inflated_amount",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5015",
+    "policy_no": "POL-3015",
+    "fault_type": "phantom_part",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5016",
+    "policy_no": "POL-3016",
+    "fault_type": "date_outside_policy",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5017",
+    "policy_no": "POL-3017",
+    "fault_type": "excluded_wear_tear",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5018",
+    "policy_no": "POL-3018",
+    "fault_type": "duplicate_claim",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5019",
+    "policy_no": "POL-3019",
+    "fault_type": "clean",
+    "split": "dev"
+  },
+  {
+    "claim_id": "CLM-5020",
+    "policy_no": "POL-3020",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5021",
+    "policy_no": "POL-3021",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5022",
+    "policy_no": "POL-3022",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5023",
+    "policy_no": "POL-3023",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5024",
+    "policy_no": "POL-3024",
+    "fault_type": "inflated_amount",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5025",
+    "policy_no": "POL-3025",
+    "fault_type": "phantom_part",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5026",
+    "policy_no": "POL-3026",
+    "fault_type": "date_outside_policy",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5027",
+    "policy_no": "POL-3027",
+    "fault_type": "excluded_wear_tear",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5028",
+    "policy_no": "POL-3028",
+    "fault_type": "duplicate_claim",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5029",
+    "policy_no": "POL-3029",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5030",
+    "policy_no": "POL-3030",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5031",
+    "policy_no": "POL-3031",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5032",
+    "policy_no": "POL-3032",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5033",
+    "policy_no": "POL-3033",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5034",
+    "policy_no": "POL-3034",
+    "fault_type": "inflated_amount",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5035",
+    "policy_no": "POL-3035",
+    "fault_type": "phantom_part",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5036",
+    "policy_no": "POL-3036",
+    "fault_type": "date_outside_policy",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5037",
+    "policy_no": "POL-3037",
+    "fault_type": "excluded_wear_tear",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5038",
+    "policy_no": "POL-3038",
+    "fault_type": "duplicate_claim",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5039",
+    "policy_no": "POL-3039",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5040",
+    "policy_no": "POL-3040",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5041",
+    "policy_no": "POL-3041",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5042",
+    "policy_no": "POL-3042",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5043",
+    "policy_no": "POL-3043",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5044",
+    "policy_no": "POL-3044",
+    "fault_type": "inflated_amount",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5045",
+    "policy_no": "POL-3045",
+    "fault_type": "phantom_part",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5046",
+    "policy_no": "POL-3046",
+    "fault_type": "date_outside_policy",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5047",
+    "policy_no": "POL-3047",
+    "fault_type": "excluded_wear_tear",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5048",
+    "policy_no": "POL-3048",
+    "fault_type": "duplicate_claim",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5049",
+    "policy_no": "POL-3049",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5050",
+    "policy_no": "POL-3050",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5051",
+    "policy_no": "POL-3051",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5052",
+    "policy_no": "POL-3052",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5053",
+    "policy_no": "POL-3053",
+    "fault_type": "clean",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5054",
+    "policy_no": "POL-3054",
+    "fault_type": "inflated_amount",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5055",
+    "policy_no": "POL-3055",
+    "fault_type": "phantom_part",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5056",
+    "policy_no": "POL-3056",
+    "fault_type": "date_outside_policy",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5057",
+    "policy_no": "POL-3057",
+    "fault_type": "excluded_wear_tear",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5058",
+    "policy_no": "POL-3058",
+    "fault_type": "duplicate_claim",
+    "split": "test"
+  },
+  {
+    "claim_id": "CLM-5059",
+    "policy_no": "POL-3059",
+    "fault_type": "clean",
+    "split": "test"
+  }
+]

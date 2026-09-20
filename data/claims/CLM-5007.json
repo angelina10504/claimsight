@@ -1,0 +1,68 @@
+{
+  "claim_id": "CLM-5007",
+  "policy_no": "POL-3007",
+  "incident_date": "2026-08-17",
+  "invoice_date": "2026-08-22",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5007.pdf",
+  "invoice_subtotal": 49950,
+  "invoice_total": 58941,
+  "line_items": [
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 2580,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Clutch plate wear - replacement",
+      "material": "metal",
+      "amount": 6500,
+      "admitted": false,
+      "reason": "wear and tear excluded under Section I"
+    },
+    {
+      "description": "Front Door - replacement",
+      "material": "metal",
+      "amount": 13610,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Front Bumper - replacement",
+      "material": "plastic",
+      "amount": 9870,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 12080,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 5310,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "grille",
+      "front door",
+      "front bumper"
+    ],
+    "fault_type": "excluded_wear_tear",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 39537.72
+  },
+  "split": "dev"
+}

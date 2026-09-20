@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3031",
+  "insured_name": "Yuvraj Dutta",
+  "phone": "09532787747",
+  "address": "87, Kale Ganj, Nashik 479748",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR35AD2245",
+  "vehicle_age_years": 3.4,
+  "idv": 758000,
+  "deductible": 1000,
+  "policy_start": "2026-04-12",
+  "policy_end": "2027-04-11",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

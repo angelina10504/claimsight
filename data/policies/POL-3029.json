@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3029",
+  "insured_name": "Idika Bhattacharyya",
+  "phone": "8442258313",
+  "address": "05, Pillay Circle, Suryapet-911467",
+  "make": "Tata",
+  "model": "Nexon XZ+",
+  "registration": "HR37QN8449",
+  "vehicle_age_years": 3.4,
+  "idv": 620000,
+  "deductible": 1000,
+  "policy_start": "2026-03-25",
+  "policy_end": "2027-03-24",
+  "zero_depreciation": false,
+  "ncb_percent": 35
+}

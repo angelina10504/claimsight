@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5016",
+  "policy_no": "POL-3016",
+  "incident_date": "2026-06-18",
+  "invoice_date": "2026-06-19",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5016.pdf",
+  "invoice_subtotal": 14790,
+  "invoice_total": 17452,
+  "line_items": [
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 2800,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Taillight - replacement",
+      "material": "plastic",
+      "amount": 4080,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3350,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 2630,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1930,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "grille",
+      "taillight",
+      "side mirror"
+    ],
+    "fault_type": "date_outside_policy",
+    "is_covered": false,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 0.0
+  },
+  "split": "dev"
+}

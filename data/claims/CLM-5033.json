@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5033",
+  "policy_no": "POL-3033",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-21",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5033.pdf",
+  "invoice_subtotal": 4860,
+  "invoice_total": 5735,
+  "line_items": [
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3330,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 950,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 580,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "side mirror"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 2629.97
+  },
+  "split": "test"
+}

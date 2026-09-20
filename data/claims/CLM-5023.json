@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5023",
+  "policy_no": "POL-3023",
+  "incident_date": "2026-07-10",
+  "invoice_date": "2026-07-11",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5023.pdf",
+  "invoice_subtotal": 6340,
+  "invoice_total": 7481,
+  "line_items": [
+    {
+      "description": "Taillight - replacement",
+      "material": "plastic",
+      "amount": 4440,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 1250,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 650,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "taillight"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 3677.22
+  },
+  "split": "test"
+}

@@ -1,0 +1,68 @@
+{
+  "claim_id": "CLM-5027",
+  "policy_no": "POL-3027",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-23",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5027.pdf",
+  "invoice_subtotal": 41200,
+  "invoice_total": 48616,
+  "line_items": [
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4680,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Clutch plate wear - replacement",
+      "material": "metal",
+      "amount": 6500,
+      "admitted": false,
+      "reason": "wear and tear excluded under Section I"
+    },
+    {
+      "description": "Front Bumper - replacement",
+      "material": "plastic",
+      "amount": 8110,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Fender - replacement",
+      "material": "metal",
+      "amount": 6590,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 9390,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 5930,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "door glass",
+      "front bumper",
+      "fender"
+    ],
+    "fault_type": "excluded_wear_tear",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 31832.03
+  },
+  "split": "test"
+}

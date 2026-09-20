@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3038",
+  "insured_name": "Maanas Sheth",
+  "phone": "+918668826343",
+  "address": "51, Halder Circle, Agartala 990139",
+  "make": "Hyundai",
+  "model": "i20 Sportz",
+  "registration": "HR48XV2395",
+  "vehicle_age_years": 8.5,
+  "idv": 390000,
+  "deductible": 1000,
+  "policy_start": "2026-05-25",
+  "policy_end": "2027-05-24",
+  "zero_depreciation": false,
+  "ncb_percent": 0
+}

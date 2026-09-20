@@ -1,0 +1,53 @@
+{
+  "claim_id": "CLM-5050",
+  "policy_no": "POL-3050",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-24",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5050.pdf",
+  "invoice_subtotal": 21620,
+  "invoice_total": 25512,
+  "line_items": [
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3120,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 10060,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 5160,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 3280,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "side mirror",
+      "windshield"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 21909.7
+  },
+  "split": "test"
+}

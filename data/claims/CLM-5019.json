@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5019",
+  "policy_no": "POL-3019",
+  "incident_date": "2026-06-12",
+  "invoice_date": "2026-06-15",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5019.pdf",
+  "invoice_subtotal": 13630,
+  "invoice_total": 16083,
+  "line_items": [
+    {
+      "description": "Front Bumper - replacement",
+      "material": "plastic",
+      "amount": 9280,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 2870,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1480,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "front bumper"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 9184.88
+  },
+  "split": "dev"
+}

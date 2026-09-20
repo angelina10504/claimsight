@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3032",
+  "insured_name": "Xiti Baria",
+  "phone": "+910257872982",
+  "address": "694, Nayar, Phusro 705516",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR74SJ6590",
+  "vehicle_age_years": 2.5,
+  "idv": 862000,
+  "deductible": 1000,
+  "policy_start": "2026-01-18",
+  "policy_end": "2027-01-17",
+  "zero_depreciation": true,
+  "ncb_percent": 35
+}

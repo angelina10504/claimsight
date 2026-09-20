@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3039",
+  "insured_name": "Samar Prabhakar",
+  "phone": "06093204899",
+  "address": "353, Korpal Marg, Jamalpur-477725",
+  "make": "Tata",
+  "model": "Nexon XZ+",
+  "registration": "HR30FE4929",
+  "vehicle_age_years": 6.0,
+  "idv": 470000,
+  "deductible": 1000,
+  "policy_start": "2026-01-21",
+  "policy_end": "2027-01-20",
+  "zero_depreciation": true,
+  "ncb_percent": 0
+}

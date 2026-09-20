@@ -1,0 +1,60 @@
+{
+  "claim_id": "CLM-5015",
+  "policy_no": "POL-3015",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-19",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5015.pdf",
+  "invoice_subtotal": 36230,
+  "invoice_total": 42751,
+  "line_items": [
+    {
+      "description": "Rear Bumper - replacement",
+      "material": "plastic",
+      "amount": 8270,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 11000,
+      "admitted": false,
+      "reason": "billed part not visible in damage evidence"
+    },
+    {
+      "description": "Taillight - replacement",
+      "material": "plastic",
+      "amount": 4000,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 8270,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 4690,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "rear bumper",
+      "taillight"
+    ],
+    "fault_type": "phantom_part",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": "windshield",
+    "expected_payout": 20312.27
+  },
+  "split": "dev"
+}

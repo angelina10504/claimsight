@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5002",
+  "policy_no": "POL-3002",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-19",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5002.pdf",
+  "invoice_subtotal": 14880,
+  "invoice_total": 17558,
+  "line_items": [
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 10400,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 3050,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1430,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "windshield"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 16108.52
+  },
+  "split": "dev"
+}

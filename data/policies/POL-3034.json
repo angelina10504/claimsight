@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3034",
+  "insured_name": "Urmi Chaudhry",
+  "phone": "2082677345",
+  "address": "H.No. 938, Gill Nagar, Belgaum 672400",
+  "make": "Hyundai",
+  "model": "i20 Sportz",
+  "registration": "HR53JS5581",
+  "vehicle_age_years": 2.5,
+  "idv": 585000,
+  "deductible": 1000,
+  "policy_start": "2026-03-08",
+  "policy_end": "2027-03-07",
+  "zero_depreciation": false,
+  "ncb_percent": 25
+}

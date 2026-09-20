@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3040",
+  "insured_name": "Bhavini Badal",
+  "phone": "6211823398",
+  "address": "H.No. 61, Ravi Path, Buxar 341016",
+  "make": "Tata",
+  "model": "Nexon XZ+",
+  "registration": "HR85MM4241",
+  "vehicle_age_years": 8.5,
+  "idv": 470000,
+  "deductible": 1000,
+  "policy_start": "2026-06-10",
+  "policy_end": "2027-06-09",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

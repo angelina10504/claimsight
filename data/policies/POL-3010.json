@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3010",
+  "insured_name": "Deepa Chokshi",
+  "phone": "0496631931",
+  "address": "05/86, Biswas Path, Ahmedabad 716572",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR70NF4981",
+  "vehicle_age_years": 4.8,
+  "idv": 598000,
+  "deductible": 1000,
+  "policy_start": "2026-05-28",
+  "policy_end": "2027-05-27",
+  "zero_depreciation": false,
+  "ncb_percent": 35
+}

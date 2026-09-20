@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3005",
+  "insured_name": "Ekapad Konda",
+  "phone": "04278498084",
+  "address": "H.No. 11, Dugal Circle, Ichalkaranji 534874",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR27BC9348",
+  "vehicle_age_years": 2.5,
+  "idv": 787000,
+  "deductible": 1000,
+  "policy_start": "2026-02-26",
+  "policy_end": "2027-02-25",
+  "zero_depreciation": false,
+  "ncb_percent": 0
+}

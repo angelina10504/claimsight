@@ -1,0 +1,53 @@
+{
+  "claim_id": "CLM-5053",
+  "policy_no": "POL-3053",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-24",
+  "narrative": "Vehicle was hit by another car while parked outside a market.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5053.pdf",
+  "invoice_subtotal": 8860,
+  "invoice_total": 10455,
+  "line_items": [
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3280,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 2780,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 1580,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1220,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "side mirror",
+      "grille"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 5646.35
+  },
+  "split": "test"
+}

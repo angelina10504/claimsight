@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5001",
+  "policy_no": "POL-3001",
+  "incident_date": "2026-07-07",
+  "invoice_date": "2026-07-12",
+  "narrative": "Vehicle was hit by another car while parked outside a market.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5001.pdf",
+  "invoice_subtotal": 3780,
+  "invoice_total": 4460,
+  "line_items": [
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 2570,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 780,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 430,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "grille"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 1829.05
+  },
+  "split": "dev"
+}

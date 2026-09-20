@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3033",
+  "insured_name": "Vanya Vora",
+  "phone": "05278585497",
+  "address": "H.No. 84, Mishra Ganj, Dhule-575844",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR85DS5397",
+  "vehicle_age_years": 3.4,
+  "idv": 692000,
+  "deductible": 1000,
+  "policy_start": "2026-07-07",
+  "policy_end": "2027-07-06",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

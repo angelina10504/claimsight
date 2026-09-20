@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3011",
+  "insured_name": "Zansi Halder",
+  "phone": "+913678377701",
+  "address": "34, Pillay, Begusarai 685574",
+  "make": "Maruti Suzuki",
+  "model": "Swift VXi",
+  "registration": "HR34JI9786",
+  "vehicle_age_years": 1.2,
+  "idv": 545000,
+  "deductible": 1000,
+  "policy_start": "2026-02-19",
+  "policy_end": "2027-02-18",
+  "zero_depreciation": false,
+  "ncb_percent": 35
+}

@@ -1,0 +1,53 @@
+{
+  "claim_id": "CLM-5056",
+  "policy_no": "POL-3056",
+  "incident_date": "2026-03-14",
+  "invoice_date": "2026-03-16",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5056.pdf",
+  "invoice_subtotal": 29970,
+  "invoice_total": 35365,
+  "line_items": [
+    {
+      "description": "Rear Bumper - replacement",
+      "material": "plastic",
+      "amount": 8270,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 11880,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 6980,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 2840,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "rear bumper",
+      "windshield"
+    ],
+    "fault_type": "date_outside_policy",
+    "is_covered": false,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 0.0
+  },
+  "split": "test"
+}

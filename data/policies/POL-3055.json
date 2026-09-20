@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3055",
+  "insured_name": "Harini Goel",
+  "phone": "00029218515",
+  "address": "H.No. 45, Dugar Street, Morbi-289539",
+  "make": "Hyundai",
+  "model": "i20 Sportz",
+  "registration": "HR48FM9071",
+  "vehicle_age_years": 0.4,
+  "idv": 748000,
+  "deductible": 1000,
+  "policy_start": "2026-01-10",
+  "policy_end": "2027-01-09",
+  "zero_depreciation": true,
+  "ncb_percent": 20
+}

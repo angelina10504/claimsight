@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3036",
+  "insured_name": "Gavin Uppal",
+  "phone": "00728679087",
+  "address": "40, Bora Ganj, Bhusawal 180170",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR85JN9595",
+  "vehicle_age_years": 3.4,
+  "idv": 758000,
+  "deductible": 1000,
+  "policy_start": "2026-03-12",
+  "policy_end": "2027-03-11",
+  "zero_depreciation": false,
+  "ncb_percent": 0
+}

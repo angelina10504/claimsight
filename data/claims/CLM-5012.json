@@ -1,0 +1,45 @@
+{
+  "claim_id": "CLM-5012",
+  "policy_no": "POL-3012",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-21",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5012.pdf",
+  "invoice_subtotal": 17280,
+  "invoice_total": 20390,
+  "line_items": [
+    {
+      "description": "Bonnet - replacement",
+      "material": "metal",
+      "amount": 11250,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 3470,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 2560,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "bonnet"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 15559.83
+  },
+  "split": "dev"
+}

@@ -1,0 +1,61 @@
+{
+  "claim_id": "CLM-5052",
+  "policy_no": "POL-3052",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-21",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5052.pdf",
+  "invoice_subtotal": 42400,
+  "invoice_total": 50032,
+  "line_items": [
+    {
+      "description": "Rear Bumper - replacement",
+      "material": "plastic",
+      "amount": 8170,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 10860,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Front Bumper - replacement",
+      "material": "plastic",
+      "amount": 9140,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 10130,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 4100,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "rear bumper",
+      "windshield",
+      "front bumper"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "expected_payout": 37324.92
+  },
+  "split": "test"
+}

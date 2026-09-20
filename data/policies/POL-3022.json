@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3022",
+  "insured_name": "Qushi Gill",
+  "phone": "+916838851606",
+  "address": "H.No. 596, Ravel, Ramagundam 605297",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR96WL3851",
+  "vehicle_age_years": 6.0,
+  "idv": 525000,
+  "deductible": 1000,
+  "policy_start": "2026-04-08",
+  "policy_end": "2027-04-07",
+  "zero_depreciation": false,
+  "ncb_percent": 25
+}

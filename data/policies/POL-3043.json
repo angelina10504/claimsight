@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-3043",
+  "insured_name": "Maya Patla",
+  "phone": "+919398280737",
+  "address": "72, Khurana Road, Jamnagar 617979",
+  "make": "Maruti Suzuki",
+  "model": "Swift VXi",
+  "registration": "HR51MR2899",
+  "vehicle_age_years": 2.5,
+  "idv": 465000,
+  "deductible": 1000,
+  "policy_start": "2026-03-06",
+  "policy_end": "2027-03-05",
+  "zero_depreciation": false,
+  "ncb_percent": 35
+}

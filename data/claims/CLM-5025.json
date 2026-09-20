@@ -1,0 +1,60 @@
+{
+  "claim_id": "CLM-5025",
+  "policy_no": "POL-3025",
+  "incident_date": "2026-09-18",
+  "invoice_date": "2026-09-22",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [],
+  "invoice_pdf": "data/invoices/CLM-5025.pdf",
+  "invoice_subtotal": 56130,
+  "invoice_total": 66233,
+  "line_items": [
+    {
+      "description": "Fender - replacement",
+      "material": "metal",
+      "amount": 6700,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Front Door - replacement",
+      "material": "metal",
+      "amount": 14000,
+      "admitted": false,
+      "reason": "billed part not visible in damage evidence"
+    },
+    {
+      "description": "Rear Door - replacement",
+      "material": "metal",
+      "amount": 14270,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 13440,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 7720,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "fender",
+      "rear door"
+    ],
+    "fault_type": "phantom_part",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": "front door",
+    "expected_payout": 36833.16
+  },
+  "split": "test"
+}
