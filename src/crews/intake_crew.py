@@ -2,14 +2,19 @@
 Intake crew.
 
 Two agents, run sequentially:
-  Document Reader   - pulls structured line items out of the repair invoice
-  Claim Assembler   - merges that with the submission and judges completeness
+  Document Reader   - turns raw invoice text into structured line items
+  Claim Assembler   - merges that with the submission and policy, judges
+                      completeness
 
-The crew's output is a validated ClaimIntake. Everything downstream branches on
-its fields, so this is the point where free text becomes structured data.
+Design note: the invoice, submission and policy are fetched in plain Python and
+handed to the agents as inputs. Reading a known file is not a decision, so it
+is not a tool call. Keeping these agents tool-free also avoids a failure mode
+where the model emits its final structured answer as a call to a tool that
+does not exist. Tools are reserved for agents that genuinely choose what to
+look up (the Fraud Analyst, later).
 
 The Damage Analyst (vision over the claimant's photos) joins this crew once the
-photo labels exist; until then damaged_parts is inferred from the invoice.
+photo labels exist; until then damaged_parts is derived from the invoice.
 """
 
 import sys
@@ -29,6 +34,23 @@ from tools.claim_tools import (                                # noqa: E402
 )
 
 
+def fetch_inputs(claim_id: str) -> dict:
+    """Deterministic data gathering. No LLM involved."""
+    submission = ReadClaimSubmission()._run(claim_id)
+    if submission.startswith("ERROR"):
+        raise FileNotFoundError(submission)
+
+    import json
+    policy_no = json.loads(submission)["policy_no"]
+
+    return {
+        "claim_id": claim_id,
+        "invoice_text": ReadInvoicePDF()._run(claim_id),
+        "submission": submission,
+        "policy": ReadPolicySchedule()._run(policy_no),
+    }
+
+
 def build_intake_crew(verbose: bool = True) -> Crew:
     llm = get_llm("text")
 
@@ -44,7 +66,6 @@ def build_intake_crew(verbose: bool = True) -> Crew:
             "field is absent from the invoice you report it as absent rather "
             "than guessing, because a guessed amount becomes a wrong payout."
         ),
-        tools=[ReadInvoicePDF()],
         llm=llm,
         verbose=verbose,
         allow_delegation=False,
@@ -57,13 +78,12 @@ def build_intake_crew(verbose: bool = True) -> Crew:
             "whether there is enough evidence to assess it."
         ),
         backstory=(
-            "You are the first human a claim meets. Your job is not to judge "
+            "You are the first person a claim meets. Your job is not to judge "
             "the claim but to make sure the file is complete: the policy "
             "exists, the vehicle on the invoice matches the policy, the dates "
             "are present. You would rather send a claim back for one missing "
             "document than let an assessor work from a half-empty file."
         ),
-        tools=[ReadClaimSubmission(), ReadPolicySchedule()],
         llm=llm,
         verbose=verbose,
         allow_delegation=False,
@@ -71,8 +91,8 @@ def build_intake_crew(verbose: bool = True) -> Crew:
 
     extract_invoice = Task(
         description=(
-            "Read the repair invoice for claim {claim_id} using the "
-            "read_invoice_pdf tool.\n\n"
+            "Below is the text of the repair invoice for claim {claim_id}.\n\n"
+            "--- INVOICE START ---\n{invoice_text}\n--- INVOICE END ---\n\n"
             "Extract:\n"
             "- invoice number, invoice date (as YYYY-MM-DD), garage name\n"
             "- the vehicle registration number\n"
@@ -98,18 +118,16 @@ def build_intake_crew(verbose: bool = True) -> Crew:
     assemble_claim = Task(
         description=(
             "Build the intake record for claim {claim_id}.\n\n"
-            "1. Use read_claim_submission to get the policy number, incident "
-            "date, narrative and photo filenames.\n"
-            "2. Use read_policy_schedule on that policy number to confirm the "
-            "policy exists and note the registered vehicle.\n"
-            "3. Take the invoice from the previous task.\n\n"
+            "What the claimant submitted:\n{submission}\n\n"
+            "The policy schedule on file:\n{policy}\n\n"
+            "The extracted invoice is provided by the previous task.\n\n"
             "Derive `damaged_parts` from the invoice line items: list the "
             "physical parts billed for replacement, lowercase and without the "
             "word 'replacement' (for example 'front bumper', 'headlight'). "
             "Exclude painting and labour lines - they are not parts.\n\n"
             "Set `is_complete` to false and name the gaps in `missing_fields` "
             "if any of these hold:\n"
-            "- the policy number does not resolve to a schedule\n"
+            "- the policy schedule is missing or shows an ERROR\n"
             "- the invoice has no line items or no total\n"
             "- the incident date is missing\n"
             "- the registration on the invoice does not match the policy\n\n"
@@ -135,6 +153,7 @@ def build_intake_crew(verbose: bool = True) -> Crew:
 
 
 def run_intake(claim_id: str, verbose: bool = True) -> ClaimIntake:
+    inputs = fetch_inputs(claim_id)
     crew = build_intake_crew(verbose=verbose)
-    result = crew.kickoff(inputs={"claim_id": claim_id})
+    result = crew.kickoff(inputs=inputs)
     return result.pydantic
