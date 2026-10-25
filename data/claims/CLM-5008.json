@@ -1,45 +1,62 @@
 {
   "claim_id": "CLM-5008",
-  "policy_no": "POL-3008",
-  "incident_date": "2026-09-18",
-  "invoice_date": "2026-09-24",
+  "policy_no": "POL-3000",
+  "incident_date": "2026-10-22",
+  "invoice_date": "2026-10-24",
   "narrative": "Reversed into a pillar in the basement parking.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5008.pdf",
-  "invoice_subtotal": 21710,
-  "invoice_total": 25618,
+  "invoice_subtotal": 36330,
+  "invoice_total": 42869,
   "line_items": [
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4880,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5000"
+    },
     {
       "description": "Rear Door - replacement",
       "material": "metal",
-      "amount": 13870,
-      "admitted": true,
-      "reason": ""
+      "amount": 11960,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5000"
+    },
+    {
+      "description": "Rear Bumper - replacement",
+      "material": "plastic",
+      "amount": 7800,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5000"
     },
     {
       "description": "Painting and finishing",
       "material": "paint",
-      "amount": 4900,
-      "admitted": true,
-      "reason": ""
+      "amount": 7010,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5000"
     },
     {
       "description": "Labour charges",
       "material": "labour",
-      "amount": 2940,
-      "admitted": true,
-      "reason": ""
+      "amount": 4680,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5000"
     }
   ],
   "ground_truth": {
     "damaged_parts": [
-      "rear door"
+      "door glass",
+      "rear door",
+      "rear bumper"
     ],
     "fault_type": "duplicate_claim",
     "is_covered": true,
     "is_fraudulent": true,
     "phantom_part": null,
-    "expected_payout": 22258.39
+    "duplicate_of": "CLM-5000",
+    "expected_payout": 0.0
   },
   "split": "dev"
 }

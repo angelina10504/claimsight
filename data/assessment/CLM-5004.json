@@ -1,0 +1,89 @@
+{
+  "decision": {
+    "claim_id": "CLM-5004",
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I \u2013 accidental external means (windshield)",
+      "Section I \u2013 accidental external means (painting)",
+      "Section I \u2013 accidental external means (labour)"
+    ],
+    "fraud_score": 0.7,
+    "fraud_flags": [
+      "Overpriced windshield replacement"
+    ],
+    "line_decisions": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 31956.0,
+        "material": "glass",
+        "admitted": false,
+        "reason": "priced far above market rate"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 11070.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4790.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "human_review",
+    "summary": "The claim falls within the policy period and the damage is covered under Section I. The windshield replacement is flagged as overpriced and is not admitted, while painting and labour are admitted. Fraud score of 0.7 requires human review."
+  },
+  "settlement": {
+    "admitted_subtotal": 15860.0,
+    "total_depreciation": 1383.75,
+    "after_depreciation": 14476.25,
+    "gst": 2605.72,
+    "deductible": 1000.0,
+    "payout": 16081.97,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 11070.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 1383.75,
+        "payable": 9686.25
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 4790.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4790.0
+      }
+    ],
+    "excluded": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 31956.0,
+        "reason": "priced far above market rate"
+      }
+    ],
+    "explanation": "Admitted lines:\n  Painting and finishing: Rs 11,070  - 12.5% depreciation (Rs 1,384)  = Rs 9,686\n  Labour charges: Rs 4,790  - 0.0% depreciation (Rs 0)  = Rs 4,790\nExcluded lines:\n  Windshield - replacement: Rs 31,956 - priced far above market rate\nSubtotal after depreciation: Rs 14,476.25\nGST: Rs 2,605.72\nLess deductible: Rs 1,000.00\nPayout: Rs 16,081.97"
+  },
+  "score": {
+    "coverage_ok": true,
+    "flagged": true,
+    "is_fraud": true,
+    "lines_ok": 3,
+    "lines_total": 3,
+    "payout": 16081.97,
+    "expected_payout": 16081.97,
+    "payout_ok": true,
+    "claim_id": "CLM-5004",
+    "fault": "inflated_amount",
+    "route": "human_review",
+    "tokens": 44394
+  }
+}

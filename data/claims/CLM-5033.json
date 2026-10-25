@@ -1,8 +1,8 @@
 {
   "claim_id": "CLM-5033",
   "policy_no": "POL-3033",
-  "incident_date": "2026-09-18",
-  "invoice_date": "2026-09-21",
+  "incident_date": "2026-10-22",
+  "invoice_date": "2026-10-25",
   "narrative": "Reversed into a pillar in the basement parking.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5033.pdf",
@@ -39,6 +39,7 @@
     "is_covered": true,
     "is_fraudulent": false,
     "phantom_part": null,
+    "duplicate_of": null,
     "expected_payout": 2629.97
   },
   "split": "test"

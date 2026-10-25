@@ -1,61 +1,54 @@
 {
   "claim_id": "CLM-5028",
-  "policy_no": "POL-3028",
-  "incident_date": "2026-06-26",
-  "invoice_date": "2026-07-02",
-  "narrative": "Vehicle was hit by another car while parked outside a market.",
+  "policy_no": "POL-3020",
+  "incident_date": "2026-07-05",
+  "invoice_date": "2026-07-07",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5028.pdf",
-  "invoice_subtotal": 41930,
-  "invoice_total": 49477,
+  "invoice_subtotal": 11570,
+  "invoice_total": 13653,
   "line_items": [
-    {
-      "description": "Headlight - replacement",
-      "material": "plastic",
-      "amount": 7890,
-      "admitted": true,
-      "reason": ""
-    },
-    {
-      "description": "Front Door - replacement",
-      "material": "metal",
-      "amount": 14090,
-      "admitted": true,
-      "reason": ""
-    },
     {
       "description": "Door Glass - replacement",
       "material": "glass",
-      "amount": 5190,
-      "admitted": true,
-      "reason": ""
+      "amount": 4730,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5020"
+    },
+    {
+      "description": "Grille - replacement",
+      "material": "plastic",
+      "amount": 3070,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5020"
     },
     {
       "description": "Painting and finishing",
       "material": "paint",
-      "amount": 9200,
-      "admitted": true,
-      "reason": ""
+      "amount": 2080,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5020"
     },
     {
       "description": "Labour charges",
       "material": "labour",
-      "amount": 5560,
-      "admitted": true,
-      "reason": ""
+      "amount": 1690,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5020"
     }
   ],
   "ground_truth": {
     "damaged_parts": [
-      "headlight",
-      "front door",
-      "door glass"
+      "door glass",
+      "grille"
     ],
     "fault_type": "duplicate_claim",
     "is_covered": true,
     "is_fraudulent": true,
     "phantom_part": null,
-    "expected_payout": 38308.75
+    "duplicate_of": "CLM-5020",
+    "expected_payout": 0.0
   },
   "split": "test"
 }

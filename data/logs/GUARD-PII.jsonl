@@ -1,0 +1,4 @@
+{"time": "2026-10-25T17:20:44.460", "elapsed_s": 0.0, "claim_id": "GUARD-PII", "event": "run_started"}
+{"time": "2026-10-25T17:20:44.470", "elapsed_s": 0.01, "claim_id": "GUARD-PII", "event": "guardrail", "kind": "pii_redacted", "items": 2}
+{"time": "2026-10-25T17:20:44.474", "elapsed_s": 0.01, "claim_id": "GUARD-PII", "event": "task_done", "agent": "Intake Officer", "task": "Claimant note: call me on +91 9876543210 or mail ravi@example.com. Bumper Rs 9,000 on 2026-05-30, policy POL-3004.", "seconds_since_previous_task": 0.01, "structured": null, "output": "noted"}
+{"time": "2026-10-25T17:20:44.476", "elapsed_s": 0.02, "claim_id": "GUARD-PII", "event": "run_finished", "total_seconds": 0.02, "tool_calls": 0, "tasks": 1, "errors": 0, "retried_llm_failures": 0, "status": "test"}

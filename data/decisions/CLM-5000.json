@@ -1,0 +1,170 @@
+{
+  "claim_id": "CLM-5000",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5000",
+    "policy_no": "POL-3000",
+    "registration": "HR45GY5012",
+    "incident_date": "2026-09-18",
+    "narrative": "Reversed into a pillar in the basement parking.",
+    "damaged_parts": [
+      "door glass",
+      "rear door",
+      "rear bumper"
+    ],
+    "invoice": {
+      "invoice_no": "INV/833/26",
+      "invoice_date": "2026-09-20",
+      "garage_name": "Nayar Auto Works",
+      "registration": "HR45GY5012",
+      "line_items": [
+        {
+          "description": "Door Glass - replacement",
+          "amount": 4880.0,
+          "material": "glass"
+        },
+        {
+          "description": "Rear Door - replacement",
+          "amount": 11960.0,
+          "material": "metal"
+        },
+        {
+          "description": "Rear Bumper - replacement",
+          "amount": 7800.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 7010.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 4680.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 36330.0,
+      "gst": 6539.0,
+      "total": 42869.0
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "All required documents are present."
+  },
+  "decision": {
+    "claim_id": "CLM-5000",
+    "is_covered": true,
+    "coverage_reasons": [],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4880.0,
+        "material": "glass",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 11960.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 7800.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 7010.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4680.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "All invoice lines are admitted. No coverage or fraud issues identified. Claim is approved for settlement."
+  },
+  "settlement": {
+    "admitted_subtotal": 36330.0,
+    "total_depreciation": 0.0,
+    "after_depreciation": 36330.0,
+    "gst": 6539.4,
+    "deductible": 1000.0,
+    "payout": 41869.4,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Door Glass - replacement",
+        "material": "glass",
+        "amount": 4880.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4880.0
+      },
+      {
+        "description": "Rear Door - replacement",
+        "material": "metal",
+        "amount": 11960.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 11960.0
+      },
+      {
+        "description": "Rear Bumper - replacement",
+        "material": "plastic",
+        "amount": 7800.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 7800.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 7010.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 7010.0
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 4680.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4680.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Door Glass - replacement: Rs 4,880  - 0.0% depreciation (Rs 0)  = Rs 4,880\n  Rear Door - replacement: Rs 11,960  - 0.0% depreciation (Rs 0)  = Rs 11,960\n  Rear Bumper - replacement: Rs 7,800  - 0.0% depreciation (Rs 0)  = Rs 7,800\n  Painting and finishing: Rs 7,010  - 0.0% depreciation (Rs 0)  = Rs 7,010\n  Labour charges: Rs 4,680  - 0.0% depreciation (Rs 0)  = Rs 4,680\nSubtotal after depreciation: Rs 36,330.00\nGST: Rs 6,539.40\nLess deductible: Rs 1,000.00\nPayout: Rs 41,869.40"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 41869.4,
+  "guardrail_flags": [],
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: covered=True, fraud_score=0.10, 0 line(s) denied, payout Rs 41,869.40 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 41,869.40"
+  ],
+  "id": "ff16f937-3134-425e-a032-2e878d21f360"
+}

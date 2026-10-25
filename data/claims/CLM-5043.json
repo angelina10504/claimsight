@@ -1,8 +1,8 @@
 {
   "claim_id": "CLM-5043",
   "policy_no": "POL-3043",
-  "incident_date": "2026-09-18",
-  "invoice_date": "2026-09-19",
+  "incident_date": "2026-10-22",
+  "invoice_date": "2026-10-23",
   "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5043.pdf",
@@ -55,6 +55,7 @@
     "is_covered": true,
     "is_fraudulent": false,
     "phantom_part": null,
+    "duplicate_of": null,
     "expected_payout": 47896.54
   },
   "split": "test"

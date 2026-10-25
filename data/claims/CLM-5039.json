@@ -39,6 +39,7 @@
     "is_covered": true,
     "is_fraudulent": false,
     "phantom_part": null,
+    "duplicate_of": null,
     "expected_payout": 15036.2
   },
   "split": "test"

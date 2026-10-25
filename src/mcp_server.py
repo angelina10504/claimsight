@@ -39,6 +39,7 @@ ROOT = SRC.parent
 sys.path.insert(0, str(SRC / "tools"))
 
 import assessment_tools as tools   # noqa: E402  (the same functions the crews used directly)
+from assessment_tools import PriceLine, SettlementLine   # noqa: E402  (typed invoice lines)
 
 DECISIONS = ROOT / "data" / "decisions"
 REVIEW_QUEUE = ROOT / "data" / "review_queue"
@@ -70,6 +71,12 @@ def _bad_date(value: str) -> Optional[dict]:
         return {"error": f"date must be YYYY-MM-DD, got {value!r}"}
 
 
+def _as_dicts(lines) -> List[Dict[str, Any]]:
+    """Typed invoice lines (pydantic models) back to plain dicts for the calculators."""
+    return [line.model_dump(exclude_none=True) if hasattr(line, "model_dump") else line
+            for line in (lines or [])]
+
+
 def _bad_lines(lines: List[Dict[str, Any]]) -> Optional[dict]:
     if not lines:
         return {"error": "line_items is empty"}
@@ -97,12 +104,13 @@ def check_policy_period(policy_no: str, incident_date: str) -> dict:
 
 
 @mcp.tool()
-def check_part_prices(line_items: List[Dict[str, Any]]) -> dict:
+def check_part_prices(line_items: List[PriceLine]) -> dict:
     """Compare each billed part with its market price, and check that painting
     and labour are in a normal proportion. Returns the lines that look inflated.
 
     line_items: every invoice line, each {"description": str, "amount": number}."""
-    return _bad_lines(line_items) or tools.check_part_prices(line_items)
+    lines = _as_dicts(line_items)
+    return _bad_lines(lines) or tools.check_part_prices(lines)
 
 
 @mcp.tool()
@@ -117,13 +125,14 @@ def find_prior_claims(policy_no: str, claim_id: str, incident_date: str,
 
 
 @mcp.tool()
-def calculate_settlement(policy_no: str, line_items: List[Dict[str, Any]]) -> dict:
+def calculate_settlement(policy_no: str, line_items: List[SettlementLine]) -> dict:
     """Compute the payout under the policy's depreciation, GST, deductible and
     IDV rules. Pass EVERY invoice line; set "admitted": false (with a "reason")
     on lines that should not be paid. Always use this for amounts.
 
     line_items: each {"description", "amount", "material"?, "admitted"?, "reason"?}."""
-    return _bad_policy(policy_no) or _bad_lines(line_items) or tools.settle(policy_no, line_items)
+    lines = _as_dicts(line_items)
+    return _bad_policy(policy_no) or _bad_lines(lines) or tools.settle(policy_no, lines)
 
 
 @mcp.tool()

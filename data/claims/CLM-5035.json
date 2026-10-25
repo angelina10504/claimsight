@@ -54,6 +54,7 @@
     "is_covered": true,
     "is_fraudulent": true,
     "phantom_part": "side mirror",
+    "duplicate_of": null,
     "expected_payout": 24622.81
   },
   "split": "test"

@@ -1,8 +1,8 @@
 {
   "claim_id": "CLM-5014",
   "policy_no": "POL-3014",
-  "incident_date": "2026-09-18",
-  "invoice_date": "2026-09-22",
+  "incident_date": "2026-10-22",
+  "invoice_date": "2026-10-26",
   "narrative": "Stone impact on the highway damaged the front of the vehicle.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5014.pdf",
@@ -55,6 +55,7 @@
     "is_covered": true,
     "is_fraudulent": true,
     "phantom_part": null,
+    "duplicate_of": null,
     "expected_payout": 36498.92
   },
   "split": "dev"

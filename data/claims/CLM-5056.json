@@ -47,6 +47,7 @@
     "is_covered": false,
     "is_fraudulent": false,
     "phantom_part": null,
+    "duplicate_of": null,
     "expected_payout": 0.0
   },
   "split": "test"

@@ -1,0 +1,54 @@
+{
+  "decision": {
+    "claim_id": "CLM-5006",
+    "is_covered": false,
+    "coverage_reasons": [
+      "Incident outside policy period"
+    ],
+    "fraud_score": 0.0,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Front Door - replacement",
+        "amount": 12600.0,
+        "material": "metal",
+        "admitted": false,
+        "reason": "outside policy period"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 4510.0,
+        "material": "paint",
+        "admitted": false,
+        "reason": "outside policy period"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 2690.0,
+        "material": "labour",
+        "admitted": false,
+        "reason": "outside policy period"
+      }
+    ],
+    "recommended_route": "reject",
+    "summary": "The incident occurred 37 days before the policy start date, so the claim is not covered. Consequently no invoice lines are admitted and the claim is rejected."
+  },
+  "settlement": {
+    "payout": 0.0,
+    "explanation": "Not covered: no settlement."
+  },
+  "score": {
+    "coverage_ok": true,
+    "flagged": false,
+    "is_fraud": false,
+    "lines_ok": 3,
+    "lines_total": 3,
+    "payout": 0.0,
+    "expected_payout": 0.0,
+    "payout_ok": true,
+    "claim_id": "CLM-5006",
+    "fault": "date_outside_policy",
+    "route": "reject",
+    "tokens": 38511
+  }
+}

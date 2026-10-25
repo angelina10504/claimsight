@@ -49,7 +49,7 @@
   },
   {
     "claim_id": "CLM-5008",
-    "policy_no": "POL-3008",
+    "policy_no": "POL-3000",
     "fault_type": "duplicate_claim",
     "split": "dev"
   },
@@ -109,7 +109,7 @@
   },
   {
     "claim_id": "CLM-5018",
-    "policy_no": "POL-3018",
+    "policy_no": "POL-3010",
     "fault_type": "duplicate_claim",
     "split": "dev"
   },
@@ -169,7 +169,7 @@
   },
   {
     "claim_id": "CLM-5028",
-    "policy_no": "POL-3028",
+    "policy_no": "POL-3020",
     "fault_type": "duplicate_claim",
     "split": "test"
   },
@@ -229,7 +229,7 @@
   },
   {
     "claim_id": "CLM-5038",
-    "policy_no": "POL-3038",
+    "policy_no": "POL-3030",
     "fault_type": "duplicate_claim",
     "split": "test"
   },
@@ -289,7 +289,7 @@
   },
   {
     "claim_id": "CLM-5048",
-    "policy_no": "POL-3048",
+    "policy_no": "POL-3040",
     "fault_type": "duplicate_claim",
     "split": "test"
   },
@@ -349,7 +349,7 @@
   },
   {
     "claim_id": "CLM-5058",
-    "policy_no": "POL-3058",
+    "policy_no": "POL-3050",
     "fault_type": "duplicate_claim",
     "split": "test"
   },

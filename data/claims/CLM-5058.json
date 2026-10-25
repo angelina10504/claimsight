@@ -1,45 +1,54 @@
 {
   "claim_id": "CLM-5058",
-  "policy_no": "POL-3058",
-  "incident_date": "2026-09-18",
-  "invoice_date": "2026-09-23",
-  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "policy_no": "POL-3050",
+  "incident_date": "2026-10-21",
+  "invoice_date": "2026-10-23",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5058.pdf",
-  "invoice_subtotal": 9240,
-  "invoice_total": 10903,
+  "invoice_subtotal": 21620,
+  "invoice_total": 25512,
   "line_items": [
     {
-      "description": "Fender - replacement",
-      "material": "metal",
-      "amount": 6560,
-      "admitted": true,
-      "reason": ""
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3120,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5050"
+    },
+    {
+      "description": "Windshield - replacement",
+      "material": "glass",
+      "amount": 10060,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5050"
     },
     {
       "description": "Painting and finishing",
       "material": "paint",
-      "amount": 1810,
-      "admitted": true,
-      "reason": ""
+      "amount": 5160,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5050"
     },
     {
       "description": "Labour charges",
       "material": "labour",
-      "amount": 870,
-      "admitted": true,
-      "reason": ""
+      "amount": 3280,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5050"
     }
   ],
   "ground_truth": {
     "damaged_parts": [
-      "fender"
+      "side mirror",
+      "windshield"
     ],
     "fault_type": "duplicate_claim",
     "is_covered": true,
     "is_fraudulent": true,
     "phantom_part": null,
-    "expected_payout": 9903.2
+    "duplicate_of": "CLM-5050",
+    "expected_payout": 0.0
   },
   "split": "test"
 }

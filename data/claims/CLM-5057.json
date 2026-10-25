@@ -1,8 +1,8 @@
 {
   "claim_id": "CLM-5057",
   "policy_no": "POL-3057",
-  "incident_date": "2026-09-18",
-  "invoice_date": "2026-09-20",
+  "incident_date": "2026-09-21",
+  "invoice_date": "2026-09-23",
   "narrative": "Collided with a divider while taking a turn in the rain.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5057.pdf",
@@ -46,6 +46,7 @@
     "is_covered": true,
     "is_fraudulent": false,
     "phantom_part": null,
+    "duplicate_of": null,
     "expected_payout": 24018.95
   },
   "split": "test"

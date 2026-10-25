@@ -1,8 +1,8 @@
 {
   "claim_id": "CLM-5022",
   "policy_no": "POL-3022",
-  "incident_date": "2026-09-18",
-  "invoice_date": "2026-09-22",
+  "incident_date": "2026-09-29",
+  "invoice_date": "2026-10-03",
   "narrative": "Reversed into a pillar in the basement parking.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5022.pdf",
@@ -47,6 +47,7 @@
     "is_covered": true,
     "is_fraudulent": false,
     "phantom_part": null,
+    "duplicate_of": null,
     "expected_payout": 26069.79
   },
   "split": "test"

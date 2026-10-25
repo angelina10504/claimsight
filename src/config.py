@@ -20,7 +20,7 @@ PROVIDER = os.getenv("LLM_PROVIDER", "groq").lower()
 
 PROFILES = {
     "groq": {
-        "text": "openai/openai/gpt-oss-120b",
+        "text": "openai/openai/gpt-oss-20b",
         "vision": "openai/qwen/qwen3.8-27b",
     },
     "ollama": {

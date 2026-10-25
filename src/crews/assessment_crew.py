@@ -55,13 +55,14 @@ def tool_access(*names: str) -> dict:
     """Agent kwargs giving access to exactly these tools: over MCP by default,
     or as direct CrewAI tools when USE_MCP=false.
 
-    The server is launched as 'python src/mcp_server.py' on purpose: CrewAI
-    prefixes each MCP tool name with the launch command, and a full interpreter
-    path would push the real tool name past the 64-character limit."""
+    The server is launched through ./claimsight_tools on purpose: CrewAI
+    prefixes each MCP tool name with the launch command, so the tools are named
+    "claimsight_tools_<tool>". Launched as "python ..." they started with
+    "python_", and gpt-oss confused them with its built-in "python" tool."""
     if USE_MCP:
         server = MCPServerStdio(
-            command="python",
-            args=["src/mcp_server.py"],
+            command="./claimsight_tools",
+            args=[],
             tool_filter=create_static_tool_filter(allowed_tool_names=list(names)),
         )
         return {"mcps": [server]}

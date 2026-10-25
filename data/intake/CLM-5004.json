@@ -1,0 +1,39 @@
+{
+  "claim_id": "CLM-5004",
+  "policy_no": "POL-3004",
+  "registration": "HR18DS4456",
+  "incident_date": "2026-05-30",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "damaged_parts": [
+    "windshield"
+  ],
+  "invoice": {
+    "invoice_no": "INV/862/26",
+    "invoice_date": "2026-06-01",
+    "garage_name": "Koshy Auto Works",
+    "registration": "HR18DS4456",
+    "line_items": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 31956.0,
+        "material": "glass"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 11070.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4790.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 47816.0,
+    "gst": 8607.0,
+    "total": 56423.0
+  },
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Invoice matches policy registration. Awaiting further documentation if needed."
+}

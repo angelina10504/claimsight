@@ -46,6 +46,7 @@
     "is_covered": true,
     "is_fraudulent": true,
     "phantom_part": "front door",
+    "duplicate_of": null,
     "expected_payout": 10589.07
   },
   "split": "test"

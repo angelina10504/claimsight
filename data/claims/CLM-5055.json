@@ -62,6 +62,7 @@
     "is_covered": true,
     "is_fraudulent": true,
     "phantom_part": "door glass",
+    "duplicate_of": null,
     "expected_payout": 65127.2
   },
   "split": "test"

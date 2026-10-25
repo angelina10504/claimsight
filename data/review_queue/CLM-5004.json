@@ -1,0 +1,131 @@
+{
+  "claim_id": "CLM-5004",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5004",
+    "policy_no": "POL-3004",
+    "registration": "HR18DS4456",
+    "incident_date": "2026-05-30",
+    "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+    "damaged_parts": [
+      "windshield"
+    ],
+    "invoice": {
+      "invoice_no": "INV/862/26",
+      "invoice_date": "2026-06-01",
+      "garage_name": "Koshy Auto Works",
+      "registration": "HR18DS4456",
+      "line_items": [
+        {
+          "description": "Windshield - replacement",
+          "amount": 31956.0,
+          "material": "glass"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 11070.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 4790.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 47816.0,
+      "gst": 8607.0,
+      "total": 56423.0
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Invoice matches policy registration. Awaiting further documentation if needed."
+  },
+  "decision": {
+    "claim_id": "CLM-5004",
+    "is_covered": true,
+    "coverage_reasons": [
+      "Accidental external means (Section I, item 6)",
+      "Policy period 2026\u201103\u201110 to 2027\u201103\u201109"
+    ],
+    "fraud_score": 0.7,
+    "fraud_flags": [
+      "Windshield replacement priced far above market rate"
+    ],
+    "line_decisions": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 31956.0,
+        "material": "glass",
+        "admitted": false,
+        "reason": "priced far above market rate"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 11070.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4790.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "human_review",
+    "summary": "The claim is covered under the policy period and accidental external means clause. The windshield replacement is not admitted due to excessive pricing, while painting and labour are admitted. The claim requires human review due to fraud score 0.7."
+  },
+  "settlement": {
+    "admitted_subtotal": 15860.0,
+    "total_depreciation": 1383.75,
+    "after_depreciation": 14476.25,
+    "gst": 2605.72,
+    "deductible": 1000.0,
+    "payout": 16081.97,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 11070.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 1383.75,
+        "payable": 9686.25
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 4790.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4790.0
+      }
+    ],
+    "excluded": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 31956.0,
+        "reason": "priced far above market rate"
+      }
+    ],
+    "explanation": "Admitted lines:\n  Painting and finishing: Rs 11,070  - 12.5% depreciation (Rs 1,384)  = Rs 9,686\n  Labour charges: Rs 4,790  - 0.0% depreciation (Rs 0)  = Rs 4,790\nExcluded lines:\n  Windshield - replacement: Rs 31,956 - priced far above market rate\nSubtotal after depreciation: Rs 14,476.25\nGST: Rs 2,605.72\nLess deductible: Rs 1,000.00\nPayout: Rs 16,081.97"
+  },
+  "route": "human_review",
+  "status": "",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: covered=True, fraud_score=0.70, 1 line(s) denied, payout Rs 16,081.97 (calculator)",
+    "router 2: human_review because fraud score 0.70 >= 0.5"
+  ],
+  "id": "8d46436b-bf4f-4161-9eb4-b684d6a3e68d"
+}

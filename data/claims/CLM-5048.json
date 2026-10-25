@@ -1,61 +1,62 @@
 {
   "claim_id": "CLM-5048",
-  "policy_no": "POL-3048",
-  "incident_date": "2026-08-21",
-  "invoice_date": "2026-08-27",
+  "policy_no": "POL-3040",
+  "incident_date": "2026-10-22",
+  "invoice_date": "2026-10-24",
   "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5048.pdf",
-  "invoice_subtotal": 33690,
-  "invoice_total": 39754,
+  "invoice_subtotal": 21970,
+  "invoice_total": 25925,
   "line_items": [
     {
-      "description": "Front Bumper - replacement",
+      "description": "Headlight - replacement",
       "material": "plastic",
-      "amount": 8520,
-      "admitted": true,
-      "reason": ""
+      "amount": 6580,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5040"
     },
     {
-      "description": "Fender - replacement",
-      "material": "metal",
-      "amount": 7050,
-      "admitted": true,
-      "reason": ""
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 2890,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5040"
     },
     {
-      "description": "Rear Bumper - replacement",
-      "material": "plastic",
-      "amount": 8130,
-      "admitted": true,
-      "reason": ""
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4610,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5040"
     },
     {
       "description": "Painting and finishing",
       "material": "paint",
-      "amount": 6730,
-      "admitted": true,
-      "reason": ""
+      "amount": 5100,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5040"
     },
     {
       "description": "Labour charges",
       "material": "labour",
-      "amount": 3260,
-      "admitted": true,
-      "reason": ""
+      "amount": 2790,
+      "admitted": false,
+      "reason": "same damage already claimed under CLM-5040"
     }
   ],
   "ground_truth": {
     "damaged_parts": [
-      "front bumper",
-      "fender",
-      "rear bumper"
+      "headlight",
+      "side mirror",
+      "door glass"
     ],
     "fault_type": "duplicate_claim",
     "is_covered": true,
     "is_fraudulent": true,
     "phantom_part": null,
-    "expected_payout": 24610.42
+    "duplicate_of": "CLM-5040",
+    "expected_payout": 0.0
   },
   "split": "test"
 }

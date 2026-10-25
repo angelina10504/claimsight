@@ -1,8 +1,8 @@
 {
   "claim_id": "CLM-5003",
   "policy_no": "POL-3003",
-  "incident_date": "2026-09-18",
-  "invoice_date": "2026-09-20",
+  "incident_date": "2026-10-22",
+  "invoice_date": "2026-10-24",
   "narrative": "Vehicle was hit by another car while parked outside a market.",
   "photos": [],
   "invoice_pdf": "data/invoices/CLM-5003.pdf",
@@ -55,6 +55,7 @@
     "is_covered": true,
     "is_fraudulent": false,
     "phantom_part": null,
+    "duplicate_of": null,
     "expected_payout": 49982.49
   },
   "split": "dev"

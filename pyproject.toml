@@ -15,4 +15,5 @@ dependencies = [
     "streamlit>=1.64.0",
     "weasyprint>=70.0",
     "ollama>=0.6.3",
+    "google-adk[a2a]>=2.13.0",
 ]

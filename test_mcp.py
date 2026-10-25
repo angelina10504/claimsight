@@ -23,7 +23,10 @@ SERVER = StdioServerParameters(command=sys.executable, args=[str(ROOT / "src" / 
 
 
 def payload(result) -> dict:
-    """The JSON a tool returned."""
+    """The JSON a tool returned. A schema violation (e.g. amount "lots") is
+    rejected by MCP itself before our code runs; it comes back as isError."""
+    if getattr(result, "isError", False):
+        return {"error": result.content[0].text.splitlines()[0]}
     if getattr(result, "structuredContent", None):
         data = result.structuredContent
         return data.get("result", data) if set(data) == {"result"} else data

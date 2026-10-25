@@ -1,0 +1,9 @@
+#!/bin/sh
+# Launches the ClaimSight MCP server for the CrewAI agents.
+#
+# Why a launcher: CrewAI names each MCP tool "<launch command>_<tool>". Launched
+# as "python src/mcp_server.py" the tools were called "python_src_mcp_server_py_...",
+# and gpt-oss (which has a built-in tool called "python") sometimes cut the name
+# short and called "python", which Groq rejects. Through this launcher the tools
+# are named "claimsight_tools_check_part_prices" and so on.
+cd "$(dirname "$0")" && exec python src/mcp_server.py "$@"
