@@ -259,6 +259,7 @@ def main():
         print("No photo_labels.json found - generating claims without photos.")
 
     manifest = []
+    records = []   # (claim, policy, items) per index, so duplicates can copy an earlier claim
     for i in range(N_CLAIMS):
         claim_id = f"CLM-{5000 + i}"
         policy = make_policy(i)
@@ -281,6 +282,22 @@ def main():
             incident = min(incident, date.today() - timedelta(days=3))
         invoice_date = incident + timedelta(days=random.randint(1, 6))
 
+        # A duplicate re-bills an earlier claim's damage on the same policy.
+        # Everything above still ran, so the random sequence for later claims is
+        # unchanged; this only overrides the duplicate's own fields.
+        duplicate_of = None
+        if fault == "duplicate_claim":
+            original, original_policy, original_items = records[i - 8]   # always a clean claim
+            duplicate_of = original["claim_id"]
+            policy = original_policy
+            damaged = list(original["ground_truth"]["damaged_parts"])
+            incident = min(date.fromisoformat(original["incident_date"]) + timedelta(days=12),
+                           date.today() - timedelta(days=3))
+            invoice_date = incident + timedelta(days=2)
+            items = [dict(item, admitted=False,
+                          reason=f"same damage already claimed under {duplicate_of}")
+                     for item in original_items]
+
         invoice_path = INVOICES / f"{claim_id}.pdf"
         render_invoice(invoice_path, policy, items,
                        f"INV/{random.randint(100, 999)}/26", invoice_date.isoformat())
@@ -288,18 +305,23 @@ def main():
         covered = fault != "date_outside_policy"
         subtotal = sum(i["amount"] for i in items)
 
+        # Drawn after the invoice render, as before, so the random sequence is unchanged
+        narrative = random.choice([
+            "Vehicle was hit by another car while parked outside a market.",
+            "Collided with a divider while taking a turn in the rain.",
+            "A two-wheeler struck the vehicle at a traffic signal.",
+            "Reversed into a pillar in the basement parking.",
+            "Stone impact on the highway damaged the front of the vehicle.",
+        ])
+        if duplicate_of:
+            narrative = records[i - 8][0]["narrative"]
+
         claim = {
             "claim_id": claim_id,
             "policy_no": policy["policy_no"],
             "incident_date": incident.isoformat(),
             "invoice_date": invoice_date.isoformat(),
-            "narrative": random.choice([
-                "Vehicle was hit by another car while parked outside a market.",
-                "Collided with a divider while taking a turn in the rain.",
-                "A two-wheeler struck the vehicle at a traffic signal.",
-                "Reversed into a pillar in the basement parking.",
-                "Stone impact on the highway damaged the front of the vehicle.",
-            ]),
+            "narrative": narrative,
             "photos": photos,
             "invoice_pdf": str(invoice_path.relative_to(ROOT)),
             "invoice_subtotal": subtotal,
@@ -312,13 +334,16 @@ def main():
                 "is_fraudulent": fault in {"inflated_amount", "phantom_part",
                                            "duplicate_claim"},
                 "phantom_part": phantom,
+                "duplicate_of": duplicate_of,
                 "expected_payout": expected_payout(items, policy, covered),
             },
             "split": "dev" if i < N_DEV else "test",
         }
+        records.append((claim, policy, items))
 
-        (POLICIES / f"{policy['policy_no']}.json").write_text(
-            json.dumps(policy, indent=2))
+        if duplicate_of is None:   # a duplicate reuses the original's policy file
+            (POLICIES / f"{policy['policy_no']}.json").write_text(
+                json.dumps(policy, indent=2))
         (CLAIMS / f"{claim_id}.json").write_text(json.dumps(claim, indent=2))
         manifest.append({"claim_id": claim_id, "policy_no": policy["policy_no"],
                          "fault_type": fault, "split": claim["split"]})
