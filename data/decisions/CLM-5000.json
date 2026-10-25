@@ -1,13 +1,13 @@
 {
   "claim_id": "CLM-5000",
-  "use_saved_intake": true,
-  "interactive": false,
+  "use_saved_intake": false,
+  "interactive": true,
   "verbose": false,
   "intake": {
     "claim_id": "CLM-5000",
     "policy_no": "POL-3000",
     "registration": "HR45GY5012",
-    "incident_date": "2026-09-18",
+    "incident_date": "2026-10-22",
     "narrative": "Reversed into a pillar in the basement parking.",
     "damaged_parts": [
       "door glass",
@@ -16,7 +16,7 @@
     ],
     "invoice": {
       "invoice_no": "INV/833/26",
-      "invoice_date": "2026-09-20",
+      "invoice_date": "2026-10-24",
       "garage_name": "Nayar Auto Works",
       "registration": "HR45GY5012",
       "line_items": [
@@ -52,13 +52,18 @@
     },
     "is_complete": true,
     "missing_fields": [],
-    "notes": "All required documents are present."
+    "notes": "No photos provided."
   },
   "decision": {
     "claim_id": "CLM-5000",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
     "is_covered": true,
-    "coverage_reasons": [],
-    "fraud_score": 0.1,
+    "coverage_reasons": [
+      "Section I, item 6 \u2013 accidental external means",
+      "Period: within policy term 2026\u201101\u201107 to 2027\u201101\u201106"
+    ],
+    "fraud_score": 0.0,
     "fraud_flags": [],
     "line_decisions": [
       {
@@ -98,7 +103,7 @@
       }
     ],
     "recommended_route": "auto_approve",
-    "summary": "All invoice lines are admitted. No coverage or fraud issues identified. Claim is approved for settlement."
+    "summary": "All invoice lines are admitted. Coverage confirmed within policy period and peril covered. No fraud or price issues detected."
   },
   "settlement": {
     "admitted_subtotal": 36330.0,
@@ -157,14 +162,15 @@
   "status": "approved",
   "final_payout": 41869.4,
   "guardrail_flags": [],
+  "coverage_doubts": [],
   "trail": [
-    "intake: reused saved Intake crew output",
+    "intake: running Intake crew",
     "intake: 5 invoice lines, complete=True",
     "router 1: file complete -> assessment",
     "assessment: Policy Analyst and Fraud Analyst running in parallel",
-    "assessment: covered=True, fraud_score=0.10, 0 line(s) denied, payout Rs 41,869.40 (calculator)",
+    "assessment: coverage=covered, fraud_score=0.00, 0 line(s) denied, payout Rs 41,869.40 (calculator)",
     "router 2: auto_approve because covered, low fraud risk, normal value",
     "auto-approved: pay Rs 41,869.40"
   ],
-  "id": "ff16f937-3134-425e-a032-2e878d21f360"
+  "id": "477f860a-2783-4307-929d-71f81b307afb"
 }

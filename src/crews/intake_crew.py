@@ -42,9 +42,18 @@ PII_FIELDS = ("insured_name", "phone", "address")
 def fetch_inputs(claim_id: str) -> dict:
     """Deterministic data gathering. No LLM involved.
 
-    Guardrails applied before anything reaches an agent: the claimant's
-    narrative is screened for prompt injection and abuse, and the
-    policyholder's name, phone and address are left out of the policy."""
+    Everything an agent is about to read is cleaned here, because this is the
+    last point at which it is still only on this machine:
+
+      the narrative   screened for prompt injection and abuse
+      the policy      name, phone and address dropped before it is passed on
+      the invoice     the policyholder's name and any address, phone, GSTIN or
+                      labelled personal field removed from the document text
+
+    The invoice matters most: it is a document nobody wrote for a machine, and
+    it carries the customer's name in plain sight. The policy schedule gives us
+    that name, so it can be removed exactly rather than guessed at. If anything
+    personal survives, safe_for_cloud raises and the claim stops here."""
     import json
 
     submission_text = ReadClaimSubmission()._run(claim_id)
@@ -54,16 +63,23 @@ def fetch_inputs(claim_id: str) -> dict:
     submission["narrative"], _ = guardrails.safe_narrative(submission.get("narrative", ""))
 
     policy_text = ReadPolicySchedule()._run(submission["policy_no"])
+    policy_on_file = None
     if not policy_text.startswith("ERROR"):
-        policy = json.loads(policy_text)
-        for field in PII_FIELDS:
-            policy.pop(field, None)
-        policy_text = json.dumps(policy, indent=2)
+        policy_on_file = json.loads(policy_text)
+        policy_text = json.dumps({k: v for k, v in policy_on_file.items()
+                                  if k not in PII_FIELDS}, indent=2)
+
+    invoice_text = ReadInvoicePDF()._run(claim_id)
+    if not invoice_text.startswith("ERROR"):
+        invoice_text = guardrails.safe_for_cloud(
+            invoice_text, policy_on_file, what=f"the invoice for {claim_id}")
 
     return {
         "claim_id": claim_id,
-        "invoice_text": ReadInvoicePDF()._run(claim_id),
-        "submission": json.dumps(submission, indent=2),
+        "invoice_text": invoice_text,
+        "submission": guardrails.safe_for_cloud(
+            json.dumps(submission, indent=2), policy_on_file,
+            what=f"the claim submission for {claim_id}"),
         "policy": policy_text,
     }
 

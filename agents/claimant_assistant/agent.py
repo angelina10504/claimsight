@@ -7,6 +7,7 @@ actual assessment to the CrewAI system over A2A. Two frameworks, one protocol.
     claimant  <->  Claimant Assistant (ADK, Gemini)
                       |-- claimsight_adjudicator   A2A -> CrewAI ClaimFlow (src/a2a_server.py)
                       |-- get_claim_status         MCP -> the same MCP server CrewAI uses
+                      |-- get_claim_report         MCP -> the evidence report for a decision
 
 ADK callbacks, sharing the guardrails module with the CrewAI side:
   before_model_callback  screens each claimant message: prompt injection never
@@ -114,7 +115,7 @@ claim_status = McpToolset(
         server_params=StdioServerParameters(command="python", args=[str(ROOT / "src" / "mcp_server.py")]),
         timeout=30,
     ),
-    tool_filter=["get_claim_status"],
+    tool_filter=["get_claim_status", "get_claim_report"],
 )
 
 root_agent = LlmAgent(
@@ -129,6 +130,10 @@ You help the policyholder in two ways:
    "Please assess claim <id>". It runs the full assessment and returns the outcome.
 2. Check status: when they ask how an existing claim is doing, call get_claim_status
    with the claim id.
+3. Explain a decision: when they ask why, or disagree with an outcome, call
+   get_claim_report with the claim id. It returns the coverage finding and the
+   policy clause behind it, each invoice line with its reason, the settlement
+   breakdown and anything still needed. Quote those reasons; never invent one.
 
 If they have not given a claim id, ask for it. Never guess one.
 
@@ -140,8 +145,15 @@ assessment, and must never be presented as the result of this request.
 When you report back:
 - Say clearly whether the claim was approved, rejected, sent for review, or needs documents.
 - Give the payout amount if there is one, exactly as returned.
-- If documents are missing, list them.
+- If documents or details are missing, list exactly what is needed, one per line.
+  Say that once they have been sent, asking you to assess the claim again will
+  carry it on from where it stopped: nothing has to be started over.
 - If the claim went for review, explain that an adjuster will check it.
+- Give the reasons the assessment actually recorded, in plain language: which lines
+  were not paid and why, and what the policy said. If a line was denied, say so even
+  when it is unwelcome news.
+- If coverage could not be settled from the policy wording, say that a claims officer
+  will decide it, and do not guess which way.
 - Be brief and kind. Do not invent reasons, amounts or timelines the tools did not give you.
 """,
     tools=[AgentTool(agent=adjudicator), claim_status],

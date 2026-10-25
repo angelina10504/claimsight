@@ -7,6 +7,9 @@ Run:  uv run python run_flow.py CLM-5000                one claim, asks you at t
       uv run python run_flow.py --demo                  the six-claim demo set
       uv run python run_flow.py --plot                  save the Flow diagram as HTML, then exit
 
+      uv run python run_flow.py CLM-9002 --resume    carry on a claim that was
+                                                     waiting, now its evidence is in
+
 Options:
       --fresh      rerun the Intake crew even if a saved intake exists
       --no-input   do not stop at the human gate; queue those claims instead
@@ -22,7 +25,10 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from claim_flow import FRAUD_THRESHOLD, HIGH_VALUE, ClaimFlow   # noqa: E402
+import observability                      # noqa: E402
+observability.start()                     # before the crews or ADK are imported
+
+from claim_flow import FRAUD_THRESHOLD, HIGH_VALUE, ClaimFlow, resume_claim   # noqa: E402
 
 CLAIMS = ROOT / "data" / "claims"
 DEMO_SET = ["CLM-5000", "CLM-5004", "CLM-5005", "CLM-5006", "CLM-5007", "CLM-5008"]
@@ -71,13 +77,21 @@ def main() -> None:
 
         flow = ClaimFlow()
         try:
-            flow.kickoff(inputs={
-                "claim_id": claim_id,
-                "use_saved_intake": "--fresh" not in args,
-                "interactive": "--no-input" not in args,
-                "verbose": "--verbose" in args,
-            })
-            s = flow.state
+            if "--resume" in args:
+                outcome = resume_claim(claim_id, interactive="--no-input" not in args,
+                                       verbose="--verbose" in args)
+                if not outcome["resumed"]:
+                    print(f"  not resumed: {outcome['why']}")
+                    continue
+                s = ClaimFlow().state.model_validate(outcome["state"])
+            else:
+                flow.kickoff(inputs={
+                    "claim_id": claim_id,
+                    "use_saved_intake": "--fresh" not in args,
+                    "interactive": "--no-input" not in args,
+                    "verbose": "--verbose" in args,
+                })
+                s = flow.state
             rows.append({"claim_id": claim_id, "pattern": claim["ground_truth"]["fault_type"],
                          "route": s.route, "expected": expected_route(claim),
                          "status": s.status, "payout": s.final_payout,
@@ -110,4 +124,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        observability.flush()      # send any spans still queued

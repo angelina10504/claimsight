@@ -20,6 +20,9 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT / "src"))
 
+import observability                      # noqa: E402
+observability.start()                     # before the crews or ADK are imported
+
 from models import AssessmentDecision                     # noqa: E402
 from guardrails import safe_narrative                     # noqa: E402
 from tools.assessment_tools import _part_name, settle     # noqa: E402
@@ -120,7 +123,9 @@ def print_claim(claim_id, decision, settlement, result, source):
     print("\n" + "=" * 70)
     print(f"ASSESSMENT  {claim_id}   (true pattern: {fault}; input: {source})")
     print("=" * 70)
-    print(f"covered      {decision.is_covered}")
+    print(f"coverage     {decision.coverage_status}")
+    for reason in (decision.uncertainty_reasons or []):
+        print(f"             ! {reason}")
     for reason in decision.coverage_reasons:
         print(f"             - {reason}")
     print(f"fraud score  {decision.fraud_score:.2f}")
@@ -239,4 +244,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        observability.flush()      # send any spans still queued

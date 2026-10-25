@@ -42,7 +42,8 @@ from a2a.types import (                                                         
 )
 from starlette.applications import Starlette                                          # noqa: E402
 
-import guardrails                                                                     # noqa: E402
+import guardrails
+import observability                                                                     # noqa: E402
 
 HOST = os.getenv("A2A_HOST", "localhost")
 PORT = int(os.getenv("A2A_PORT", "9999"))
@@ -56,15 +57,18 @@ FINAL_STATUSES = {"approved", "rejected", "awaiting_evidence", "awaiting_review"
 
 
 def run_claim_flow(claim_id: str) -> dict:
-    """Run the CrewAI ClaimFlow for one claim and return its final state."""
-    from claim_flow import ClaimFlow
-    flow = ClaimFlow()
-    flow.kickoff(inputs={"claim_id": claim_id, "interactive": False, "use_saved_intake": True})
-    return flow.state.model_dump()
+    """Assess one claim, or carry on a claim that was waiting on evidence.
+
+    A claimant who sends what was missing and then says "please assess my claim
+    again" means: continue. run_or_resume works that out from the saved state
+    and the evidence ledger, so the claimant does not need a second verb."""
+    from claim_flow import run_or_resume
+    return run_or_resume(claim_id, interactive=False)
 
 
 def summarise(state: dict) -> str:
-    """One short paragraph a claimant-facing agent can relay."""
+    """Fallback one-liner, used when the evidence report has nothing to say.
+    Normally reporting.explanation() supplies the text instead."""
     claim, status = state["claim_id"], state.get("status")
     payout = state.get("final_payout", 0.0)
     decision = state.get("decision") or {}
@@ -78,7 +82,10 @@ def summarise(state: dict) -> str:
         return f"Claim {claim} needs more documents before it can be assessed: {missing}."
     if status == "awaiting_review":
         proposed = (state.get("settlement") or {}).get("payout", 0.0)
-        return (f"Claim {claim} has been sent to a claims adjuster for review. "
+        doubts = state.get("coverage_doubts") or []
+        why = (f" Coverage could not be settled from the policy wording: {doubts[0]}"
+               if doubts else "")
+        return (f"Claim {claim} has been sent to a claims adjuster for review.{why} "
                 f"Proposed payout: Rs {proposed:,.2f}. The claimant will hear back after review.")
     return f"Claim {claim}: status {status}."
 
@@ -130,6 +137,8 @@ class ClaimSightExecutor(AgentExecutor):
                                        f"Nothing has been decided; please try again later."))
             return
 
+        import reporting
+        report = reporting.build_report(state)
         decision = state.get("decision") or {}
         result = {
             "claim_id": claim_id,
@@ -137,14 +146,20 @@ class ClaimSightExecutor(AgentExecutor):
             "route": state.get("route"),
             "payout": state.get("final_payout", 0.0),
             "proposed_payout": (state.get("settlement") or {}).get("payout", 0.0),
+            "coverage_status": decision.get("coverage_status"),
             "is_covered": decision.get("is_covered"),
+            "coverage_doubts": state.get("coverage_doubts", []),
             "fraud_score": decision.get("fraud_score"),
             "denied_lines": [{"line": x["description"], "reason": x.get("reason", "")}
                              for x in decision.get("line_decisions", []) if not x.get("admitted")],
             "missing_evidence": (state.get("intake") or {}).get("missing_fields", []),
             "guardrail_flags": state.get("guardrail_flags", []),
+            "explanation": reporting.explanation(report),
         }
-        summary = summarise(state)
+        # The explanation already covers coverage, denied lines, what is still
+        # needed and the outcome, so it IS the summary. summarise() stays as the
+        # fallback for a state the report cannot describe.
+        summary = f"Claim {claim_id}: " + (result["explanation"] or summarise(state))
         await updater.add_artifact([new_text_part(summary)], name="summary")
         await updater.add_artifact([new_data_part(result)], name="decision")
         await updater.complete(reply(summary))
@@ -176,6 +191,7 @@ def agent_card() -> AgentCard:
 
 
 def build_app() -> Starlette:
+    observability.start()          # one trace per claim, across ADK and CrewAI
     card = agent_card()
     handler = DefaultRequestHandler(agent_executor=ClaimSightExecutor(),
                                     task_store=InMemoryTaskStore(), agent_card=card)

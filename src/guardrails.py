@@ -14,21 +14,24 @@ Guardrails for ClaimSight: four layers between untrusted data and the agents.
 3. OUTPUT GUARDRAILS  (CrewAI task guardrails)
    The analysts' reports must carry their required headings. The Lead's
    decision must list every invoice line with its exact amount, give a reason
-   for every denied line, keep the fraud score in 0..1, and contain no personal
-   data. A failing output is sent back to the agent with the reason, and the
+   for every denied line, keep the fraud score in 0..1, state a coverage_status
+   it can support, and contain no personal data. A failing output is sent back to the agent with the reason, and the
    agent retries (CrewAI allows up to guardrail_max_retries attempts).
 
-4. PII REDACTION  (CrewAI before_llm_call hook)
-   Phone and Aadhaar-like numbers and email addresses are masked in every
-   message just before it leaves for the cloud LLM: a last line of defence
-   behind removing name, phone and address from the inputs.
+4. PII REDACTION  (document cleaning, then a CrewAI before_llm_call hook)
+   Documents are cleaned before any agent reads them: the claimant's name,
+   phone and address are taken from the policy schedule and removed from the
+   invoice text, along with labelled fields, phone/email/Aadhaar patterns and
+   anything that looks like a postal address. The claim is stopped rather than
+   sent if its own details survive. The hook then masks the patterns again in
+   every outgoing message, as a last line of defence.
 
 Every guardrail decision is written to the claim's monitoring log.
 """
 
 import json
 import re
-from typing import Any, Tuple
+from typing import Any, List, Optional, Tuple
 
 import monitoring
 
@@ -78,10 +81,165 @@ def safe_narrative(text: str) -> Tuple[str, dict]:
 
 # ---------------------------------------------------------------- 4. PII
 PII_PATTERNS = {
-    "phone": re.compile(r"(?<![\w/-])(\+91[\s-]?)?[6-9]\d{9}(?!\d)|(?<![\w/-])0\d{9,10}(?!\d)"),
+    # Non-capturing on purpose: with a capturing group, findall returns the
+    # group rather than the match, so find_pii reported "+91" or an empty
+    # string instead of the number it had found.
+    "phone": re.compile(r"(?<![\w/-])(?:\+91[\s-]?)?[6-9]\d{9}(?!\d)|(?<![\w/-])0\d{9,10}(?!\d)"),
     "aadhaar": re.compile(r"(?<!\d)\d{4}\s\d{4}\s\d{4}(?!\d)"),
     "email": re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+"),
 }
+
+
+# ---- Documents: the claimant's name and address
+# A garage invoice carries the policyholder's name, and addresses and phone
+# numbers for the garage. None of it is needed to assess a claim, and all of it
+# would otherwise be sent to a cloud model.
+#
+# Names are not detected by pattern: general name-spotting is unreliable, and a
+# wrong guess either leaks a name or mangles "Maruti Swift". Instead the
+# claimant's own details are taken from the policy schedule, where ClaimSight
+# already holds them, and those exact values are removed. That is the layer
+# that actually protects the claimant; the patterns below are a net for
+# whatever else a document happens to carry.
+
+NAME_PART_MIN = 3          # ignore initials and particles like "de"
+ADDRESS_PART_MIN = 10      # whole parts of an address, not single words: a city
+                           # name on its own identifies nobody, and removing it
+                           # would also strip the garage's address for no gain
+
+# The markers must not contain a word the label rule below treats as a label,
+# or a second pass would read "[address withheld]" as a labelled field and eat
+# the rest of the line.
+MARKERS = {"insured_name": "[withheld-name]", "phone": "[withheld-contact]",
+           "address": "[withheld-postal]"}
+
+# "Customer   Ravi Kumar   Vehicle   Maruti Swift" on one extracted line: take
+# the value between the label and whatever label comes next.
+LABELLED_FIELD = re.compile(
+    r"(?i)\b(customer|insured(?:\s+name)?|client|address|phone|ph|mobile|gstin|gst\s*no|"
+    r"email|e-?mail|pan)\b\s*[:.\-]?\s*"
+    r"(.+?)(?=\s*\b(?:vehicle|reg\.?\s*no\.?|registration|job\s*card|date|invoice|"
+    r"gstin|ph|phone|subtotal|total|description|amount|make|model)\b|$)")
+
+# A postal address: a six-digit PIN code, with either several commas or a word
+# that only appears in addresses. Money lines are excluded, so a six-digit
+# amount is never mistaken for a PIN.
+ADDRESS_WORD = re.compile(r"(?i)\b(road|rd|street|st|sector|nagar|colony|marg|lane|"
+                          r"block|floor|phase|extn|extension|po|dist|pin|pincode)\b")
+MONEY_WORD = re.compile(r"(?i)(\brs\b|₹|\bamount\b|\bsubtotal\b|\btotal\b|\bgst\s*@)")
+PIN_CODE = re.compile(r"\b\d{6}\b")
+
+
+class PrivacyError(RuntimeError):
+    """A document still carried the claimant's own details after cleaning.
+
+    Raised rather than handled quietly: failing a claim is recoverable, sending
+    someone's name to a cloud model is not."""
+
+
+def known_values(policy: Optional[dict]) -> dict:
+    """The claimant's identifying details, as the policy schedule records them."""
+    if not policy:
+        return {}
+    return {field: str(policy[field]) for field in ("insured_name", "phone", "address")
+            if policy.get(field)}
+
+
+def _pieces(value: str, minimum: int, by_word: bool = False) -> List[str]:
+    """A value and the parts of it worth removing on their own, longest first,
+    so 'Ravi Kumar' goes before 'Kumar' and no fragment is left behind.
+
+    by_word is for names, where a surname on its own identifies someone. An
+    address is split on commas only, so a bare city name is left alone."""
+    parts = [p.strip(" ,.-") for p in re.split(r"[,\n]| {2,}", value)]
+    if by_word:
+        parts += [w.strip(" ,.-") for w in value.split()]
+    out = {value.strip()} | {p for p in parts if len(p) >= minimum}
+    return sorted((p for p in out if p), key=len, reverse=True)
+
+
+def sanitise_document(text: str, policy: Optional[dict] = None) -> Tuple[str, dict]:
+    """Remove personal data from a document before any model reads it.
+
+    Four layers, strongest first:
+      1. the claimant's own name, phone and address, taken from the policy
+      2. labelled fields on the document itself (Customer, Address, Ph, GSTIN)
+      3. the phone, email and Aadhaar patterns
+      4. a line that looks like a postal address
+
+    Returns the cleaned text and a report of what was removed, which goes into
+    the claim's log so the redaction itself is on record."""
+    if not text:
+        return text, {}
+    report: dict = {}
+
+    # Labels first: a value sitting behind "Customer" or "Ph" on the document
+    # itself is the most reliable thing to remove.
+    text, n = LABELLED_FIELD.subn(lambda m: f"{m.group(1)}: [withheld]", text)
+    if n:
+        report["labelled_fields"] = n
+
+    for field, value in known_values(policy).items():
+        is_name = field == "insured_name"
+        removed = 0
+        for piece in _pieces(value, NAME_PART_MIN if is_name else ADDRESS_PART_MIN,
+                             by_word=is_name):
+            text, n = re.subn(re.escape(piece), MARKERS[field], text,
+                              flags=re.IGNORECASE)
+            removed += n
+        if removed:
+            report[f"known_{field}"] = removed
+
+    text, n = redact_pii(text)
+    if n:
+        report["patterns"] = n
+
+    lines, addresses = [], 0
+    for line in text.splitlines():
+        looks_postal = (PIN_CODE.search(line)
+                        and (line.count(",") >= 2 or ADDRESS_WORD.search(line))
+                        and not MONEY_WORD.search(line))
+        if looks_postal:
+            addresses += 1
+            lines.append(MARKERS["address"])
+        else:
+            lines.append(line)
+    if addresses:
+        report["address_lines"] = addresses
+    text = "\n".join(lines)
+
+    _log("document_sanitised", passed=True, **report)
+    return text, report
+
+
+def contains_known_pii(text: str, policy: Optional[dict] = None) -> List[str]:
+    """Anything of the claimant's that is still in the text. Should be empty
+    after sanitise_document; if it is not, something unexpected is in the
+    document and the claim must stop rather than go to a model."""
+    found = []
+    for field, value in known_values(policy).items():
+        is_name = field == "insured_name"
+        for piece in _pieces(value, NAME_PART_MIN if is_name else ADDRESS_PART_MIN,
+                             by_word=is_name):
+            if re.search(re.escape(piece), text or "", flags=re.IGNORECASE):
+                found.append(f"{field}: {piece}")
+                break
+    found += [f"{kind}: {match}" for kind, matches in find_pii(text).items()
+              for match in (matches if isinstance(matches, list) else [matches])]
+    return found
+
+
+def safe_for_cloud(text: str, policy: Optional[dict] = None,
+                   what: str = "document") -> str:
+    """Clean a document and refuse to pass it on if anything is left."""
+    clean, _ = sanitise_document(text, policy)
+    leaks = contains_known_pii(clean, policy)
+    if leaks:
+        _log("document_sanitised", passed=False, leaks=leaks[:3])
+        raise PrivacyError(
+            f"{what} still contains personal data after cleaning: {leaks[:3]}. "
+            f"The claim has been stopped rather than sent to a model.")
+    return clean
 
 
 def find_pii(text: str) -> dict:
@@ -170,8 +328,16 @@ def decision_guardrail(output: Any) -> Tuple[bool, Any]:
     if unexplained:
         problems.append(f"these denied lines need a reason: {unexplained}")
 
-    if d.get("is_covered") is False and any(x.get("admitted") for x in lines):
-        problems.append("the claim is not covered, so no line may be admitted")
+    status = str(d.get("coverage_status", "")).lower().strip()
+    if status not in {"covered", "excluded", "uncertain"}:
+        problems.append(f"coverage_status must be covered, excluded or uncertain, got {status!r}")
+    if not (d.get("coverage_reasons") or []):
+        problems.append("coverage_reasons must say what the policy wording showed, with the clause")
+    if status == "excluded" and any(x.get("admitted") for x in lines):
+        problems.append("coverage_status is excluded, so no line may be admitted")
+    if status == "uncertain" and not (d.get("uncertainty_reasons") or []):
+        problems.append("coverage_status is uncertain, so uncertainty_reasons must say what "
+                        "could not be established and what would settle it")
 
     text_out = " ".join([d.get("summary", "")] + list(d.get("coverage_reasons", []))
                         + list(d.get("fraud_flags", [])))
@@ -187,9 +353,21 @@ def decision_guardrail(output: Any) -> Tuple[bool, Any]:
 
 
 # ---------------------------------------------------------------- 2 + 4. CrewAI hooks
+
 def _after_tool_call(context) -> Any:
-    """Type-check every tool result. Return a replacement string, or None to keep it."""
+    """Type-check every tool result. Return a replacement string, or None to keep it.
+
+    This hook is also where tool calls get into the monitoring log: it fires for
+    every tool, including MCP ones, whereas CrewAI's step callback sees nothing
+    when the model uses native tool calling. Without this the evidence report
+    would show a decision with no tool results behind it."""
     result = context.tool_result
+    monitor = monitoring.current()
+    if monitor:
+        monitor.record_tool_call(
+            getattr(context, "tool_name", "unknown tool"),
+            getattr(context, "tool_input", ""), result,
+            agent=getattr(context, "agent", None))
     try:
         parsed = json.loads(result) if isinstance(result, str) else result
     except (json.JSONDecodeError, TypeError):

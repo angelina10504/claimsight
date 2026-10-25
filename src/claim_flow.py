@@ -19,6 +19,7 @@ claim's full trail is kept even if a run stops part-way.
 """
 
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -32,15 +33,19 @@ SRC = Path(__file__).resolve().parent
 ROOT = SRC.parent
 sys.path.insert(0, str(SRC))
 
+import evidence                              # noqa: E402
 import guardrails                            # noqa: E402
+import observability                         # noqa: E402
 import monitoring                            # noqa: E402
-from tools.assessment_tools import settle   # noqa: E402
+from tools.assessment_tools import check_policy_period, settle   # noqa: E402
+from tools.settlement import check_invoice_tax                   # noqa: E402
 
 CLAIMS = ROOT / "data" / "claims"
 POLICIES = ROOT / "data" / "policies"
 INTAKE = ROOT / "data" / "intake"
 DECISIONS = ROOT / "data" / "decisions"
 REVIEW_QUEUE = ROOT / "data" / "review_queue"
+WORDING = ROOT / "knowledge" / "policy_wording.txt"
 
 FRAUD_THRESHOLD = 0.5
 HIGH_VALUE = 50_000          # payouts above this always go to a person
@@ -60,6 +65,10 @@ class ClaimState(BaseModel):
     status: str = ""
     final_payout: float = 0.0
     guardrail_flags: List[str] = Field(default_factory=list)
+    coverage_doubts: List[str] = Field(default_factory=list)
+    evidence_applied: List[str] = Field(default_factory=list)
+    payout_doubts: List[str] = Field(default_factory=list)
+    resumed: bool = False             # this run continued a claim that was waiting
     trail: List[str] = Field(default_factory=list)
 
 
@@ -118,6 +127,101 @@ def completeness_gaps(intake: dict) -> list:
     return gaps
 
 
+# A clause reference such as "Section II exclusion 4", "Clause 3", "item 6".
+CLAUSE_RE = re.compile(r"\b(section|clause|exclusion|exception|item|endorsement)\s*[0-9IVXivx]")
+_wording_cache: List[str] = []
+
+
+def _wording() -> str:
+    """The policy wording as one lowercase, single-spaced string, read once."""
+    if not _wording_cache:
+        text = WORDING.read_text(errors="ignore") if WORDING.exists() else ""
+        _wording_cache.append(" ".join(text.lower().split()))
+    return _wording_cache[0]
+
+
+def cites_policy(reason: str) -> bool:
+    """Is this coverage reason actually grounded in the policy?
+
+    Either it names a clause, or it quotes a long enough piece of text that
+    really appears in the policy wording. A reason that does neither is the
+    agent's own words, which is not enough to reject a claim on."""
+    reason = reason or ""
+    if CLAUSE_RE.search(reason.lower()):
+        return True
+    for quoted in re.findall(r"[\"\u201c\u2018']([^\"\u201d\u2019']{20,})[\"\u201d\u2019']", reason):
+        if " ".join(quoted.lower().split()) in _wording():
+            return True
+    return False
+
+
+def coverage_doubts(intake: dict, decision: dict) -> list:
+    """Reasons NOT to act on the coverage verdict without a person.
+
+    Checked in code, like completeness_gaps, because an LLM contributes to the
+    coverage decision and a wrong rejection costs the claimant their payout.
+    An exclusion the policy period proves is objective and needs no clause."""
+    status = (decision.get("coverage_status") or "").lower()
+    if not status:                      # a decision saved before this field existed
+        status = "covered" if decision.get("is_covered") else "excluded"
+    reasons = [r for r in (decision.get("coverage_reasons") or []) if r]
+
+    if status == "uncertain":
+        said = (decision.get("uncertainty_reasons") or ["no reason given"])[0]
+        return [f"the Policy Analyst could not establish coverage: {said}"]
+    if status != "excluded":
+        return []
+
+    period = check_policy_period(intake.get("policy_no") or "",
+                                 intake.get("incident_date") or "1970-01-01")
+    if period.get("within_period") is False:
+        return []                       # outside the cover dates: arithmetic, not judgement
+    if not any(cites_policy(r) for r in reasons):
+        return [f"the exclusion names no policy clause: "
+                f"{reasons[0] if reasons else 'no reason given'}"]
+    return []
+
+
+def payout_doubts(intake: dict) -> list:
+    """Reasons the payout cannot be trusted even if the coverage is clear.
+
+    The calculator depreciates each line and then adds GST, which is only
+    correct if the invoice lists its amounts before tax. check_invoice_tax
+    settles that from the invoice's own arithmetic instead of assuming it, so a
+    tax-inclusive bill goes to a person rather than being paid twice the tax."""
+    invoice = (intake or {}).get("invoice") or {}
+    verdict = check_invoice_tax(invoice.get("line_items"), invoice.get("total"))
+    if verdict["treatment"] == "exclusive":
+        return []
+    return [f"the invoice's tax treatment is {verdict['treatment']}: {verdict['note']}"]
+
+
+def decide_route(decision: dict, settlement: dict, guardrail_flags: list,
+                 doubts: list, payout_problems: list = ()) -> tuple:
+    """The routing rules, in order. Pure function, so it can be tested without
+    running a crew. Returns (route, why)."""
+    payout = settlement.get("payout", 0.0)
+    status = (decision.get("coverage_status") or "").lower()
+    if not status:
+        status = "covered" if decision.get("is_covered") else "excluded"
+    score = decision.get("fraud_score") or 0.0
+
+    if guardrail_flags:
+        return "human_review", f"guardrail flag: {guardrail_flags[0]}"
+    if doubts:
+        return "human_review", f"coverage not established: {doubts[0]}"
+    if payout_problems:
+        return "human_review", f"the payout cannot be computed safely: {payout_problems[0]}"
+    if status == "excluded":
+        reasons = decision.get("coverage_reasons") or []
+        return "reject", f"not covered: {reasons[0] if reasons else 'excluded'}"
+    if score >= FRAUD_THRESHOLD:
+        return "human_review", f"fraud score {score:.2f} >= {FRAUD_THRESHOLD}"
+    if payout > HIGH_VALUE:
+        return "human_review", f"payout above Rs {HIGH_VALUE:,}"
+    return "auto_approve", "covered, low fraud risk, normal value"
+
+
 def assessment_inputs(intake: dict) -> dict:
     """What the Assessment crew sees. Name, phone and address are left out."""
     policy = json.loads((POLICIES / f"{intake['policy_no']}.json").read_text())
@@ -132,6 +236,78 @@ def assessment_inputs(intake: dict) -> dict:
         "line_items": json.dumps(lines, indent=1),
         "policy": json.dumps({k: policy[k] for k in POLICY_FIELDS}, indent=1),
     }
+
+
+def saved_state(claim_id: str) -> dict:
+    """The last saved state for this claim, decided or waiting."""
+    for folder in (DECISIONS, REVIEW_QUEUE):
+        path = folder / f"{claim_id}.json"
+        if path.exists():
+            return json.loads(path.read_text())
+    return {}
+
+
+def resume_claim(claim_id: str, interactive: bool = True, verbose: bool = False) -> dict:
+    """Continue a claim that was waiting, now that evidence has arrived.
+
+    Only what the new evidence affects is run again. A value the claimant typed
+    in (a missing total, say) is placed into the saved intake in code, so the
+    Intake crew does not read the documents a second time and the assessment
+    runs on the completed file. A new document does mean reading it again.
+
+    Returns {"resumed": bool, "why": str, "state": dict|None}."""
+    state = saved_state(claim_id)
+    if not state:
+        return {"resumed": False, "why": f"{claim_id} has not been through the Flow yet",
+                "state": None}
+
+    items = evidence.unapplied(claim_id)
+    if not items:
+        asked = [r.item for r in evidence.outstanding(state)]
+        return {"resumed": False, "state": None,
+                "why": ("no new evidence has been accepted for this claim; still waiting for: "
+                        + ", ".join(asked) if asked
+                        else "no new evidence, and nothing is outstanding")}
+
+    steps = evidence.plan(state, items)
+    intake = state.get("intake") or {}
+    intake, changes = evidence.apply_to_intake(intake, items)
+    if changes:
+        INTAKE.mkdir(parents=True, exist_ok=True)
+        (INTAKE / f"{claim_id}.json").write_text(json.dumps(intake, indent=2, default=str))
+
+    print(f"\n  [{claim_id}] resuming with {len(items)} piece(s) of evidence")
+    for line in changes + steps["why"]:
+        print(f"      {line}")
+
+    evidence.mark_applied(claim_id, items)
+    flow = ClaimFlow()
+    with observability.claim_span(claim_id, resumed=True):
+        flow.kickoff(inputs={"claim_id": claim_id,
+                             "use_saved_intake": not steps["run_intake"],
+                             "interactive": interactive, "verbose": verbose,
+                             "resumed": True, "evidence_applied": changes})
+    return {"resumed": True, "why": "; ".join(steps["why"]), "state": flow.state.model_dump()}
+
+
+def run_or_resume(claim_id: str, interactive: bool = True, verbose: bool = False,
+                  use_saved_intake: bool = True) -> dict:
+    """Assess a claim, or carry on a waiting claim if evidence has arrived.
+
+    One entry point, so a claimant saying "assess my claim" gets the right
+    behaviour whether it is the first time or after sending what was missing."""
+    waiting = saved_state(claim_id).get("status") == "awaiting_evidence"
+    if waiting and evidence.unapplied(claim_id):
+        outcome = resume_claim(claim_id, interactive=interactive, verbose=verbose)
+        if outcome["resumed"]:
+            return outcome["state"]
+    flow = ClaimFlow()
+    # One span per claim, so the Flow, both crews, every LLM call and every
+    # tool call appear under it as one tree in Langfuse.
+    with observability.claim_span(claim_id):
+        flow.kickoff(inputs={"claim_id": claim_id, "use_saved_intake": use_saved_intake,
+                             "interactive": interactive, "verbose": verbose})
+    return flow.state.model_dump()
 
 
 # ----------------------------------------------------- the flow
@@ -194,12 +370,15 @@ class ClaimFlow(Flow[ClaimState]):
 
         gaps = completeness_gaps(self.state.intake)
         agent_said = self.state.intake.get("is_complete")
-        if agent_said != (not gaps):
+        if agent_said != (not gaps) and not self.state.resumed:
             self.log(f"intake: Intake Officer said complete={agent_said}; "
                      f"the completeness check overrides it")
         self.state.intake["is_complete"] = not gaps
         self.state.intake["missing_fields"] = gaps
         lines = len(self.state.intake["invoice"]["line_items"])
+        if self.state.resumed:
+            self.log(f"intake: reused, with {len(self.state.evidence_applied)} "
+                     f"field(s) filled in from new evidence", resumed=True)
         self.log(f"intake: {lines} invoice lines, complete={not gaps}")
 
     @router(intake, emit=["complete", "incomplete"])
@@ -212,10 +391,21 @@ class ClaimFlow(Flow[ClaimState]):
 
     @listen("incomplete")
     def request_evidence(self):
-        missing = ", ".join(self.state.intake.get("missing_fields") or ["details not stated"])
+        """Stop and name the exact evidence needed, rather than failing the claim.
+
+        The claim keeps its state, so once the evidence arrives (add_evidence.py)
+        resume_claim() carries on from here without reading the documents again."""
+        gaps = self.state.intake.get("missing_fields") or ["details not stated"]
         self.state.route = "needs_evidence"
         self.state.status = "awaiting_evidence"
-        self.log(f"asked the claimant for: {missing}")
+        for gap in gaps:
+            field = evidence.field_for(gap)
+            how = (f"send the value: uv run python add_evidence.py {self.state.claim_id} "
+                   f"--item \"{gap}\" --value <value>") if field else \
+                  (f"send the document: uv run python add_evidence.py {self.state.claim_id} "
+                   f"--item \"{gap}\" --file <path>")
+            self.log(f"evidence request: {gap}", kind="evidence_request", item=gap, how=how)
+            print(f"      {how}")
         self.finish()
 
     @listen("complete")
@@ -224,27 +414,34 @@ class ClaimFlow(Flow[ClaimState]):
         self.state.decision = self.guarded("assessment", run_assessment_step,
                                            assessment_inputs(self.state.intake), self.state.verbose)
         d = self.state.decision
-        if d["is_covered"]:
-            self.state.settlement = settle(self.state.intake["policy_no"], d["line_decisions"])
-        else:
+        status = (d.get("coverage_status") or
+                  ("covered" if d.get("is_covered") else "excluded")).lower()
+        self.state.coverage_doubts = coverage_doubts(self.state.intake, d)
+        self.state.payout_doubts = payout_doubts(self.state.intake)
+
+        if status == "excluded" and not self.state.coverage_doubts:
             self.state.settlement = {"payout": 0.0, "explanation": "Not covered: no settlement."}
+        else:
+            # covered, or uncertain: the adjuster needs the figure the claim would pay
+            self.state.settlement = settle(self.state.intake["policy_no"], d["line_decisions"])
+            if status != "covered":
+                self.state.settlement["explanation"] = (
+                    "PROVISIONAL, subject to a person confirming coverage.\n"
+                    + self.state.settlement.get("explanation", ""))
         denied = sum(not line["admitted"] for line in d["line_decisions"])
-        self.log(f"assessment: covered={d['is_covered']}, fraud_score={d['fraud_score']:.2f}, "
-                 f"{denied} line(s) denied, payout Rs {self.state.settlement['payout']:,.2f} (calculator)")
+        self.log(f"assessment: coverage={status}, fraud_score={d['fraud_score']:.2f}, "
+                 f"{denied} line(s) denied, payout Rs {self.state.settlement['payout']:,.2f} (calculator)",
+                 coverage_status=status)
+        for doubt in self.state.coverage_doubts:
+            self.log(f"coverage doubt: {doubt}", kind="coverage_doubt")
+        for doubt in self.state.payout_doubts:
+            self.log(f"payout doubt: {doubt}", kind="payout_doubt")
 
     @router(assess, emit=["auto_approve", "human_review", "reject"])
     def route_claim(self):
         d, payout = self.state.decision, self.state.settlement["payout"]
-        if self.state.guardrail_flags:
-            route, why = "human_review", f"guardrail flag: {self.state.guardrail_flags[0]}"
-        elif not d["is_covered"]:
-            route, why = "reject", "not covered"
-        elif d["fraud_score"] >= FRAUD_THRESHOLD:
-            route, why = "human_review", f"fraud score {d['fraud_score']:.2f} >= {FRAUD_THRESHOLD}"
-        elif payout > HIGH_VALUE:
-            route, why = "human_review", f"payout above Rs {HIGH_VALUE:,}"
-        else:
-            route, why = "auto_approve", "covered, low fraud risk, normal value"
+        route, why = decide_route(d, self.state.settlement, self.state.guardrail_flags,
+                                  self.state.coverage_doubts, self.state.payout_doubts)
         suggested = d.get("recommended_route", "").lower().replace("-", "_").replace(" ", "_")
         if suggested and suggested != route:
             why += f" (the Lead suggested {suggested}; the rule decides)"
@@ -274,6 +471,19 @@ class ClaimFlow(Flow[ClaimState]):
         print("\n" + "-" * 70)
         print(f"HUMAN REVIEW  {self.state.claim_id}")
         print("-" * 70)
+        status = (d.get("coverage_status") or
+                  ("covered" if d.get("is_covered") else "excluded")).lower()
+        print(f"coverage      {status}")
+        for reason in (d.get("coverage_reasons") or [])[:3]:
+            print(f"              - {reason}")
+        if self.state.coverage_doubts:
+            print("NEEDS A DECISION ON COVERAGE")
+            for doubt in self.state.coverage_doubts:
+                print(f"              ! {doubt}")
+        if self.state.payout_doubts:
+            print("THE PAYOUT NEEDS CHECKING BY HAND")
+            for doubt in self.state.payout_doubts:
+                print(f"              ! {doubt}")
         print(f"fraud score   {d['fraud_score']:.2f}")
         for flag in d.get("fraud_flags", []):
             print(f"              - {flag}")

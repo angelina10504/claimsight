@@ -39,6 +39,8 @@ ROOT = SRC.parent
 sys.path.insert(0, str(SRC / "tools"))
 
 import assessment_tools as tools   # noqa: E402  (the same functions the crews used directly)
+import guardrails                  # noqa: E402  (PII redaction before a report leaves)
+import reporting                   # noqa: E402  (the evidence report, built from saved files)
 from assessment_tools import PriceLine, SettlementLine   # noqa: E402  (typed invoice lines)
 
 DECISIONS = ROOT / "data" / "decisions"
@@ -133,6 +135,40 @@ def calculate_settlement(policy_no: str, line_items: List[SettlementLine]) -> di
     line_items: each {"description", "amount", "material"?, "admitted"?, "reason"?}."""
     lines = _as_dicts(line_items)
     return _bad_policy(policy_no) or _bad_lines(lines) or tools.settle(policy_no, lines)
+
+
+MAX_EVIDENCE = 20          # a report is for reading, not for dumping a whole log
+MAX_DETAIL = 300
+
+
+@mcp.tool()
+def get_claim_report(claim_id: str) -> dict:
+    """Why a claim was decided the way it was: the coverage finding and the
+    clause behind it, the fraud checks, every invoice line with its reason, the
+    settlement breakdown, what evidence is still needed, and where each finding
+    came from. Use this when a claimant asks why, not to decide anything.
+
+    Built from the claim's saved decision and monitoring log, so it calls no
+    model. Personal data is removed before the report leaves this server."""
+    bad = _bad_claim(claim_id)
+    if bad:
+        return bad
+    report = reporting.for_claim(claim_id)
+    if report is None:
+        return {"error": f"no assessed claim {claim_id}; it has not been through the Flow yet"}
+
+    data = report.model_dump()
+    data["explanation"] = reporting.explanation(report)
+    trimmed = data["evidence"][:MAX_EVIDENCE]
+    for item in trimmed:
+        item["detail"] = str(item.get("detail", ""))[:MAX_DETAIL]
+    data["evidence"] = trimmed
+    data["evidence_truncated"] = len(report.evidence) > MAX_EVIDENCE
+
+    clean, removed = guardrails.redact_pii(json.dumps(data, default=str))
+    data = json.loads(clean)
+    data["pii_redacted"] = removed
+    return data
 
 
 @mcp.tool()

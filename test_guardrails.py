@@ -82,7 +82,7 @@ def test_tool_result_check() -> int:
     from crewai import Agent, Crew, Task
     from crewai.mcp import MCPServerStdio, create_static_tool_filter
 
-    server = MCPServerStdio(command="python", args=["src/mcp_server.py"],
+    server = MCPServerStdio(command="./claimsight_tools", args=[],
                             tool_filter=create_static_tool_filter(allowed_tool_names=["check_policy_period"]))
     probe = Agent(role="probe", goal="g", backstory="b", llm=scripted_llm(["x"]), mcps=[server])
     tool_name = probe.get_mcp_tools(probe.mcps)[0].name
@@ -120,7 +120,8 @@ def test_decision_guardrail() -> int:
 
     def decision(lines_out):
         return json.dumps({
-            "claim_id": "CLM-5004", "is_covered": True, "coverage_reasons": ["Section I item 6"],
+            "claim_id": "CLM-5004", "coverage_status": "covered", "uncertainty_reasons": [],
+            "coverage_reasons": ["Section I item 6"],
             "fraud_score": 0.8, "fraud_flags": ["windshield overpriced"],
             "line_decisions": lines_out, "recommended_route": "human_review", "summary": "Overpriced windshield."})
 

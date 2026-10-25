@@ -2,7 +2,7 @@
   "claim_id": "CLM-5000",
   "policy_no": "POL-3000",
   "registration": "HR45GY5012",
-  "incident_date": "2026-09-18",
+  "incident_date": "2026-10-22",
   "narrative": "Reversed into a pillar in the basement parking.",
   "damaged_parts": [
     "door glass",
@@ -11,7 +11,7 @@
   ],
   "invoice": {
     "invoice_no": "INV/833/26",
-    "invoice_date": "2026-09-20",
+    "invoice_date": "2026-10-24",
     "garage_name": "Nayar Auto Works",
     "registration": "HR45GY5012",
     "line_items": [
@@ -47,5 +47,5 @@
   },
   "is_complete": true,
   "missing_fields": [],
-  "notes": "All required documents are present."
+  "notes": "No photos provided."
 }

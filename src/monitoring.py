@@ -8,7 +8,11 @@ and costed afterwards (show_log.py prints it as a timeline).
 Three kinds of hook feed the log:
 
   step_callback  CrewAI calls it after every agent step: each tool call with
-                 its input and result, and each agent's final answer.
+                 its input and result, and each agent's final answer. With a
+                 model that uses native tool calling (Groq's gpt-oss does),
+                 CrewAI never sends a tool step here, so tool calls are
+                 recorded from the after_tool_call hook instead; both routes
+                 go through record_tool_call, which drops duplicates.
   task_callback  CrewAI calls it when a task finishes: which agent, how long
                  it took, and its output.
   event bus      Listeners for errors CrewAI handles internally and retries
@@ -21,6 +25,7 @@ crew timings and token use, and the final outcome.
 """
 
 import json
+import re
 import threading
 import time
 from datetime import datetime
@@ -34,6 +39,40 @@ MAX_TEXT = 600          # characters kept from long outputs
 _lock = threading.Lock()
 _active: Optional["ClaimMonitor"] = None     # the claim currently running
 _listeners_registered = False
+
+
+def _trace_id() -> Optional[str]:
+    """The Langfuse trace this run belongs to, so the local log and the trace
+    can be read side by side. None when tracing is off."""
+    try:
+        import observability
+        return observability.trace_id()
+    except Exception:            # tracing is optional; never break a run for it
+        return None
+
+
+def looks_like_tool_error(result: Any) -> bool:
+    """Did this tool call fail?
+
+    Two shapes count: a string starting with ERROR (how CrewAI reports a tool
+    that raised) and a JSON object with an "error" key (how the ClaimSight
+    tools report bad input). Checking only the first missed every rejected
+    input, so failed calls were logged as successes."""
+    if isinstance(result, str):
+        if result.strip().upper().startswith("ERROR"):
+            return True
+        try:
+            result = json.loads(result)
+        except (json.JSONDecodeError, TypeError, ValueError):
+            return False
+    return isinstance(result, dict) and "error" in result
+
+
+def _name_key(tool: Any) -> str:
+    """A tool name with punctuation and casing removed, so the same tool reported
+    as 'python_src/mcp_server.py_check_prices' and
+    'python_src_mcp_server_py_check_prices' is recognised as one tool."""
+    return re.sub(r"[^a-z0-9]", "", str(tool).lower())[-40:]
 
 
 def _short(value: Any) -> str:
@@ -52,9 +91,10 @@ class ClaimMonitor:
         self.started = time.time()
         self.last_task_end = self.started
         self.counts = {"tool_calls": 0, "tasks": 0, "errors": 0, "retried_llm_failures": 0}
+        self._seen_tool_calls: list = []        # recent (tool, input, result) keys
         _active = self
         register_listeners()
-        self.record("run_started")
+        self.record("run_started", trace_id=_trace_id())
 
     # ------------------------------------------------------------ writing
     def record(self, event: str, **fields) -> None:
@@ -69,19 +109,43 @@ class ClaimMonitor:
             with self.path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(entry, default=str) + "\n")
 
+    def record_tool_call(self, tool: str, tool_input: Any, result: Any,
+                         error: Optional[bool] = None, agent: Any = None) -> None:
+        """The one place a tool call is written to the log.
+
+        Two things can report the same call: CrewAI's step callback (when the
+        agent works in the ReAct style) and the after_tool_call guardrail hook
+        (always). Recording it twice would make the evidence trail and the tool
+        count wrong, so a call already seen is dropped.
+
+        The two routes do not agree on the wording: the step callback gives the
+        tool's name with its launch path punctuation intact and the result after
+        the guardrail annotated it, while the hook gives the sanitised name and
+        the raw result. So the key ignores punctuation in the name, and ignores
+        the result entirely. The hook fires first, which is what we want: the
+        raw tool output is the evidence, and the guardrail's note on it is
+        logged separately as its own event."""
+        if error is None:
+            error = looks_like_tool_error(result)
+        key = (_name_key(tool), _short(tool_input))
+        if key in self._seen_tool_calls:
+            return
+        self._seen_tool_calls = (self._seen_tool_calls + [key])[-8:]
+        self.counts["tool_calls"] += 1
+        if error:
+            self.counts["errors"] += 1
+        self.record("tool_call", tool=tool, input=_short(tool_input),
+                    result=_short(result), tool_error=error,
+                    agent=str(getattr(agent, "role", "") or "") or None)
+
     # ------------------------------------------------------------ CrewAI callbacks
     def step_callback(self, step: Any) -> None:
         """After each agent step. CrewAI passes a tool call (AgentAction), a raw
         tool result (ToolResult) or a final answer (AgentFinish)."""
         kind = type(step).__name__
         if hasattr(step, "tool"):                       # AgentAction: a tool was called
-            self.counts["tool_calls"] += 1
-            result = getattr(step, "result", None)
-            error = isinstance(result, str) and result.strip().upper().startswith("ERROR")
-            if error:
-                self.counts["errors"] += 1
-            self.record("tool_call", tool=step.tool, input=_short(getattr(step, "tool_input", "")),
-                        result=_short(result or ""), tool_error=error)
+            self.record_tool_call(step.tool, getattr(step, "tool_input", ""),
+                                  getattr(step, "result", None) or "")
         elif hasattr(step, "output"):                   # AgentFinish: the agent's answer
             self.record("agent_answer", output=_short(step.output))
         elif hasattr(step, "result"):                   # ToolResult before it is attached
@@ -110,7 +174,8 @@ class ClaimMonitor:
         self.record("error", where=where, error_type=type(exc).__name__, error=_short(str(exc)))
 
     def finish(self, **fields) -> dict:
-        summary = {"total_seconds": round(time.time() - self.started, 2), **self.counts, **fields}
+        summary = {"total_seconds": round(time.time() - self.started, 2),
+                   "trace_id": _trace_id(), **self.counts, **fields}
         self.record("run_finished", **summary)
         return summary
 

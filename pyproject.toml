@@ -16,4 +16,9 @@ dependencies = [
     "weasyprint>=70.0",
     "ollama>=0.6.3",
     "google-adk[a2a]>=2.13.0",
+    "langfuse<5",
+    "openinference-instrumentation-crewai>=1.1.21",
+    "openinference-instrumentation-openai>=0.1.66",
+    "opentelemetry-sdk==1.44.0",
+    "opentelemetry-api==1.44.0",
 ]

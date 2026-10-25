@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-9002",
+  "insured_name": "Aryan Maharaj",
+  "phone": "+913218196001",
+  "address": "90/83, Saini Circle, Sultan Pur Majra-026542",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR45GY5012",
+  "vehicle_age_years": 0.4,
+  "idv": 1104000,
+  "deductible": 1000,
+  "policy_start": "2026-01-07",
+  "policy_end": "2027-01-06",
+  "zero_depreciation": true,
+  "ncb_percent": 0
+}
