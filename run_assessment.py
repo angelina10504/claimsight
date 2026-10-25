@@ -21,6 +21,7 @@ ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from models import AssessmentDecision                     # noqa: E402
+from guardrails import safe_narrative                     # noqa: E402
 from tools.assessment_tools import _part_name, settle     # noqa: E402
 
 CLAIMS = ROOT / "data" / "claims"
@@ -63,7 +64,7 @@ def build_case(claim_id: str):
         "claim_id": claim_id,
         "policy_no": claim["policy_no"],
         "incident_date": incident,
-        "narrative": claim["narrative"],
+        "narrative": safe_narrative(claim["narrative"])[0],
         "damaged_parts": json.dumps(parts),
         "line_items": json.dumps(lines, indent=1),
         "policy": json.dumps({k: policy[k] for k in POLICY_FIELDS}, indent=1),

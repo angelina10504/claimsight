@@ -38,6 +38,24 @@ def line(entry: dict, full: bool) -> str:
     if e in ("tool_error", "error"):
         where = entry.get("where") or entry.get("tool")
         return f"ERROR   {where}: {cut(entry['error'])}"
+    if e == "guardrail":
+        mark = "pass" if entry.get("passed", True) else "FAIL"
+        kind = entry.get("kind")
+        if kind == "input_screening":
+            found = entry.get("injection_matches") or entry.get("abusive_matches") or ""
+            return f"GUARD   input screening: {entry.get('verdict')}  {cut(found, 70) if found else ''}"
+        if kind == "pii_redacted":
+            return f"GUARD   PII redacted before LLM call: {entry.get('items')} item(s)"
+        if kind == "decision":
+            detail = "" if entry.get("passed") else f"  -> agent retries: {cut(entry.get('problems'), 80)}"
+            return f"GUARD   decision check {mark}{detail}"
+        if kind == "report_format":
+            detail = "" if entry.get("passed") else f"  missing {entry.get('missing')}"
+            return f"GUARD   {entry.get('report')} format {mark}{detail}"
+        if kind == "tool_result":
+            detail = "" if entry.get("passed") else f"  ({cut(entry.get('problem'), 70)})"
+            return f"GUARD   {entry.get('tool')} result {mark}{detail}"
+        return f"GUARD   {kind} {mark}"
     if e == "run_started":
         return "START"
     if e == "run_finished":
@@ -51,7 +69,7 @@ def line(entry: dict, full: bool) -> str:
 
 def main() -> None:
     args = sys.argv[1:]
-    ids = [a for a in args if a.startswith("CLM-")]
+    ids = [a for a in args if not a.startswith("--")]
     if not ids:
         sys.exit(__doc__)
     path = LOGS / f"{ids[0]}.jsonl"

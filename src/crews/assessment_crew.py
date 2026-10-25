@@ -37,6 +37,7 @@ sys.path.insert(0, str(SRC))
 
 from config import get_llm                                   # noqa: E402
 from monitoring import crew_callbacks                        # noqa: E402
+import guardrails                                            # noqa: E402
 from models import AssessmentDecision                        # noqa: E402
 from tools.assessment_tools import (                         # noqa: E402
     PolicyPeriodTool,
@@ -70,6 +71,7 @@ def tool_access(*names: str) -> dict:
 
 
 def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
+    guardrails.install()       # tool-result checks and PII redaction on every LLM call
     llm = get_llm("text")
 
     policy_wording = TextFileKnowledgeSource(
@@ -146,6 +148,8 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
         expected_output="A coverage report with PERIOD, PERIL and EXCLUDED LINES, each citing its source.",
         agent=policy_analyst,
         async_execution=True,
+        guardrail=guardrails.coverage_report_guardrail,
+        guardrail_max_retries=2,
     )
 
     fraud_task = Task(
@@ -170,6 +174,8 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
         expected_output="A fraud report with PRICES, PRIOR CLAIMS, CONSISTENCY and RISK.",
         agent=fraud_analyst,
         async_execution=True,
+        guardrail=guardrails.fraud_report_guardrail,
+        guardrail_max_retries=2,
     )
 
     decision_task = Task(
@@ -199,6 +205,8 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
         agent=assessment_lead,
         context=[coverage_task, fraud_task],
         output_pydantic=AssessmentDecision,
+        guardrail=guardrails.decision_guardrail,     # every line, exact amounts, no PII
+        guardrail_max_retries=2,
     )
 
     return Crew(

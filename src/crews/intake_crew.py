@@ -27,6 +27,7 @@ sys.path.insert(0, str(SRC))
 
 from config import get_llm                                     # noqa: E402
 from monitoring import crew_callbacks                          # noqa: E402
+import guardrails                                              # noqa: E402
 from models import ClaimIntake, ExtractedInvoice               # noqa: E402
 from tools.claim_tools import (                                # noqa: E402
     ReadClaimSubmission,
@@ -35,24 +36,40 @@ from tools.claim_tools import (                                # noqa: E402
 )
 
 
-def fetch_inputs(claim_id: str) -> dict:
-    """Deterministic data gathering. No LLM involved."""
-    submission = ReadClaimSubmission()._run(claim_id)
-    if submission.startswith("ERROR"):
-        raise FileNotFoundError(submission)
+PII_FIELDS = ("insured_name", "phone", "address")
 
+
+def fetch_inputs(claim_id: str) -> dict:
+    """Deterministic data gathering. No LLM involved.
+
+    Guardrails applied before anything reaches an agent: the claimant's
+    narrative is screened for prompt injection and abuse, and the
+    policyholder's name, phone and address are left out of the policy."""
     import json
-    policy_no = json.loads(submission)["policy_no"]
+
+    submission_text = ReadClaimSubmission()._run(claim_id)
+    if submission_text.startswith("ERROR"):
+        raise FileNotFoundError(submission_text)
+    submission = json.loads(submission_text)
+    submission["narrative"], _ = guardrails.safe_narrative(submission.get("narrative", ""))
+
+    policy_text = ReadPolicySchedule()._run(submission["policy_no"])
+    if not policy_text.startswith("ERROR"):
+        policy = json.loads(policy_text)
+        for field in PII_FIELDS:
+            policy.pop(field, None)
+        policy_text = json.dumps(policy, indent=2)
 
     return {
         "claim_id": claim_id,
         "invoice_text": ReadInvoicePDF()._run(claim_id),
-        "submission": submission,
-        "policy": ReadPolicySchedule()._run(policy_no),
+        "submission": json.dumps(submission, indent=2),
+        "policy": policy_text,
     }
 
 
 def build_intake_crew(verbose: bool = True, monitor=None) -> Crew:
+    guardrails.install()       # tool-result checks and PII redaction on every LLM call
     llm = get_llm("text")
 
     document_reader = Agent(

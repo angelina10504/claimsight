@@ -32,6 +32,7 @@ SRC = Path(__file__).resolve().parent
 ROOT = SRC.parent
 sys.path.insert(0, str(SRC))
 
+import guardrails                            # noqa: E402
 import monitoring                            # noqa: E402
 from tools.assessment_tools import settle   # noqa: E402
 
@@ -58,6 +59,7 @@ class ClaimState(BaseModel):
     route: str = ""
     status: str = ""
     final_payout: float = 0.0
+    guardrail_flags: List[str] = Field(default_factory=list)
     trail: List[str] = Field(default_factory=list)
 
 
@@ -154,9 +156,24 @@ class ClaimFlow(Flow[ClaimState]):
                 monitor.finish(status="failed", failed_at=step)
             raise
 
+    def screen_claimant_text(self) -> None:
+        """Input guardrail: check what the claimant wrote before any agent reads it."""
+        claim = json.loads((CLAIMS / f"{self.state.claim_id}.json").read_text())
+        result = guardrails.screen_text(claim.get("narrative", ""))
+        monitoring.current().record("guardrail", kind="input_screening",
+                                    passed=result["verdict"] == "clean", **result)
+        if result["verdict"] == "injection":
+            self.state.guardrail_flags.append(
+                f"possible prompt injection in claimant text: {result['injection_matches'][:2]}")
+            self.log("guardrail: prompt injection detected; narrative withheld from the agents")
+        elif result["verdict"] == "abusive":
+            self.state.guardrail_flags.append("abusive language in claimant text")
+            self.log("guardrail: abusive language masked before the agents see it")
+
     @start()
     def intake(self):
         monitoring.ClaimMonitor(self.state.claim_id)     # fresh log: data/logs/<claim>.jsonl
+        self.screen_claimant_text()
         saved = INTAKE / f"{self.state.claim_id}.json"
         if self.state.use_saved_intake and saved.exists():
             self.state.intake = json.loads(saved.read_text())
@@ -170,6 +187,10 @@ class ClaimFlow(Flow[ClaimState]):
                                         seconds=round(time.time() - started, 2))
             INTAKE.mkdir(parents=True, exist_ok=True)
             saved.write_text(json.dumps(self.state.intake, indent=2))
+
+        # The agents only ever see the screened narrative, even from a saved intake
+        self.state.intake["narrative"], _ = guardrails.safe_narrative(
+            self.state.intake.get("narrative") or "")
 
         gaps = completeness_gaps(self.state.intake)
         agent_said = self.state.intake.get("is_complete")
@@ -214,7 +235,9 @@ class ClaimFlow(Flow[ClaimState]):
     @router(assess, emit=["auto_approve", "human_review", "reject"])
     def route_claim(self):
         d, payout = self.state.decision, self.state.settlement["payout"]
-        if not d["is_covered"]:
+        if self.state.guardrail_flags:
+            route, why = "human_review", f"guardrail flag: {self.state.guardrail_flags[0]}"
+        elif not d["is_covered"]:
             route, why = "reject", "not covered"
         elif d["fraud_score"] >= FRAUD_THRESHOLD:
             route, why = "human_review", f"fraud score {d['fraud_score']:.2f} >= {FRAUD_THRESHOLD}"
