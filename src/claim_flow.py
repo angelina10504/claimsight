@@ -20,6 +20,7 @@ claim's full trail is kept even if a run stops part-way.
 
 import json
 import sys
+import time
 from pathlib import Path
 from typing import Dict, List
 
@@ -31,6 +32,7 @@ SRC = Path(__file__).resolve().parent
 ROOT = SRC.parent
 sys.path.insert(0, str(SRC))
 
+import monitoring                            # noqa: E402
 from tools.assessment_tools import settle   # noqa: E402
 
 CLAIMS = ROOT / "data" / "claims"
@@ -63,7 +65,7 @@ class ClaimState(BaseModel):
 # Kept as module-level functions so they can be swapped out in tests.
 def run_intake_step(claim_id: str, verbose: bool) -> dict:
     from crews.intake_crew import run_intake
-    intake = run_intake(claim_id, verbose=verbose)
+    intake = run_intake(claim_id, verbose=verbose, monitor=monitoring.current())
     if intake is None:
         raise RuntimeError("Intake crew returned no valid ClaimIntake")
     return intake.model_dump()
@@ -71,7 +73,15 @@ def run_intake_step(claim_id: str, verbose: bool) -> dict:
 
 def run_assessment_step(inputs: dict, verbose: bool) -> dict:
     from crews.assessment_crew import build_assessment_crew
-    output = build_assessment_crew(verbose=verbose).kickoff(inputs=inputs)
+    monitor = monitoring.current()
+    started = time.time()
+    output = build_assessment_crew(verbose=verbose, monitor=monitor).kickoff(inputs=inputs)
+    usage = getattr(output, "token_usage", None)
+    if monitor:
+        monitor.record("crew_done", crew="assessment", seconds=round(time.time() - started, 2),
+                       total_tokens=getattr(usage, "total_tokens", 0) or 0,
+                       prompt_tokens=getattr(usage, "prompt_tokens", 0) or 0,
+                       completion_tokens=getattr(usage, "completion_tokens", 0) or 0)
     if output.pydantic is None:
         raise RuntimeError("Assessment crew returned no valid AssessmentDecision")
     return output.pydantic.model_dump()
@@ -126,19 +136,38 @@ def assessment_inputs(intake: dict) -> dict:
 @persist()
 class ClaimFlow(Flow[ClaimState]):
 
-    def log(self, message: str) -> None:
+    def log(self, message: str, **fields) -> None:
         self.state.trail.append(message)
         print(f"  [{self.state.claim_id}] {message}")
+        monitor = monitoring.current()
+        if monitor:
+            monitor.record("flow", message=message, **fields)
+
+    def guarded(self, step: str, fn, *args):
+        """Run a crew step; log any error with where it happened, then re-raise."""
+        try:
+            return fn(*args)
+        except Exception as exc:
+            monitor = monitoring.current()
+            if monitor:
+                monitor.error(step, exc)
+                monitor.finish(status="failed", failed_at=step)
+            raise
 
     @start()
     def intake(self):
+        monitoring.ClaimMonitor(self.state.claim_id)     # fresh log: data/logs/<claim>.jsonl
         saved = INTAKE / f"{self.state.claim_id}.json"
         if self.state.use_saved_intake and saved.exists():
             self.state.intake = json.loads(saved.read_text())
             self.log("intake: reused saved Intake crew output")
         else:
             self.log("intake: running Intake crew")
-            self.state.intake = run_intake_step(self.state.claim_id, self.state.verbose)
+            started = time.time()
+            self.state.intake = self.guarded("intake", run_intake_step,
+                                             self.state.claim_id, self.state.verbose)
+            monitoring.current().record("crew_done", crew="intake",
+                                        seconds=round(time.time() - started, 2))
             INTAKE.mkdir(parents=True, exist_ok=True)
             saved.write_text(json.dumps(self.state.intake, indent=2))
 
@@ -171,7 +200,8 @@ class ClaimFlow(Flow[ClaimState]):
     @listen("complete")
     def assess(self):
         self.log("assessment: Policy Analyst and Fraud Analyst running in parallel")
-        self.state.decision = run_assessment_step(assessment_inputs(self.state.intake), self.state.verbose)
+        self.state.decision = self.guarded("assessment", run_assessment_step,
+                                           assessment_inputs(self.state.intake), self.state.verbose)
         d = self.state.decision
         if d["is_covered"]:
             self.state.settlement = settle(self.state.intake["policy_no"], d["line_decisions"])
@@ -196,7 +226,8 @@ class ClaimFlow(Flow[ClaimState]):
         if suggested and suggested != route:
             why += f" (the Lead suggested {suggested}; the rule decides)"
         self.state.route = route
-        self.log(f"router 2: {route} because {why}")
+        self.log(f"router 2: {route} because {why}", router="route_claim", route=route,
+                 fraud_score=d["fraud_score"], payout=payout)
         return route
 
     @listen("auto_approve")
@@ -252,6 +283,10 @@ class ClaimFlow(Flow[ClaimState]):
         self.finish()
 
     def finish(self) -> None:
+        monitor = monitoring.current()
+        if monitor:
+            monitor.finish(status=self.state.status, route=self.state.route,
+                           final_payout=self.state.final_payout)
         DECISIONS.mkdir(parents=True, exist_ok=True)
         (DECISIONS / f"{self.state.claim_id}.json").write_text(
             json.dumps(self.state.model_dump(), indent=2, default=str))

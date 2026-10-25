@@ -26,6 +26,7 @@ SRC = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SRC))
 
 from config import get_llm                                     # noqa: E402
+from monitoring import crew_callbacks                          # noqa: E402
 from models import ClaimIntake, ExtractedInvoice               # noqa: E402
 from tools.claim_tools import (                                # noqa: E402
     ReadClaimSubmission,
@@ -51,7 +52,7 @@ def fetch_inputs(claim_id: str) -> dict:
     }
 
 
-def build_intake_crew(verbose: bool = True) -> Crew:
+def build_intake_crew(verbose: bool = True, monitor=None) -> Crew:
     llm = get_llm("text")
 
     document_reader = Agent(
@@ -149,11 +150,12 @@ def build_intake_crew(verbose: bool = True) -> Crew:
         tasks=[extract_invoice, assemble_claim],
         process=Process.sequential,
         verbose=verbose,
+        **crew_callbacks(monitor),     # step and task callbacks -> data/logs/<claim>.jsonl
     )
 
 
-def run_intake(claim_id: str, verbose: bool = True) -> ClaimIntake:
+def run_intake(claim_id: str, verbose: bool = True, monitor=None) -> ClaimIntake:
     inputs = fetch_inputs(claim_id)
-    crew = build_intake_crew(verbose=verbose)
+    crew = build_intake_crew(verbose=verbose, monitor=monitor)
     result = crew.kickoff(inputs=inputs)
     return result.pydantic

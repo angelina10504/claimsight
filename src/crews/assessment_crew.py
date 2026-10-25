@@ -30,6 +30,7 @@ SRC = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SRC))
 
 from config import get_llm                                   # noqa: E402
+from monitoring import crew_callbacks                        # noqa: E402
 from models import AssessmentDecision                        # noqa: E402
 from tools.assessment_tools import (                         # noqa: E402
     PolicyPeriodTool,
@@ -41,7 +42,7 @@ from tools.assessment_tools import (                         # noqa: E402
 EMBEDDER = {"provider": "ollama", "config": {"model_name": "nomic-embed-text"}}
 
 
-def build_assessment_crew(verbose: bool = True) -> Crew:
+def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
     llm = get_llm("text")
 
     policy_wording = TextFileKnowledgeSource(
@@ -179,4 +180,5 @@ def build_assessment_crew(verbose: bool = True) -> Crew:
         process=Process.sequential,
         verbose=verbose,
         max_rpm=10,          # stay inside the free-tier request limit
+        **crew_callbacks(monitor),     # step and task callbacks -> data/logs/<claim>.jsonl
     )
