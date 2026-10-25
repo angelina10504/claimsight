@@ -1,0 +1,140 @@
+╭───────────────────────────── 🌊 Flow Execution ──────────────────────────────╮
+│                                                                              │
+│  Starting Flow Execution                                                     │
+│  Name: ClaimFlow                                                             │
+│  ID: e11ed7fd-f105-40a1-912a-a3e5ce965822                                    │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─────────────────────────── ✨ Update Available ✨ ───────────────────────────╮
+│                                                                              │
+│  A new version of CrewAI is available!                                       │
+│                                                                              │
+│  Current version: 1.15.22                                                    │
+│  Latest version:  1.15.30                                                    │
+│                                                                              │
+│  To update, run: uv sync --upgrade-package crewai                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────────── 🌊 Flow Started ───────────────────────────────╮
+│                                                                              │
+│  Flow Started                                                                │
+│  Name: ClaimFlow                                                             │
+│  ID: e11ed7fd-f105-40a1-912a-a3e5ce965822                                    │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: intake                                                              │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  [CLM-5008] intake: reused saved Intake crew output
+  [CLM-5008] intake: 5 invoice lines, complete=True
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: intake                                                              │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+  [CLM-5008] router 1: file complete -> assessment
+
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: check_complete                                                      │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: check_complete                                                      │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  [CLM-5008] assessment: Policy Analyst and Fraud Analyst running in parallel
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: assess                                                              │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  [CLM-5008] assessment: coverage=covered, fraud_score=0.90, 5 line(s) denied, payout Rs 0.00 (calculator)
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: assess                                                              │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+  [CLM-5008] router 2: human_review because fraud score 0.90 >= 0.5
+
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: route_claim                                                         │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: route_claim                                                         │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+----------------------------------------------------------------------
+HUMAN REVIEW  CLM-5008
+----------------------------------------------------------------------
+coverage      covered
+              - Section I: loss of or damage to the vehicle insured
+fraud score   0.90
+              - same parts already claimed
+  DENY Door Glass - replacement: Rs 4,880  (same damage already claimed)
+  DENY Rear Door - replacement: Rs 11,960  (same damage already claimed)
+  DENY Rear Bumper - replacement: Rs 7,800  (same damage already claimed)
+  DENY Painting and finishing: Rs 7,010  (same damage already claimed)
+  DENY Labour charges: Rs 4,680  (same damage already claimed)
+proposed payout  Rs 0.00
+summary       stand-in decision
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: send_to_adjuster                                                    │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  [CLM-5008] paused: queued for an adjuster (data/review_queue)
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: send_to_adjuster                                                    │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭───────────────────────────── ✅ Flow Completion ─────────────────────────────╮
+│                                                                              │
+│  Flow Execution Completed                                                    │
+│  Name: ClaimFlow                                                             │
+│  ID: e11ed7fd-f105-40a1-912a-a3e5ce965822                                    │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+

@@ -1,0 +1,140 @@
+╭───────────────────────────── 🌊 Flow Execution ──────────────────────────────╮
+│                                                                              │
+│  Starting Flow Execution                                                     │
+│  Name: ClaimFlow                                                             │
+│  ID: 9480c080-f094-4bdc-badb-f2bb343ca711                                    │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─────────────────────────── ✨ Update Available ✨ ───────────────────────────╮
+│                                                                              │
+│  A new version of CrewAI is available!                                       │
+│                                                                              │
+│  Current version: 1.15.22                                                    │
+│  Latest version:  1.15.30                                                    │
+│                                                                              │
+│  To update, run: uv sync --upgrade-package crewai                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────────── 🌊 Flow Started ───────────────────────────────╮
+│                                                                              │
+│  Flow Started                                                                │
+│  Name: ClaimFlow                                                             │
+│  ID: 9480c080-f094-4bdc-badb-f2bb343ca711                                    │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: intake                                                              │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  [CLM-5014] intake: running Intake crew
+  [CLM-5014] intake: 5 invoice lines, complete=True
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: intake                                                              │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+  [CLM-5014] router 1: file complete -> assessment
+
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: check_complete                                                      │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: check_complete                                                      │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  [CLM-5014] assessment: Policy Analyst and Fraud Analyst running in parallel
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: assess                                                              │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  [CLM-5014] assessment: coverage=covered, fraud_score=0.70, 1 line(s) denied, payout Rs 36,498.93 (calculator)
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: assess                                                              │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: route_claim                                                         │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  [CLM-5014] router 2: human_review because fraud score 0.70 >= 0.5
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: route_claim                                                         │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+----------------------------------------------------------------------
+HUMAN REVIEW  CLM-5014
+----------------------------------------------------------------------
+coverage      covered
+              - Section I: loss of or damage to the vehicle insured
+fraud score   0.70
+              - Fender - replacement overpriced
+  DENY Fender - replacement: Rs 16,056  (priced far above market rate)
+  PAY  Door Glass - replacement: Rs 4,570
+  PAY  Rear Door - replacement: Rs 13,640
+  PAY  Painting and finishing: Rs 9,930
+  PAY  Labour charges: Rs 4,880
+proposed payout  Rs 36,498.93
+summary       stand-in decision
+╭─────────────────────────── 🔄 Flow Method Running ───────────────────────────╮
+│                                                                              │
+│  Method: send_to_adjuster                                                    │
+│  Status: Running                                                             │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  [CLM-5014] paused: queued for an adjuster (data/review_queue)
+╭────────────────────────── ✅ Flow Method Completed ──────────────────────────╮
+│                                                                              │
+│  Method: send_to_adjuster                                                    │
+│  Status: Completed                                                           │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭───────────────────────────── ✅ Flow Completion ─────────────────────────────╮
+│                                                                              │
+│  Flow Execution Completed                                                    │
+│  Name: ClaimFlow                                                             │
+│  ID: 9480c080-f094-4bdc-badb-f2bb343ca711                                    │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+

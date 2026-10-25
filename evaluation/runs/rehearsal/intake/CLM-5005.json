@@ -1,0 +1,43 @@
+{
+  "claim_id": "CLM-5005",
+  "policy_no": "POL-3005",
+  "registration": "HR27BC9348",
+  "incident_date": "2026-09-19",
+  "narrative": "Vehicle was hit by another car while parked outside a market.",
+  "damaged_parts": [
+    "door glass",
+    "headlight"
+  ],
+  "invoice": {
+    "invoice_no": "INV-CLM-5005",
+    "invoice_date": "2026-09-24",
+    "registration": "HR27BC9348",
+    "line_items": [
+      {
+        "description": "Headlight - replacement",
+        "amount": 7380,
+        "material": "plastic"
+      },
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4800,
+        "material": "glass"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 3810,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1680,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 17670,
+    "total": 20851
+  },
+  "is_complete": true,
+  "missing_fields": [],
+  "notes": "stand-in intake"
+}

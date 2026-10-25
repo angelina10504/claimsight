@@ -1,0 +1,127 @@
+{
+  "claim_id": "CLM-5016",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5016",
+    "policy_no": "POL-3016",
+    "registration": "HR80EH3546",
+    "incident_date": "2026-06-18",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "grille",
+      "side mirror",
+      "taillight"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5016",
+      "invoice_date": "2026-06-19",
+      "registration": "HR80EH3546",
+      "line_items": [
+        {
+          "description": "Grille - replacement",
+          "amount": 2800,
+          "material": "plastic"
+        },
+        {
+          "description": "Taillight - replacement",
+          "amount": 4080,
+          "material": "plastic"
+        },
+        {
+          "description": "Side Mirror - replacement",
+          "amount": 3350,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 2630,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 1930,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 14790,
+      "total": 17452
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5016",
+    "coverage_status": "excluded",
+    "uncertainty_reasons": [],
+    "is_covered": false,
+    "coverage_reasons": [
+      "incident is 22 days BEFORE cover began"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Grille - replacement",
+        "amount": 2800.0,
+        "material": "plastic",
+        "admitted": false,
+        "reason": "incident outside the policy period"
+      },
+      {
+        "description": "Taillight - replacement",
+        "amount": 4080.0,
+        "material": "plastic",
+        "admitted": false,
+        "reason": "incident outside the policy period"
+      },
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3350.0,
+        "material": "plastic",
+        "admitted": false,
+        "reason": "incident outside the policy period"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2630.0,
+        "material": "paint",
+        "admitted": false,
+        "reason": "incident outside the policy period"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1930.0,
+        "material": "labour",
+        "admitted": false,
+        "reason": "incident outside the policy period"
+      }
+    ],
+    "recommended_route": "reject",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "payout": 0.0,
+    "explanation": "Not covered: no settlement."
+  },
+  "route": "reject",
+  "status": "rejected",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=excluded, fraud_score=0.10, 5 line(s) denied, payout Rs 0.00 (calculator)",
+    "router 2: reject because not covered: incident is 22 days BEFORE cover began",
+    "rejected: incident is 22 days BEFORE cover began"
+  ],
+  "id": "09a1b3cf-d1d7-4a4e-a7da-5b6f74789d4a"
+}

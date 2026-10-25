@@ -1,0 +1,101 @@
+{
+  "claim_id": "CLM-5006",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5006",
+    "policy_no": "POL-3006",
+    "registration": "HR44YI6573",
+    "incident_date": "2026-06-05",
+    "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+    "damaged_parts": [
+      "front door"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5006",
+      "invoice_date": "2026-06-07",
+      "registration": "HR44YI6573",
+      "line_items": [
+        {
+          "description": "Front Door - replacement",
+          "amount": 12600,
+          "material": "metal"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 4510,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 2690,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 19800,
+      "total": 23364
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5006",
+    "coverage_status": "excluded",
+    "uncertainty_reasons": [],
+    "is_covered": false,
+    "coverage_reasons": [
+      "incident is 37 days BEFORE cover began"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Front Door - replacement",
+        "amount": 12600.0,
+        "material": "metal",
+        "admitted": false,
+        "reason": "incident outside the policy period"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 4510.0,
+        "material": "paint",
+        "admitted": false,
+        "reason": "incident outside the policy period"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 2690.0,
+        "material": "labour",
+        "admitted": false,
+        "reason": "incident outside the policy period"
+      }
+    ],
+    "recommended_route": "reject",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "payout": 0.0,
+    "explanation": "Not covered: no settlement."
+  },
+  "route": "reject",
+  "status": "rejected",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=excluded, fraud_score=0.10, 3 line(s) denied, payout Rs 0.00 (calculator)",
+    "router 2: reject because not covered: incident is 37 days BEFORE cover began",
+    "rejected: incident is 37 days BEFORE cover began"
+  ],
+  "id": "f31373f1-4174-4530-9926-29992e927e0b"
+}

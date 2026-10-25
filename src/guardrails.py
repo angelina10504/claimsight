@@ -345,6 +345,20 @@ def decision_guardrail(output: Any) -> Tuple[bool, Any]:
     if pii:
         problems.append(f"remove personal data from the summary and reasons: {list(pii)}")
 
+    # A refusal whose clause cannot be verified in the policy is recorded here
+    # but NOT sent back to the agent: the router escalates such a claim to a
+    # person, which is the safe outcome. Failing the task instead would spend
+    # retries and could end with no decision at all.
+    if status == "excluded":
+        import citations
+        unverified = [citations.check(r, verdict="excluded")
+                      for r in (d.get("coverage_reasons") or [])]
+        if not any(v["source_verified"] and v["supports_conclusion"] for v in unverified):
+            _log("citation_unverified", passed=False,
+                 notes=[v["note"] for v in unverified][:3],
+                 note="the refusal is not backed by a clause in the policy; "
+                      "the router will send this claim to a person")
+
     if problems:
         _log("decision", passed=False, problems=problems)
         return False, "Fix these problems in your decision: " + " | ".join(problems)

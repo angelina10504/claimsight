@@ -1,0 +1,175 @@
+{
+  "claim_id": "CLM-5014",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5014",
+    "policy_no": "POL-3014",
+    "registration": "HR41DA1651",
+    "incident_date": "2026-10-22",
+    "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+    "damaged_parts": [
+      "door glass",
+      "fender",
+      "rear door"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5014",
+      "invoice_date": "2026-10-26",
+      "registration": "HR41DA1651",
+      "line_items": [
+        {
+          "description": "Fender - replacement",
+          "amount": 16056,
+          "material": "metal"
+        },
+        {
+          "description": "Door Glass - replacement",
+          "amount": 4570,
+          "material": "glass"
+        },
+        {
+          "description": "Rear Door - replacement",
+          "amount": 13640,
+          "material": "metal"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 9930,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 4880,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 49076,
+      "total": 57910
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5014",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.7,
+    "fraud_flags": [
+      "Fender - replacement overpriced"
+    ],
+    "line_decisions": [
+      {
+        "description": "Fender - replacement",
+        "amount": 16056.0,
+        "material": "metal",
+        "admitted": false,
+        "reason": "priced far above market rate"
+      },
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4570.0,
+        "material": "glass",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 13640.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 9930.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4880.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "human_review",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 33020.0,
+    "total_depreciation": 1241.25,
+    "after_depreciation": 31778.75,
+    "gst": 5720.18,
+    "deductible": 1000.0,
+    "payout": 36498.93,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Door Glass - replacement",
+        "material": "glass",
+        "amount": 4570.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4570.0
+      },
+      {
+        "description": "Rear Door - replacement",
+        "material": "metal",
+        "amount": 13640.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 13640.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 9930.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 1241.25,
+        "payable": 8688.75
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 4880.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4880.0
+      }
+    ],
+    "excluded": [
+      {
+        "description": "Fender - replacement",
+        "amount": 16056.0,
+        "reason": "priced far above market rate"
+      }
+    ],
+    "explanation": "Admitted lines:\n  Door Glass - replacement: Rs 4,570  - 0.0% depreciation (Rs 0)  = Rs 4,570\n  Rear Door - replacement: Rs 13,640  - 0.0% depreciation (Rs 0)  = Rs 13,640\n  Painting and finishing: Rs 9,930  - 12.5% depreciation (Rs 1,241)  = Rs 8,689\n  Labour charges: Rs 4,880  - 0.0% depreciation (Rs 0)  = Rs 4,880\nExcluded lines:\n  Fender - replacement: Rs 16,056 - priced far above market rate\nSubtotal after depreciation: Rs 31,778.75\nGST: Rs 5,720.18\nLess deductible: Rs 1,000.00\nPayout: Rs 36,498.93"
+  },
+  "route": "human_review",
+  "status": "",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.70, 1 line(s) denied, payout Rs 36,498.93 (calculator)",
+    "router 2: human_review because fraud score 0.70 >= 0.5"
+  ],
+  "id": "9480c080-f094-4bdc-badb-f2bb343ca711"
+}

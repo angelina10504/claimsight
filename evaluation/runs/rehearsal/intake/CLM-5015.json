@@ -1,0 +1,49 @@
+{
+  "claim_id": "CLM-5015",
+  "policy_no": "POL-3015",
+  "registration": "HR78BE4492",
+  "incident_date": "2026-10-22",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "damaged_parts": [
+    "rear bumper",
+    "taillight",
+    "windshield"
+  ],
+  "invoice": {
+    "invoice_no": "INV-CLM-5015",
+    "invoice_date": "2026-10-23",
+    "registration": "HR78BE4492",
+    "line_items": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 8270,
+        "material": "plastic"
+      },
+      {
+        "description": "Windshield - replacement",
+        "amount": 11000,
+        "material": "glass"
+      },
+      {
+        "description": "Taillight - replacement",
+        "amount": 4000,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 8270,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4690,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 36230,
+    "total": 42751
+  },
+  "is_complete": true,
+  "missing_fields": [],
+  "notes": "stand-in intake"
+}

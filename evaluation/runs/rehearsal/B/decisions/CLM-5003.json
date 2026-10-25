@@ -1,0 +1,176 @@
+{
+  "claim_id": "CLM-5003",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5003",
+    "policy_no": "POL-3003",
+    "registration": "HR95XK5374",
+    "incident_date": "2026-10-22",
+    "narrative": "Vehicle was hit by another car while parked outside a market.",
+    "damaged_parts": [
+      "headlight",
+      "rear door",
+      "windshield"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5003",
+      "invoice_date": "2026-10-24",
+      "registration": "HR95XK5374",
+      "line_items": [
+        {
+          "description": "Windshield - replacement",
+          "amount": 11500,
+          "material": "glass"
+        },
+        {
+          "description": "Headlight - replacement",
+          "amount": 6710,
+          "material": "plastic"
+        },
+        {
+          "description": "Rear Door - replacement",
+          "amount": 12880,
+          "material": "metal"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 12380,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 6570,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 50040,
+      "total": 59047
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5003",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 11500.0,
+        "material": "glass",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Headlight - replacement",
+        "amount": 6710.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 12880.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 12380.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 6570.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 50040.0,
+    "total_depreciation": 6834.5,
+    "after_depreciation": 43205.5,
+    "gst": 7776.99,
+    "deductible": 1000.0,
+    "payout": 49982.49,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Windshield - replacement",
+        "material": "glass",
+        "amount": 11500.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 11500.0
+      },
+      {
+        "description": "Headlight - replacement",
+        "material": "plastic",
+        "amount": 6710.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 3355.0,
+        "payable": 3355.0
+      },
+      {
+        "description": "Rear Door - replacement",
+        "material": "metal",
+        "amount": 12880.0,
+        "depreciation_rate": 0.15,
+        "depreciation_amount": 1932.0,
+        "payable": 10948.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 12380.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 1547.5,
+        "payable": 10832.5
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 6570.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 6570.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Windshield - replacement: Rs 11,500  - 0.0% depreciation (Rs 0)  = Rs 11,500\n  Headlight - replacement: Rs 6,710  - 50.0% depreciation (Rs 3,355)  = Rs 3,355\n  Rear Door - replacement: Rs 12,880  - 15.0% depreciation (Rs 1,932)  = Rs 10,948\n  Painting and finishing: Rs 12,380  - 12.5% depreciation (Rs 1,548)  = Rs 10,832\n  Labour charges: Rs 6,570  - 0.0% depreciation (Rs 0)  = Rs 6,570\nSubtotal after depreciation: Rs 43,205.50\nGST: Rs 7,776.99\nLess deductible: Rs 1,000.00\nPayout: Rs 49,982.49"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 49982.49,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 49,982.49 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 49,982.49"
+  ],
+  "id": "8896e6bb-bf58-4b6d-9974-f0376cb7d120"
+}

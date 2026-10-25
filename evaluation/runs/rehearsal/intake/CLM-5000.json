@@ -1,0 +1,49 @@
+{
+  "claim_id": "CLM-5000",
+  "policy_no": "POL-3000",
+  "registration": "HR45GY5012",
+  "incident_date": "2026-10-22",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "damaged_parts": [
+    "door glass",
+    "rear bumper",
+    "rear door"
+  ],
+  "invoice": {
+    "invoice_no": "INV-CLM-5000",
+    "invoice_date": "2026-10-24",
+    "registration": "HR45GY5012",
+    "line_items": [
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4880,
+        "material": "glass"
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 11960,
+        "material": "metal"
+      },
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 7800,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 7010,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4680,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 36330,
+    "total": 42869
+  },
+  "is_complete": true,
+  "missing_fields": [],
+  "notes": "stand-in intake"
+}

@@ -1,0 +1,134 @@
+{
+  "claim_id": "CLM-5019",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5019",
+    "policy_no": "POL-3019",
+    "registration": "HR54QH6000",
+    "incident_date": "2026-06-12",
+    "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+    "damaged_parts": [
+      "front bumper"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5019",
+      "invoice_date": "2026-06-15",
+      "registration": "HR54QH6000",
+      "line_items": [
+        {
+          "description": "Front Bumper - replacement",
+          "amount": 9280,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 2870,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 1480,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 13630,
+      "total": 16083
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5019",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 9280.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2870.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1480.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 13630.0,
+    "total_depreciation": 4998.75,
+    "after_depreciation": 8631.25,
+    "gst": 1553.62,
+    "deductible": 1000.0,
+    "payout": 9184.87,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Front Bumper - replacement",
+        "material": "plastic",
+        "amount": 9280.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 4640.0,
+        "payable": 4640.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 2870.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 358.75,
+        "payable": 2511.25
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 1480.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 1480.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Front Bumper - replacement: Rs 9,280  - 50.0% depreciation (Rs 4,640)  = Rs 4,640\n  Painting and finishing: Rs 2,870  - 12.5% depreciation (Rs 359)  = Rs 2,511\n  Labour charges: Rs 1,480  - 0.0% depreciation (Rs 0)  = Rs 1,480\nSubtotal after depreciation: Rs 8,631.25\nGST: Rs 1,553.62\nLess deductible: Rs 1,000.00\nPayout: Rs 9,184.87"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 9184.87,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 9,184.87 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 9,184.87"
+  ],
+  "id": "68ba4d4f-a9d5-432b-b6f7-1d648595ac72"
+}

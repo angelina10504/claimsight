@@ -25,8 +25,8 @@ from crewai import Agent, Crew, Process, Task
 SRC = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SRC))
 
-from config import get_llm                                     # noqa: E402
-from monitoring import crew_callbacks                          # noqa: E402
+from config import get_llm, max_rpm                            # noqa: E402
+from monitoring import crew_callbacks, usage_fields            # noqa: E402
 import guardrails                                              # noqa: E402
 from models import ClaimIntake, ExtractedInvoice               # noqa: E402
 from tools.claim_tools import (                                # noqa: E402
@@ -183,6 +183,8 @@ def build_intake_crew(verbose: bool = True, monitor=None) -> Crew:
         tasks=[extract_invoice, assemble_claim],
         process=Process.sequential,
         verbose=verbose,
+        cache=True,
+        max_rpm=max_rpm(),
         **crew_callbacks(monitor),     # step and task callbacks -> data/logs/<claim>.jsonl
     )
 
@@ -191,4 +193,6 @@ def run_intake(claim_id: str, verbose: bool = True, monitor=None) -> ClaimIntake
     inputs = fetch_inputs(claim_id)
     crew = build_intake_crew(verbose=verbose, monitor=monitor)
     result = crew.kickoff(inputs=inputs)
+    if monitor is not None:      # the Flow puts this in its intake crew_done entry
+        monitor.crew_usage["intake"] = usage_fields(getattr(result, "token_usage", None))
     return result.pydantic

@@ -1,0 +1,134 @@
+{
+  "claim_id": "CLM-5012",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5012",
+    "policy_no": "POL-3012",
+    "registration": "HR71TZ4502",
+    "incident_date": "2026-10-22",
+    "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+    "damaged_parts": [
+      "bonnet"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5012",
+      "invoice_date": "2026-10-25",
+      "registration": "HR71TZ4502",
+      "line_items": [
+        {
+          "description": "Bonnet - replacement",
+          "amount": 11250,
+          "material": "metal"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 3470,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 2560,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 17280,
+      "total": 20390
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5012",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Bonnet - replacement",
+        "amount": 11250.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 3470.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 2560.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 17280.0,
+    "total_depreciation": 3246.25,
+    "after_depreciation": 14033.75,
+    "gst": 2526.07,
+    "deductible": 1000.0,
+    "payout": 15559.82,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Bonnet - replacement",
+        "material": "metal",
+        "amount": 11250.0,
+        "depreciation_rate": 0.25,
+        "depreciation_amount": 2812.5,
+        "payable": 8437.5
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 3470.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 433.75,
+        "payable": 3036.25
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 2560.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 2560.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Bonnet - replacement: Rs 11,250  - 25.0% depreciation (Rs 2,812)  = Rs 8,438\n  Painting and finishing: Rs 3,470  - 12.5% depreciation (Rs 434)  = Rs 3,036\n  Labour charges: Rs 2,560  - 0.0% depreciation (Rs 0)  = Rs 2,560\nSubtotal after depreciation: Rs 14,033.75\nGST: Rs 2,526.07\nLess deductible: Rs 1,000.00\nPayout: Rs 15,559.82"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 15559.82,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 15,559.82 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 15,559.82"
+  ],
+  "id": "947a5a73-db22-4054-a97a-627387078d17"
+}

@@ -1,0 +1,21 @@
+metric,A,B,C
+claims,20,20,not available
+correct_decision_rate,0.8,0.8,not available
+accuracy_when_decided,0.8889,1.0,not available
+escalation_rate,0.1,0.2,not available
+coverage_accuracy,1.0,1.0,not available
+coverage_accuracy_when_judged,1.0,1.0,not available
+fraud_precision,1.0,1.0,not available
+fraud_recall,0.3333,0.6667,not available
+line_f1,0.2501,0.8333,not available
+payout_mae,4142.03,1660.85,not available
+payout_max_error,41869.4,12980.0,not available
+payout_within_1,14,16,not available
+seconds_mean,0.08,0.03,not available
+seconds_median,0.02,0.02,not available
+assessment_total_tokens_mean,1000,3000,not available
+assessment_prompt_tokens_mean,900,2700,not available
+assessment_completion_tokens_mean,100,300,not available
+assessment_reasoning_tokens_mean,0,0,not available
+assessment_successful_requests_mean,1,1,not available
+end_to_end_tokens_mean,1500,3500,not available

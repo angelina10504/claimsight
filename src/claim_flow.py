@@ -33,6 +33,7 @@ SRC = Path(__file__).resolve().parent
 ROOT = SRC.parent
 sys.path.insert(0, str(SRC))
 
+import citations                             # noqa: E402
 import evidence                              # noqa: E402
 import guardrails                            # noqa: E402
 import observability                         # noqa: E402
@@ -82,17 +83,23 @@ def run_intake_step(claim_id: str, verbose: bool) -> dict:
     return intake.model_dump()
 
 
-def run_assessment_step(inputs: dict, verbose: bool) -> dict:
-    from crews.assessment_crew import build_assessment_crew
+def run_assessment_step(inputs: dict, verbose: bool, build=None) -> dict:
+    """`build` makes the crew. The evaluation passes a single-LLM crew here, so
+    both configurations are run, timed and counted by this same code."""
+    if build is None:
+        from crews.assessment_crew import build_assessment_crew as build
     monitor = monitoring.current()
     started = time.time()
-    output = build_assessment_crew(verbose=verbose, monitor=monitor).kickoff(inputs=inputs)
+    output = build(verbose=verbose, monitor=monitor).kickoff(inputs=inputs)
     usage = getattr(output, "token_usage", None)
     if monitor:
-        monitor.record("crew_done", crew="assessment", seconds=round(time.time() - started, 2),
-                       total_tokens=getattr(usage, "total_tokens", 0) or 0,
-                       prompt_tokens=getattr(usage, "prompt_tokens", 0) or 0,
-                       completion_tokens=getattr(usage, "completion_tokens", 0) or 0)
+        # Everything the provider reported, not just the total; see
+        # monitoring.USAGE_FIELDS. No cost is estimated here.
+        monitor.record("crew_done", crew="assessment",
+                       seconds=round(time.time() - started, 2),
+                       **monitoring.usage_fields(usage),
+                       retried_llm_failures=monitor.counts.get("retried_llm_failures", 0),
+                       llm_errors=sorted(monitor.llm_error_kinds))
     if output.pydantic is None:
         raise RuntimeError("Assessment crew returned no valid AssessmentDecision")
     return output.pydantic.model_dump()
@@ -127,32 +134,14 @@ def completeness_gaps(intake: dict) -> list:
     return gaps
 
 
-# A clause reference such as "Section II exclusion 4", "Clause 3", "item 6".
-CLAUSE_RE = re.compile(r"\b(section|clause|exclusion|exception|item|endorsement)\s*[0-9IVXivx]")
-_wording_cache: List[str] = []
-
-
-def _wording() -> str:
-    """The policy wording as one lowercase, single-spaced string, read once."""
-    if not _wording_cache:
-        text = WORDING.read_text(errors="ignore") if WORDING.exists() else ""
-        _wording_cache.append(" ".join(text.lower().split()))
-    return _wording_cache[0]
-
-
 def cites_policy(reason: str) -> bool:
-    """Is this coverage reason actually grounded in the policy?
+    """Is this coverage reason grounded in the policy document?
 
-    Either it names a clause, or it quotes a long enough piece of text that
-    really appears in the policy wording. A reason that does neither is the
-    agent's own words, which is not enough to reject a claim on."""
-    reason = reason or ""
-    if CLAUSE_RE.search(reason.lower()):
-        return True
-    for quoted in re.findall(r"[\"\u201c\u2018']([^\"\u201d\u2019']{20,})[\"\u201d\u2019']", reason):
-        if " ".join(quoted.lower().split()) in _wording():
-            return True
-    return False
+    Delegates to src/citations.py, which looks the clause up in the wording
+    instead of accepting anything clause-shaped. "Section II exclusion 4" is
+    clause-shaped and this policy has no numbered exclusions at all, so it
+    comes back False."""
+    return citations.cites_policy(reason)
 
 
 def coverage_doubts(intake: dict, decision: dict) -> list:
@@ -172,14 +161,25 @@ def coverage_doubts(intake: dict, decision: dict) -> list:
     if status != "excluded":
         return []
 
+    # Outside the cover dates is arithmetic, not judgement: the tool settles it
+    # and no clause is needed.
     period = check_policy_period(intake.get("policy_no") or "",
-                                 intake.get("incident_date") or "1970-01-01")
+                                 intake.get("incident_date"))
     if period.get("within_period") is False:
-        return []                       # outside the cover dates: arithmetic, not judgement
-    if not any(cites_policy(r) for r in reasons):
-        return [f"the exclusion names no policy clause: "
-                f"{reasons[0] if reasons else 'no reason given'}"]
-    return []
+        return []
+
+    if not reasons:
+        return ["the claim is refused with no reason given"]
+
+    # A rejection needs a clause that exists AND that takes cover away. A
+    # verified clause listing what the policy covers argues the other way.
+    notes = []
+    for reason in reasons:
+        verdict = citations.check(reason, verdict="excluded")
+        if verdict["source_verified"] and verdict["supports_conclusion"]:
+            return []
+        notes.append(verdict["note"])
+    return [f"no reason supports refusing this claim: {notes[0]}"]
 
 
 def payout_doubts(intake: dict) -> list:
@@ -238,6 +238,10 @@ def assessment_inputs(intake: dict) -> dict:
     }
 
 
+FINAL_STATUSES = {"approved", "rejected", "awaiting_evidence", "awaiting_review",
+                  "approved_by_adjuster", "rejected_by_adjuster"}
+
+
 def saved_state(claim_id: str) -> dict:
     """The last saved state for this claim, decided or waiting."""
     for folder in (DECISIONS, REVIEW_QUEUE):
@@ -264,29 +268,60 @@ def resume_claim(claim_id: str, interactive: bool = True, verbose: bool = False)
     items = evidence.unapplied(claim_id)
     if not items:
         asked = [r.item for r in evidence.outstanding(state)]
+        blocked = evidence.stuck(claim_id)
+        if blocked:
+            return {"resumed": False, "state": None,
+                    "why": (f"{len(blocked)} piece(s) of evidence failed "
+                            f"{evidence.MAX_ATTEMPTS} times and need a person: "
+                            f"{blocked[0].get('last_error', 'no reason recorded')}")}
         return {"resumed": False, "state": None,
                 "why": ("no new evidence has been accepted for this claim; still waiting for: "
                         + ", ".join(asked) if asked
                         else "no new evidence, and nothing is outstanding")}
 
     steps = evidence.plan(state, items)
-    intake = state.get("intake") or {}
+    intake_path = INTAKE / f"{claim_id}.json"
+    before = intake_path.read_text() if intake_path.exists() else None
+
+    intake = json.loads(json.dumps(state.get("intake") or {}))     # work on a copy
     intake, changes = evidence.apply_to_intake(intake, items)
-    if changes:
-        INTAKE.mkdir(parents=True, exist_ok=True)
-        (INTAKE / f"{claim_id}.json").write_text(json.dumps(intake, indent=2, default=str))
 
     print(f"\n  [{claim_id}] resuming with {len(items)} piece(s) of evidence")
     for line in changes + steps["why"]:
         print(f"      {line}")
 
-    evidence.mark_applied(claim_id, items)
+    # The evidence is marked "processing", not "applied": it is only spent once
+    # the Flow has produced a decision and saved it. A run that fails here must
+    # leave the claim exactly as it was, with the evidence still owed a
+    # reassessment, rather than losing it or leaving a half-patched file.
+    evidence.mark_processing(claim_id, items)
+    if changes:
+        evidence.write_json(intake_path, intake)
+
     flow = ClaimFlow()
-    with observability.claim_span(claim_id, resumed=True):
-        flow.kickoff(inputs={"claim_id": claim_id,
-                             "use_saved_intake": not steps["run_intake"],
-                             "interactive": interactive, "verbose": verbose,
-                             "resumed": True, "evidence_applied": changes})
+    try:
+        with observability.claim_span(claim_id, resumed=True):
+            flow.kickoff(inputs={"claim_id": claim_id,
+                                 "use_saved_intake": not steps["run_intake"],
+                                 "interactive": interactive, "verbose": verbose,
+                                 "resumed": True, "evidence_applied": changes})
+        if flow.state.status not in FINAL_STATUSES:
+            raise RuntimeError(f"the Flow stopped without a decision "
+                               f"(status {flow.state.status or 'none'})")
+    except Exception as exc:                                        # noqa: BLE001
+        reason = str(exc).splitlines()[0][:200] or type(exc).__name__
+        if before is None:
+            intake_path.unlink(missing_ok=True)
+        else:
+            evidence.write_json(intake_path, json.loads(before))
+        evidence.mark_pending(claim_id, items, error=reason)
+        print(f"  [{claim_id}] resume failed: {reason}")
+        print(f"      the evidence is still on file; try again with "
+              f"'uv run python add_evidence.py {claim_id} --resume'")
+        return {"resumed": False, "state": None,
+                "why": f"the reassessment failed and nothing was changed: {reason}"}
+
+    evidence.mark_applied(claim_id, items)
     return {"resumed": True, "why": "; ".join(steps["why"]), "state": flow.state.model_dump()}
 
 
@@ -359,10 +394,11 @@ class ClaimFlow(Flow[ClaimState]):
             started = time.time()
             self.state.intake = self.guarded("intake", run_intake_step,
                                              self.state.claim_id, self.state.verbose)
-            monitoring.current().record("crew_done", crew="intake",
-                                        seconds=round(time.time() - started, 2))
-            INTAKE.mkdir(parents=True, exist_ok=True)
-            saved.write_text(json.dumps(self.state.intake, indent=2))
+            monitor = monitoring.current()
+            monitor.record("crew_done", crew="intake",
+                           seconds=round(time.time() - started, 2),
+                           **monitor.crew_usage.get("intake", {}))
+            evidence.write_json(saved, self.state.intake)
 
         # The agents only ever see the screened narrative, even from a saved intake
         self.state.intake["narrative"], _ = guardrails.safe_narrative(
@@ -495,9 +531,8 @@ class ClaimFlow(Flow[ClaimState]):
         print(f"summary       {d.get('summary', '')}")
 
         if not self.state.interactive:
-            REVIEW_QUEUE.mkdir(parents=True, exist_ok=True)
-            (REVIEW_QUEUE / f"{self.state.claim_id}.json").write_text(
-                json.dumps(self.state.model_dump(), indent=2, default=str))
+            evidence.write_json(REVIEW_QUEUE / f"{self.state.claim_id}.json",
+                                self.state.model_dump())
             self.state.status = "awaiting_review"
             self.log("paused: queued for an adjuster (data/review_queue)")
             self.finish()
@@ -520,6 +555,5 @@ class ClaimFlow(Flow[ClaimState]):
         if monitor:
             monitor.finish(status=self.state.status, route=self.state.route,
                            final_payout=self.state.final_payout)
-        DECISIONS.mkdir(parents=True, exist_ok=True)
-        (DECISIONS / f"{self.state.claim_id}.json").write_text(
-            json.dumps(self.state.model_dump(), indent=2, default=str))
+        evidence.write_json(DECISIONS / f"{self.state.claim_id}.json",
+                            self.state.model_dump())

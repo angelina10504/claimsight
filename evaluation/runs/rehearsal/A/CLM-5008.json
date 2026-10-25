@@ -1,0 +1,70 @@
+{
+  "claim_id": "CLM-5008",
+  "config": "A",
+  "fault_type": "duplicate_claim",
+  "split": "dev",
+  "model": "none (stand-in)",
+  "prompt_version": "cd2b1b73b872",
+  "intake_prompt_version": "e1eaa9702021",
+  "decision_code": "bcb2355b68aa",
+  "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails",
+  "stand_in": true,
+  "code_version": "ba74af4-dirty",
+  "started_at": "2026-10-25T21:15:46+00:00",
+  "seconds": 0.02,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.1,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Door Glass - replacement",
+      "amount": 4880.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Door - replacement",
+      "amount": 11960.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Bumper - replacement",
+      "amount": 7800.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 7010.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 4680.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 41869.4,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": false,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 1000,
+      "prompt_tokens": 900,
+      "completion_tokens": 100,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 0,
+      "successful_requests": 1
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": "a4a217a8fd36f9cfd80f759fd21eba69"
+}

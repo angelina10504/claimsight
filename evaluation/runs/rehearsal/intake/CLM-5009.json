@@ -1,0 +1,49 @@
+{
+  "claim_id": "CLM-5009",
+  "policy_no": "POL-3009",
+  "registration": "HR18YM6539",
+  "incident_date": "2026-10-22",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "damaged_parts": [
+    "front bumper",
+    "rear bumper",
+    "taillight"
+  ],
+  "invoice": {
+    "invoice_no": "INV-CLM-5009",
+    "invoice_date": "2026-10-24",
+    "registration": "HR18YM6539",
+    "line_items": [
+      {
+        "description": "Taillight - replacement",
+        "amount": 4470,
+        "material": "plastic"
+      },
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 8200,
+        "material": "plastic"
+      },
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 7760,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 5200,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 3240,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 28870,
+    "total": 34067
+  },
+  "is_complete": true,
+  "missing_fields": [],
+  "notes": "stand-in intake"
+}

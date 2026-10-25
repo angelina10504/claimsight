@@ -1,0 +1,49 @@
+{
+  "claim_id": "CLM-5014",
+  "policy_no": "POL-3014",
+  "registration": "HR41DA1651",
+  "incident_date": "2026-10-22",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "damaged_parts": [
+    "door glass",
+    "fender",
+    "rear door"
+  ],
+  "invoice": {
+    "invoice_no": "INV-CLM-5014",
+    "invoice_date": "2026-10-26",
+    "registration": "HR41DA1651",
+    "line_items": [
+      {
+        "description": "Fender - replacement",
+        "amount": 16056,
+        "material": "metal"
+      },
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4570,
+        "material": "glass"
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 13640,
+        "material": "metal"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 9930,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4880,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 49076,
+    "total": 57910
+  },
+  "is_complete": true,
+  "missing_fields": [],
+  "notes": "stand-in intake"
+}

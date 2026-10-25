@@ -16,6 +16,12 @@ tested is that ClaimSight never rejects a claim on an unsupported exclusion.
 Run:  uv run python test_routing.py
 """
 
+import os
+# No offline test sends anything to Langfuse: without this, a test that
+# starts the A2A server would pick up the real keys from .env and post
+# spans, which is how an automated run came to report a 401.
+os.environ.setdefault("CLAIMSIGHT_OFFLINE", "1")
+
 import json
 import sys
 from pathlib import Path
@@ -64,11 +70,25 @@ def main() -> None:
         ("covered, low risk, normal value",
          normal, decision("covered", ["Section I item 6: accidental external means"]),
          None, (), "auto_approve"),
-        ("exclusion with the clause cited",
-         normal, decision("excluded", ["Section II exclusion 4: wear and tear"], admitted=False),
+        ("exclusion under a clause that really is in the policy",
+         normal, decision("excluded",
+                          ["General Exceptions 1: loss outside the geographical area"],
+                          admitted=False),
          None, (), "reject"),
+        ("exclusion under a clause-shaped reference that does not exist",
+         normal, decision("excluded", ["Section II exclusion 4: wear and tear"],
+                          admitted=False),
+         None, (), "human_review"),
+        ("exclusion citing a clause that lists what the policy COVERS",
+         normal, decision("excluded",
+                          ["Section I item 6: by accidental external means"],
+                          admitted=False),
+         None, (), "human_review"),
         ("exclusion with no clause named",
          normal, decision("excluded", ["this looks like wear and tear to me"], admitted=False),
+         None, (), "human_review"),
+        ("a refusal with no reason at all",
+         normal, decision("excluded", [], admitted=False),
          None, (), "human_review"),
         ("exclusion quoting the real policy wording",
          normal, decision("excluded", ['the policy excludes "consequential loss, depreciation"'],
@@ -146,17 +166,36 @@ def main() -> None:
         passed += ok
         print(f"  {'PASS' if ok else 'FAIL'}  {name}: is_covered={built.is_covered}")
 
-    print("\nIs a coverage reason grounded in the policy?")
-    citation_checks = [("Section II exclusion 4", True),
-                       ("item 6 of Section I", True),
-                       ("wear and tear is not covered", False),
+    print("\nIs a coverage reason grounded in the policy document?")
+    citation_checks = [("Section II exclusion 4", False),          # no such clause
+                       ("item 6 of Section I", True),              # a real clause
+                       ("Section IV clause 9", False),             # no such section
+                       ("wear and tear is not covered", False),    # no clause at all
                        ('the wording says "by accidental external means"', True)]
     for reason, expected in citation_checks:
         ok = cites_policy(reason) == expected
         passed += ok
-        print(f"  {'PASS' if ok else 'FAIL'}  {reason!r} -> grounded={cites_policy(reason)}")
+        print(f"  {'PASS' if ok else 'FAIL'}  {reason!r} -> found in the policy="
+              f"{cites_policy(reason)}")
 
-    total = len(cases) + len(tax_cases) + len(model_checks) + len(citation_checks)
+    print("\nCited, found in the document, and supporting the conclusion are three things:")
+    import citations
+    three = [("Section I item 6: by accidental external means", "excluded",
+              True, True, False),
+             ("General Exceptions 1: loss outside the geographical area", "excluded",
+              True, True, True),
+             ("Section II exclusion 4: wear and tear", "excluded", True, False, False),
+             ("wear and tear is not covered", "excluded", False, False, False)]
+    for reason, verdict, cited, found, supports in three:
+        v = citations.check(reason, verdict=verdict)
+        ok = (v["cited"], v["source_verified"], v["supports_conclusion"]) == (cited, found, supports)
+        passed += ok
+        print(f"  {'PASS' if ok else 'FAIL'}  {reason[:46]}\n"
+              f"        cited={v['cited']} found={v['source_verified']} "
+              f"supports={v['supports_conclusion']}  ({v['note'][:62]})")
+
+    total = (len(cases) + len(tax_cases) + len(model_checks)
+             + len(citation_checks) + len(three))
     print(f"\n{passed}/{total} routing checks as expected")
     sys.exit(0 if passed == total else 1)
 

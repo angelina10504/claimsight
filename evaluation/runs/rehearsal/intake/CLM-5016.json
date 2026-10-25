@@ -1,0 +1,49 @@
+{
+  "claim_id": "CLM-5016",
+  "policy_no": "POL-3016",
+  "registration": "HR80EH3546",
+  "incident_date": "2026-06-18",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "damaged_parts": [
+    "grille",
+    "side mirror",
+    "taillight"
+  ],
+  "invoice": {
+    "invoice_no": "INV-CLM-5016",
+    "invoice_date": "2026-06-19",
+    "registration": "HR80EH3546",
+    "line_items": [
+      {
+        "description": "Grille - replacement",
+        "amount": 2800,
+        "material": "plastic"
+      },
+      {
+        "description": "Taillight - replacement",
+        "amount": 4080,
+        "material": "plastic"
+      },
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3350,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2630,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1930,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 14790,
+    "total": 17452
+  },
+  "is_complete": true,
+  "missing_fields": [],
+  "notes": "stand-in intake"
+}

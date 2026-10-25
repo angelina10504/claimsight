@@ -37,6 +37,49 @@ REVIEW_QUEUE = ROOT / "data" / "review_queue"
 LOGS = ROOT / "data" / "logs"
 REPORTS = ROOT / "data" / "reports"
 
+# How a claim's money stands. A claim waiting on a person has no final figure
+# at all, and showing one as nought would read as a refusal.
+AUTHORISED = {"approved", "approved_by_adjuster"}
+REFUSED = {"rejected", "rejected_by_adjuster"}
+BY_A_PERSON = {"approved_by_adjuster", "rejected_by_adjuster"}
+SETTLEMENT_STATE = {
+    "pending_human_review": "PENDING HUMAN REVIEW - no payment authorised yet",
+    "pending_evidence": "ON HOLD - waiting for documents from the claimant",
+    "authorised": "AUTHORISED",
+    "refused": "REFUSED - nothing payable",
+    "not_assessed": "NOT ASSESSED",
+}
+
+
+def settlement_state(status: str) -> str:
+    """Which of the five states this claim's money is in."""
+    status = (status or "").strip()
+    if status in AUTHORISED:
+        return "authorised"
+    if status in REFUSED:
+        return "refused"
+    if status == "awaiting_review":
+        return "pending_human_review"
+    if status == "awaiting_evidence":
+        return "pending_evidence"
+    return "not_assessed"
+
+
+def line_label(admitted: bool, state: str, decided_by_person: bool) -> str:
+    """What to call one invoice line, given where the claim has got to.
+
+    A line the agents would not admit is DISPUTED until a person has looked at
+    it; only afterwards is it DENIED. The difference matters to a claimant who
+    is reading why their claim is short."""
+    if state in {"pending_human_review", "pending_evidence", "not_assessed"}:
+        return "PROPOSE PAY" if admitted else "DISPUTED   "
+    if state == "refused":
+        return "NOT PAID   "
+    if admitted:
+        return "PAID       "
+    return "DENIED     " if decided_by_person else "NOT PAID   "
+
+
 # What each tool contributes, in words an assessor can read.
 TOOL_MEANING = {
     "check_policy_period": "whether the incident fell inside the cover dates",
@@ -118,22 +161,33 @@ def _coverage_references(decision: dict, log: List[dict]) -> List[EvidenceRefere
     dates is checked against the tool that computed them: if the agent says the
     incident was outside the period and the tool says it was inside, that
     disagreement is the useful thing to show."""
-    from claim_flow import cites_policy          # imported here to avoid a cycle
+    import citations
+
+    # The conclusion the reasons are supporting matters: Section I item 6 is a
+    # correct citation for a covered claim and the wrong one for a refusal.
+    status = str(decision.get("coverage_status") or "").strip().lower()
+    if not status and "is_covered" in decision:
+        status = "covered" if decision["is_covered"] else "excluded"
 
     within = period_from_tool(log)
     out = []
     for reason in (decision.get("coverage_reasons") or []):
         if not reason:
             continue
-        if PERIOD_RE.search(reason) and not cites_policy(reason):
+        verdict = citations.check(reason, verdict=status or "covered")
+        if PERIOD_RE.search(reason) and not verdict["source_verified"]:
             agrees = None if within is None else (within is not bool(OUTSIDE_RE.search(reason)))
             out.append(EvidenceReference(
                 kind="policy_clause", source="policy period (check_policy_period)",
                 detail=reason, grounded=agrees))
         else:
+            # Three findings, not one: named, found in the document, and
+            # actually supporting the conclusion it is cited for.
+            source = ("policy wording: " + verdict["note"]) if verdict["note"] \
+                else "policy wording"
             out.append(EvidenceReference(
-                kind="policy_clause", source="policy wording",
-                detail=reason, grounded=cites_policy(reason)))
+                kind="policy_clause", source=source, detail=reason,
+                grounded=verdict["source_verified"] and verdict["supports_conclusion"]))
     return out
 
 
@@ -278,6 +332,10 @@ def build_report(state: dict, log: Optional[List[dict]] = None) -> ClaimReport:
         line_decisions=decision.get("line_decisions") or [],
         settlement_explanation=settlement.get("explanation", ""),
         proposed_payout=float(settlement.get("payout") or 0.0),
+        settlement_state=settlement_state(state.get("status")),
+        authorised_payout=(float(state.get("final_payout") or 0.0)
+                           if settlement_state(state.get("status"))
+                           in {"authorised", "refused"} else None),
         final_payout=float(state.get("final_payout") or 0.0),
         evidence=_document_references(
             intake, invoice.get("registration") or intake.get("registration")
@@ -306,14 +364,23 @@ def _money(value: float) -> str:
 
 
 def _check_mark(ref: EvidenceReference) -> str:
-    """How a coverage reason was checked, in two words, so a reader can see at a
-    glance which findings rest on something and which are the agent's own words."""
+    """How a coverage reason was checked, so a reader can see at a glance which
+    findings rest on the policy document and which are the agent's own words."""
     by_tool = "policy period" in ref.source
+    note = (ref.source or "").lower()
     if ref.grounded is None:
         return "not checked"
     if ref.grounded:
-        return "tool verified" if by_tool else "clause cited"
-    return "DISAGREES WITH TOOL" if by_tool else "NO CLAUSE CITED"
+        return "tool verified" if by_tool else "clause verified"
+    if by_tool:
+        return "DISAGREES WITH TOOL"
+    if "not in this policy" in note or "not in section" in note:
+        return "CLAUSE NOT IN POLICY"
+    if "covers" in note:
+        return "CITES COVER, NOT AN EXCLUSION"
+    if "no clause or quotation" in note:
+        return "NO CLAUSE CITED"
+    return "NOT SUPPORTED BY THE CLAUSE"
 
 
 def render(report: ClaimReport) -> str:
@@ -341,9 +408,12 @@ def render(report: ClaimReport) -> str:
         out.append(f"  ! guardrail: {flag}")
     out.append("")
 
-    out.append("INVOICE LINES")
+    by_person = r.status in BY_A_PERSON
+    pending = r.settlement_state in {"pending_human_review", "pending_evidence",
+                                     "not_assessed"}
+    out.append("INVOICE LINES" + ("   (nothing here is final yet)" if pending else ""))
     for line in r.line_decisions:
-        mark = "PAY " if line.admitted else "DENY"
+        mark = line_label(line.admitted, r.settlement_state, by_person)
         note = f"   {line.reason}" if line.reason else ""
         out.append(f"  {mark} {line.description}: {_money(line.amount)}{note}")
     if not r.line_decisions:
@@ -355,8 +425,14 @@ def render(report: ClaimReport) -> str:
         out.append(f"  {text}")
     for doubt in r.payout_doubts:
         out.append(f"  ! {doubt}")
-    out.append(f"  Proposed payout: {_money(r.proposed_payout)}")
-    out.append(f"  Final payout:    {_money(r.final_payout)}")
+    out.append(f"  Assessed as worth:  {_money(r.proposed_payout)}")
+    out.append(f"  Status:             {SETTLEMENT_STATE[r.settlement_state]}")
+    if r.authorised_payout is not None:
+        out.append(f"  Authorised payout:  {_money(r.authorised_payout)}")
+        if (by_person and r.proposed_payout
+                and abs(r.authorised_payout - r.proposed_payout) > 0.01):
+            out.append(f"  (the adjuster authorised a different amount from the "
+                       f"assessed {_money(r.proposed_payout)})")
     out.append("")
 
     if r.outstanding_evidence:
@@ -399,7 +475,8 @@ def to_markdown(report: ClaimReport) -> str:
            f"- **Policy:** {r.policy_no or 'not stated'}",
            f"- **Incident date:** {r.incident_date or 'not stated'}",
            f"- **Vehicle:** {r.registration or 'not stated'}",
-           f"- **Outcome:** {r.status or 'not decided'} (route `{r.route or 'none'}`)"]
+           f"- **Outcome:** {r.status or 'not decided'} (route `{r.route or 'none'}`)",
+           f"- **Settlement:** {SETTLEMENT_STATE[r.settlement_state]}"]
     if r.route_reason:
         out.append(f"- **Why:** {r.route_reason}")
     out += ["", f"## Coverage: {r.coverage_status or 'not assessed'}", ""]
@@ -411,13 +488,21 @@ def to_markdown(report: ClaimReport) -> str:
         out.append(f"- **Doubt:** {doubt}")
     out += ["", f"## Fraud score: {r.fraud_score:.2f}", ""]
     out += [f"- {flag}" for flag in r.fraud_flags] or ["- none"]
-    out += ["", "## Invoice lines", "", "| Line | Amount | Decision | Reason |", "|---|---|---|---|"]
+    out += ["", "## Invoice lines", ""]
+    if r.settlement_state in {"pending_human_review", "pending_evidence", "not_assessed"}:
+        out.append("Nothing in this table is final: the claim has not been decided yet.\n")
+    out += ["| Line | Amount | Decision | Reason |", "|---|---|---|---|"]
+    by_person = r.status in BY_A_PERSON
     for line in r.line_decisions:
         out.append(f"| {line.description} | {_money(line.amount)} | "
-                   f"{'pay' if line.admitted else 'deny'} | {line.reason or ''} |")
+                   f"{line_label(line.admitted, r.settlement_state, by_person).strip().lower()} | "
+                   f"{line.reason or ''} |")
     out += ["", "## Settlement", "", "```", r.settlement_explanation or "not calculated",
-            f"Proposed payout: {_money(r.proposed_payout)}",
-            f"Final payout:    {_money(r.final_payout)}", "```"]
+            f"Assessed as worth: {_money(r.proposed_payout)}",
+            f"Status:            {SETTLEMENT_STATE[r.settlement_state]}"]
+    if r.authorised_payout is not None:
+        out.append(f"Authorised payout: {_money(r.authorised_payout)}")
+    out.append("```")
     if r.outstanding_evidence:
         out += ["", "## Still needed", ""]
         out += [f"- From the {q.from_whom}: **{q.item}** — because {q.why}"
@@ -447,9 +532,12 @@ def explanation(report: ClaimReport) -> str:
         parts.append("The policy wording did not settle whether this incident is covered, "
                      "so a claims officer will decide.")
 
+    pending = r.settlement_state in {"pending_human_review", "pending_evidence",
+                                     "not_assessed"}
     denied = [line for line in r.line_decisions if not line.admitted]
     if denied:
-        parts.append("Not paid: " + "; ".join(
+        lead = ("Questioned, and not yet decided: " if pending else "Not paid: ")
+        parts.append(lead + "; ".join(
             f"{line.description} ({line.reason or 'no reason recorded'})" for line in denied) + ".")
     if r.fraud_flags:
         parts.append("Checks raised: " + "; ".join(r.fraud_flags[:2]) + ".")
@@ -460,17 +548,23 @@ def explanation(report: ClaimReport) -> str:
                      + ", ".join(q.item for q in claimant_asks) + ".")
 
     if r.status == "approved":
-        parts.append(f"Approved for {_money(r.final_payout)}.")
-    elif r.status in {"approved_by_adjuster", "rejected_by_adjuster"}:
-        parts.append(f"An adjuster reviewed it: {r.status.replace('_', ' ')}"
-                     + (f", {_money(r.final_payout)}." if r.final_payout else "."))
+        parts.append(f"Approved, and {_money(r.authorised_payout or r.final_payout)} "
+                     f"is authorised for payment.")
+    elif r.status == "approved_by_adjuster":
+        parts.append(f"A claims adjuster reviewed it and authorised "
+                     f"{_money(r.authorised_payout or r.final_payout)}.")
+    elif r.status == "rejected_by_adjuster":
+        parts.append("A claims adjuster reviewed it and refused the claim, "
+                     "so nothing is payable.")
     elif r.status == "awaiting_review":
-        parts.append(f"A claims adjuster is reviewing it. Proposed amount: "
-                     f"{_money(r.proposed_payout)}.")
+        parts.append(f"No payment has been authorised yet: a claims adjuster is still "
+                     f"reviewing the claim. As assessed it would come to "
+                     f"{_money(r.proposed_payout)}, which may change.")
     elif r.status == "rejected":
-        parts.append("The claim was rejected, so nothing is payable.")
+        parts.append("The claim was refused, so nothing is payable.")
     elif r.status == "awaiting_evidence":
-        parts.append("The claim is on hold until the missing documents arrive.")
+        parts.append("The claim is on hold until the missing documents arrive. "
+                     "Nothing has been decided and no amount has been refused.")
     return " ".join(parts)
 
 

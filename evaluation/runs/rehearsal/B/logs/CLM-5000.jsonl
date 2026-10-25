@@ -1,0 +1,11 @@
+{"time": "2026-10-26T02:45:46.069", "elapsed_s": 0.0, "claim_id": "CLM-5000", "event": "run_started", "trace_id": "dd807eca99b37d8a9c0b4f1ca7aedcce"}
+{"time": "2026-10-26T02:45:46.070", "elapsed_s": 0.0, "claim_id": "CLM-5000", "event": "guardrail", "kind": "input_screening", "passed": true, "verdict": "clean", "injection_matches": [], "abusive_matches": []}
+{"time": "2026-10-26T02:45:46.070", "elapsed_s": 0.0, "claim_id": "CLM-5000", "event": "flow", "message": "intake: reused saved Intake crew output"}
+{"time": "2026-10-26T02:45:46.070", "elapsed_s": 0.0, "claim_id": "CLM-5000", "event": "flow", "message": "intake: 5 invoice lines, complete=True"}
+{"time": "2026-10-26T02:45:46.072", "elapsed_s": 0.0, "claim_id": "CLM-5000", "event": "flow", "message": "router 1: file complete -> assessment"}
+{"time": "2026-10-26T02:45:46.074", "elapsed_s": 0.0, "claim_id": "CLM-5000", "event": "flow", "message": "assessment: Policy Analyst and Fraud Analyst running in parallel"}
+{"time": "2026-10-26T02:45:46.087", "elapsed_s": 0.02, "claim_id": "CLM-5000", "event": "crew_done", "crew": "assessment", "seconds": 0.0, "total_tokens": 3000, "prompt_tokens": 2700, "completion_tokens": 300, "cached_prompt_tokens": 0, "reasoning_tokens": 0, "successful_requests": 1}
+{"time": "2026-10-26T02:45:46.087", "elapsed_s": 0.02, "claim_id": "CLM-5000", "event": "flow", "message": "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 41,869.40 (calculator)", "coverage_status": "covered"}
+{"time": "2026-10-26T02:45:46.089", "elapsed_s": 0.02, "claim_id": "CLM-5000", "event": "flow", "message": "router 2: auto_approve because covered, low fraud risk, normal value", "router": "route_claim", "route": "auto_approve", "fraud_score": 0.1, "payout": 41869.4}
+{"time": "2026-10-26T02:45:46.093", "elapsed_s": 0.02, "claim_id": "CLM-5000", "event": "flow", "message": "auto-approved: pay Rs 41,869.40"}
+{"time": "2026-10-26T02:45:46.093", "elapsed_s": 0.02, "claim_id": "CLM-5000", "event": "run_finished", "total_seconds": 0.02, "trace_id": "dd807eca99b37d8a9c0b4f1ca7aedcce", "llm_errors": [], "tool_calls": 0, "tasks": 0, "errors": 0, "retried_llm_failures": 0, "status": "approved", "route": "auto_approve", "final_payout": 41869.4}

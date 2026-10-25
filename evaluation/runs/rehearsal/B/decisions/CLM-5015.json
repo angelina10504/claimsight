@@ -1,0 +1,176 @@
+{
+  "claim_id": "CLM-5015",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5015",
+    "policy_no": "POL-3015",
+    "registration": "HR78BE4492",
+    "incident_date": "2026-10-22",
+    "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+    "damaged_parts": [
+      "rear bumper",
+      "taillight",
+      "windshield"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5015",
+      "invoice_date": "2026-10-23",
+      "registration": "HR78BE4492",
+      "line_items": [
+        {
+          "description": "Rear Bumper - replacement",
+          "amount": 8270,
+          "material": "plastic"
+        },
+        {
+          "description": "Windshield - replacement",
+          "amount": 11000,
+          "material": "glass"
+        },
+        {
+          "description": "Taillight - replacement",
+          "amount": 4000,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 8270,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 4690,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 36230,
+      "total": 42751
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5015",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 8270.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Windshield - replacement",
+        "amount": 11000.0,
+        "material": "glass",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Taillight - replacement",
+        "amount": 4000.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 8270.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4690.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 36230.0,
+    "total_depreciation": 7168.75,
+    "after_depreciation": 29061.25,
+    "gst": 5231.02,
+    "deductible": 1000.0,
+    "payout": 33292.27,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Rear Bumper - replacement",
+        "material": "plastic",
+        "amount": 8270.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 4135.0,
+        "payable": 4135.0
+      },
+      {
+        "description": "Windshield - replacement",
+        "material": "glass",
+        "amount": 11000.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 11000.0
+      },
+      {
+        "description": "Taillight - replacement",
+        "material": "plastic",
+        "amount": 4000.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 2000.0,
+        "payable": 2000.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 8270.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 1033.75,
+        "payable": 7236.25
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 4690.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4690.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Rear Bumper - replacement: Rs 8,270  - 50.0% depreciation (Rs 4,135)  = Rs 4,135\n  Windshield - replacement: Rs 11,000  - 0.0% depreciation (Rs 0)  = Rs 11,000\n  Taillight - replacement: Rs 4,000  - 50.0% depreciation (Rs 2,000)  = Rs 2,000\n  Painting and finishing: Rs 8,270  - 12.5% depreciation (Rs 1,034)  = Rs 7,236\n  Labour charges: Rs 4,690  - 0.0% depreciation (Rs 0)  = Rs 4,690\nSubtotal after depreciation: Rs 29,061.25\nGST: Rs 5,231.02\nLess deductible: Rs 1,000.00\nPayout: Rs 33,292.27"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 33292.27,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 33,292.27 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 33,292.27"
+  ],
+  "id": "012b92fa-a45d-46ce-baa0-ebbd1c3fcb4f"
+}

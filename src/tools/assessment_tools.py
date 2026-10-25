@@ -12,6 +12,7 @@ decide what to check and how to weigh the results; the tools only report facts.
 """
 
 import json
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -47,6 +48,36 @@ def _load_policy(policy_no: str) -> Optional[dict]:
     return json.loads(path.read_text()) if path.exists() else None
 
 
+ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _as_date(value, what: str = "date"):
+    """Parse an ISO date, or say why it could not be parsed.
+
+    Returns (date, None) or (None, {"error": ...}). A claim can legitimately
+    reach these tools with no incident date yet: that is an incomplete file,
+    which must be reported as such and NOT be allowed to look like an
+    exclusion or a fraud signal. Raising here would stop the whole run on a
+    claim that is merely waiting for a document."""
+    if value is None or (isinstance(value, str) and not value.strip()):
+        return None, {"error": f"no {what} was supplied",
+                      "reason": "incomplete_document", what: value}
+    if isinstance(value, date):
+        return value, None
+    # The contract is a YYYY-MM-DD string. Checking the shape first is
+    # deliberate: date.fromisoformat also accepts the compact form, so the
+    # integer 20260530 would quietly parse as a date and hide whatever
+    # upstream mistake produced a number instead of a date.
+    bad = {"error": f"{what} must be an ISO date string (YYYY-MM-DD), got {value!r}",
+           "reason": "invalid_input", what: str(value)}
+    if not isinstance(value, str) or not ISO_DATE.match(value.strip()):
+        return None, bad
+    try:
+        return date.fromisoformat(value.strip()), None
+    except ValueError:
+        return None, bad
+
+
 def _part_name(description: str) -> Optional[str]:
     text = description.lower()
     for part in sorted(MARKET_PRICES, key=len, reverse=True):   # "door glass" before "door"
@@ -57,18 +88,32 @@ def _part_name(description: str) -> Optional[str]:
 
 # ------------------------------------------------------------- the checks
 def check_policy_period(policy_no: str, incident_date: str) -> dict:
+    """Was the incident inside the cover dates?
+
+    Every answer is a dict. A missing or malformed date, or a policy that is
+    not on file, comes back as a structured error rather than an exception, and
+    never as "outside the period": not knowing the date is not the same as
+    knowing the claim is out of cover."""
     policy = _load_policy(policy_no)
     if policy is None:
-        return {"error": f"no policy on file for {policy_no}"}
-    start = date.fromisoformat(policy["policy_start"])
-    end = date.fromisoformat(policy["policy_end"])
-    incident = date.fromisoformat(incident_date)
+        return {"error": f"no policy on file for {policy_no}",
+                "reason": "missing_policy", "policy_no": policy_no}
+    incident, problem = _as_date(incident_date, "incident_date")
+    if problem:
+        return {**problem, "policy_no": policy_no}
+    start, bad_start = _as_date(policy.get("policy_start"), "policy_start")
+    end, bad_end = _as_date(policy.get("policy_end"), "policy_end")
+    if bad_start or bad_end:
+        return {"error": f"the policy schedule for {policy_no} has no usable cover dates",
+                "reason": "invalid_policy_record",
+                "policy_start": policy.get("policy_start"),
+                "policy_end": policy.get("policy_end")}
     inside = start <= incident <= end
     return {
         "policy_no": policy_no,
         "policy_start": policy["policy_start"],
         "policy_end": policy["policy_end"],
-        "incident_date": incident_date,
+        "incident_date": str(incident),
         "within_period": inside,
         "note": "incident inside the cover period" if inside else
                 (f"incident is {(start - incident).days} days BEFORE cover began"
@@ -78,6 +123,14 @@ def check_policy_period(policy_no: str, incident_date: str) -> dict:
 
 
 def check_part_prices(line_items: List[dict]) -> dict:
+    """Is any line billed far above the market rate?
+
+    An invoice with no lines is an incomplete file, not a clean bill, so it
+    comes back as a structured error. Reporting suspicious=False for nothing
+    at all would let an empty invoice pass a fraud check."""
+    if not line_items:
+        return {"error": "the invoice has no line items to check",
+                "reason": "incomplete_document", "lines": [], "flags": []}
     flags, parts_total, paint, labour = [], 0.0, 0.0, 0.0
     lines = []
     for item in line_items:
@@ -118,14 +171,26 @@ def find_prior_claims(policy_no: str, claim_id: str, incident_date: str,
     hold (dates and billed lines), never the dataset's ground-truth labels.
     Claim ids are issued in filing order, so only lower ids count as earlier;
     this stops an original claim being flagged as a duplicate of its copy."""
-    current = date.fromisoformat(incident_date)
-    wanted = {p.lower().strip() for p in damaged_parts}
+    current, problem = _as_date(incident_date, "incident_date")
+    if problem:
+        return {**problem, "policy_no": policy_no, "claim_id": claim_id}
+    wanted = {p.lower().strip() for p in (damaged_parts or [])}
     matches = []
+    skipped = []
     for path in sorted(CLAIMS.glob("CLM-*.json")):
-        other = json.loads(path.read_text())
-        if other["claim_id"] >= claim_id or other["policy_no"] != policy_no:
+        try:
+            other = json.loads(path.read_text())
+        except (json.JSONDecodeError, OSError):
+            skipped.append(path.stem)
             continue
-        other_date = date.fromisoformat(other["incident_date"])
+        if other.get("claim_id", "") >= claim_id or other.get("policy_no") != policy_no:
+            continue
+        # Another claim with no usable date must not stop this one being
+        # checked: skip it and say so, rather than raising.
+        other_date, other_problem = _as_date(other.get("incident_date"))
+        if other_problem:
+            skipped.append(other.get("claim_id", path.stem))
+            continue
         gap = (current - other_date).days
         if not 0 <= gap <= PRIOR_CLAIM_WINDOW_DAYS:
             continue
@@ -137,6 +202,7 @@ def find_prior_claims(policy_no: str, claim_id: str, incident_date: str,
     repeat = [m for m in matches if m["overlapping_parts"]]
     return {
         "prior_claims": matches,
+        "skipped_claims": skipped,          # on file but with no usable date
         "possible_duplicate": bool(repeat),
         "note": (f"same parts already claimed under {repeat[0]['claim_id']} "
                  f"{repeat[0]['days_before']} days earlier") if repeat else

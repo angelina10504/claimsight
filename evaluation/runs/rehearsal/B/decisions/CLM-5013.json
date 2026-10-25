@@ -1,0 +1,134 @@
+{
+  "claim_id": "CLM-5013",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5013",
+    "policy_no": "POL-3013",
+    "registration": "HR79CT1998",
+    "incident_date": "2026-07-07",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "fender"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5013",
+      "invoice_date": "2026-07-12",
+      "registration": "HR79CT1998",
+      "line_items": [
+        {
+          "description": "Fender - replacement",
+          "amount": 6760,
+          "material": "metal"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 2620,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 1330,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 10710,
+      "total": 12638
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5013",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Fender - replacement",
+        "amount": 6760.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2620.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1330.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 10710.0,
+    "total_depreciation": 327.5,
+    "after_depreciation": 10382.5,
+    "gst": 1868.85,
+    "deductible": 1000.0,
+    "payout": 11251.35,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Fender - replacement",
+        "material": "metal",
+        "amount": 6760.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 6760.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 2620.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 327.5,
+        "payable": 2292.5
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 1330.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 1330.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Fender - replacement: Rs 6,760  - 0.0% depreciation (Rs 0)  = Rs 6,760\n  Painting and finishing: Rs 2,620  - 12.5% depreciation (Rs 328)  = Rs 2,292\n  Labour charges: Rs 1,330  - 0.0% depreciation (Rs 0)  = Rs 1,330\nSubtotal after depreciation: Rs 10,382.50\nGST: Rs 1,868.85\nLess deductible: Rs 1,000.00\nPayout: Rs 11,251.35"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 11251.35,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 11,251.35 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 11,251.35"
+  ],
+  "id": "4e72c4c3-f9b9-4d7f-91ca-66ade217a1ff"
+}

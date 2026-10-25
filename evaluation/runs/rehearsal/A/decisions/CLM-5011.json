@@ -1,0 +1,134 @@
+{
+  "claim_id": "CLM-5011",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5011",
+    "policy_no": "POL-3011",
+    "registration": "HR34JI9786",
+    "incident_date": "2026-10-22",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "side mirror"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5011",
+      "invoice_date": "2026-10-23",
+      "registration": "HR34JI9786",
+      "line_items": [
+        {
+          "description": "Side Mirror - replacement",
+          "amount": 3070,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 1170,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 440,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 4680,
+      "total": 5522
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5011",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3070.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 1170.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 440.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 4680.0,
+    "total_depreciation": 1681.25,
+    "after_depreciation": 2998.75,
+    "gst": 539.77,
+    "deductible": 1000.0,
+    "payout": 2538.52,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Side Mirror - replacement",
+        "material": "plastic",
+        "amount": 3070.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 1535.0,
+        "payable": 1535.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 1170.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 146.25,
+        "payable": 1023.75
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 440.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 440.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Side Mirror - replacement: Rs 3,070  - 50.0% depreciation (Rs 1,535)  = Rs 1,535\n  Painting and finishing: Rs 1,170  - 12.5% depreciation (Rs 146)  = Rs 1,024\n  Labour charges: Rs 440  - 0.0% depreciation (Rs 0)  = Rs 440\nSubtotal after depreciation: Rs 2,998.75\nGST: Rs 539.77\nLess deductible: Rs 1,000.00\nPayout: Rs 2,538.52"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 2538.52,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 2,538.52 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 2,538.52"
+  ],
+  "id": "125f29c8-6223-47b1-ba0a-73e923c07237"
+}

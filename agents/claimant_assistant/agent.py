@@ -144,7 +144,9 @@ assessment, and must never be presented as the result of this request.
 
 When you report back:
 - Say clearly whether the claim was approved, rejected, sent for review, or needs documents.
-- Give the payout amount if there is one, exactly as returned.
+- Give the payout amount if there is one, exactly as returned. A claim under review
+  has NO authorised amount yet: report the assessed figure as what it would come to,
+  never as a payout, and never say zero or "nothing" for a claim nobody has decided.
 - If documents or details are missing, list exactly what is needed, one per line.
   Say that once they have been sent, asking you to assess the claim again will
   carry it on from where it stopped: nothing has to be started over.

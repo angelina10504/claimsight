@@ -1,0 +1,155 @@
+{
+  "claim_id": "CLM-5005",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5005",
+    "policy_no": "POL-3005",
+    "registration": "HR27BC9348",
+    "incident_date": "2026-09-19",
+    "narrative": "Vehicle was hit by another car while parked outside a market.",
+    "damaged_parts": [
+      "door glass",
+      "headlight"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5005",
+      "invoice_date": "2026-09-24",
+      "registration": "HR27BC9348",
+      "line_items": [
+        {
+          "description": "Headlight - replacement",
+          "amount": 7380,
+          "material": "plastic"
+        },
+        {
+          "description": "Door Glass - replacement",
+          "amount": 4800,
+          "material": "glass"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 3810,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 1680,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 17670,
+      "total": 20851
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5005",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Headlight - replacement",
+        "amount": 7380.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4800.0,
+        "material": "glass",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 3810.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1680.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 17670.0,
+    "total_depreciation": 4166.25,
+    "after_depreciation": 13503.75,
+    "gst": 2430.67,
+    "deductible": 1000.0,
+    "payout": 14934.42,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Headlight - replacement",
+        "material": "plastic",
+        "amount": 7380.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 3690.0,
+        "payable": 3690.0
+      },
+      {
+        "description": "Door Glass - replacement",
+        "material": "glass",
+        "amount": 4800.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4800.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 3810.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 476.25,
+        "payable": 3333.75
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 1680.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 1680.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Headlight - replacement: Rs 7,380  - 50.0% depreciation (Rs 3,690)  = Rs 3,690\n  Door Glass - replacement: Rs 4,800  - 0.0% depreciation (Rs 0)  = Rs 4,800\n  Painting and finishing: Rs 3,810  - 12.5% depreciation (Rs 476)  = Rs 3,334\n  Labour charges: Rs 1,680  - 0.0% depreciation (Rs 0)  = Rs 1,680\nSubtotal after depreciation: Rs 13,503.75\nGST: Rs 2,430.67\nLess deductible: Rs 1,000.00\nPayout: Rs 14,934.42"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 14934.42,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 4 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 14,934.42 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 14,934.42"
+  ],
+  "id": "7e980ac7-ce93-4f63-a093-917c139eb7a8"
+}

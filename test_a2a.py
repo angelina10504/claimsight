@@ -13,6 +13,12 @@ and logs are not touched.
 Run:  uv run python test_a2a.py
 """
 
+import os
+# No offline test sends anything to Langfuse: without this, a test that
+# starts the A2A server would pick up the real keys from .env and post
+# spans, which is how an automated run came to report a 401.
+os.environ.setdefault("CLAIMSIGHT_OFFLINE", "1")
+
 import asyncio
 import json
 import sys

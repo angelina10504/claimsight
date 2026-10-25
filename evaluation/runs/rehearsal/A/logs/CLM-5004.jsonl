@@ -1,0 +1,12 @@
+{"time": "2026-10-26T02:45:46.387", "elapsed_s": 0.0, "claim_id": "CLM-5004", "event": "run_started", "trace_id": "76438e2c38220016f39334ec6835bc14"}
+{"time": "2026-10-26T02:45:46.387", "elapsed_s": 0.0, "claim_id": "CLM-5004", "event": "guardrail", "kind": "input_screening", "passed": true, "verdict": "clean", "injection_matches": [], "abusive_matches": []}
+{"time": "2026-10-26T02:45:46.387", "elapsed_s": 0.0, "claim_id": "CLM-5004", "event": "flow", "message": "intake: running Intake crew"}
+{"time": "2026-10-26T02:45:46.388", "elapsed_s": 0.0, "claim_id": "CLM-5004", "event": "crew_done", "crew": "intake", "seconds": 0.0, "total_tokens": 500, "prompt_tokens": 450, "completion_tokens": 50, "cached_prompt_tokens": 0, "reasoning_tokens": 0, "successful_requests": 1}
+{"time": "2026-10-26T02:45:46.389", "elapsed_s": 0.0, "claim_id": "CLM-5004", "event": "flow", "message": "intake: 3 invoice lines, complete=True"}
+{"time": "2026-10-26T02:45:46.390", "elapsed_s": 0.0, "claim_id": "CLM-5004", "event": "flow", "message": "router 1: file complete -> assessment"}
+{"time": "2026-10-26T02:45:46.392", "elapsed_s": 0.0, "claim_id": "CLM-5004", "event": "flow", "message": "assessment: Policy Analyst and Fraud Analyst running in parallel"}
+{"time": "2026-10-26T02:45:46.392", "elapsed_s": 0.01, "claim_id": "CLM-5004", "event": "crew_done", "crew": "assessment", "seconds": 0.0, "total_tokens": 1000, "prompt_tokens": 900, "completion_tokens": 100, "cached_prompt_tokens": 0, "reasoning_tokens": 0, "successful_requests": 1}
+{"time": "2026-10-26T02:45:46.392", "elapsed_s": 0.01, "claim_id": "CLM-5004", "event": "flow", "message": "assessment: coverage=covered, fraud_score=0.70, 1 line(s) denied, payout Rs 16,081.97 (calculator)", "coverage_status": "covered"}
+{"time": "2026-10-26T02:45:46.393", "elapsed_s": 0.01, "claim_id": "CLM-5004", "event": "flow", "message": "router 2: human_review because fraud score 0.70 >= 0.5", "router": "route_claim", "route": "human_review", "fraud_score": 0.7, "payout": 16081.97}
+{"time": "2026-10-26T02:45:46.396", "elapsed_s": 0.01, "claim_id": "CLM-5004", "event": "flow", "message": "paused: queued for an adjuster (data/review_queue)"}
+{"time": "2026-10-26T02:45:46.396", "elapsed_s": 0.01, "claim_id": "CLM-5004", "event": "run_finished", "total_seconds": 0.01, "trace_id": "76438e2c38220016f39334ec6835bc14", "llm_errors": [], "tool_calls": 0, "tasks": 0, "errors": 0, "retried_llm_failures": 0, "status": "awaiting_review", "route": "human_review", "final_payout": 0.0}

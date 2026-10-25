@@ -52,10 +52,6 @@ CLAIM_RE = re.compile(r"\bCLM-\d{4}\b", re.IGNORECASE)
 CLAIMS = SRC.parent / "data" / "claims"
 
 
-FINAL_STATUSES = {"approved", "rejected", "awaiting_evidence", "awaiting_review",
-                  "approved_by_adjuster", "rejected_by_adjuster"}
-
-
 def run_claim_flow(claim_id: str) -> dict:
     """Assess one claim, or carry on a claim that was waiting on evidence.
 
@@ -131,6 +127,7 @@ class ClaimSightExecutor(AgentExecutor):
                                        f"({reason}). Nothing has been decided; please try again later."))
             return
 
+        from claim_flow import FINAL_STATUSES
         if state.get("status") not in FINAL_STATUSES:     # the Flow stopped before a decision
             await updater.failed(reply(f"Assessment of {claim_id} could not be completed right now "
                                        f"(the assessment system stopped before a decision). "

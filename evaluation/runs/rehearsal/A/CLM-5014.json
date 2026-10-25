@@ -1,0 +1,72 @@
+{
+  "claim_id": "CLM-5014",
+  "config": "A",
+  "fault_type": "inflated_amount",
+  "split": "dev",
+  "model": "none (stand-in)",
+  "prompt_version": "cd2b1b73b872",
+  "intake_prompt_version": "e1eaa9702021",
+  "decision_code": "bcb2355b68aa",
+  "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails",
+  "stand_in": true,
+  "code_version": "ba74af4-dirty",
+  "started_at": "2026-10-25T21:15:47+00:00",
+  "seconds": 0.02,
+  "status": "awaiting_review",
+  "route": "human_review",
+  "coverage_status": "covered",
+  "fraud_score": 0.7,
+  "fraud_flags": [
+    "Fender - replacement overpriced"
+  ],
+  "line_decisions": [
+    {
+      "description": "Fender - replacement",
+      "amount": 16056.0,
+      "admitted": false,
+      "reason": "priced far above market rate"
+    },
+    {
+      "description": "Door Glass - replacement",
+      "amount": 4570.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Door - replacement",
+      "amount": 13640.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 9930.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 4880.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 36498.93,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": false,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 1000,
+      "prompt_tokens": 900,
+      "completion_tokens": 100,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 0,
+      "successful_requests": 1
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": "d99895ed07f5d8441e9caf7076d2e4f0"
+}

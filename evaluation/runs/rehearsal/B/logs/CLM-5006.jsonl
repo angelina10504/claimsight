@@ -1,0 +1,11 @@
+{"time": "2026-10-26T02:45:46.575", "elapsed_s": 0.0, "claim_id": "CLM-5006", "event": "run_started", "trace_id": "0756a75e3904b94fafdff5890814ebbb"}
+{"time": "2026-10-26T02:45:46.576", "elapsed_s": 0.0, "claim_id": "CLM-5006", "event": "guardrail", "kind": "input_screening", "passed": true, "verdict": "clean", "injection_matches": [], "abusive_matches": []}
+{"time": "2026-10-26T02:45:46.576", "elapsed_s": 0.0, "claim_id": "CLM-5006", "event": "flow", "message": "intake: reused saved Intake crew output"}
+{"time": "2026-10-26T02:45:46.576", "elapsed_s": 0.0, "claim_id": "CLM-5006", "event": "flow", "message": "intake: 3 invoice lines, complete=True"}
+{"time": "2026-10-26T02:45:46.578", "elapsed_s": 0.0, "claim_id": "CLM-5006", "event": "flow", "message": "router 1: file complete -> assessment"}
+{"time": "2026-10-26T02:45:46.579", "elapsed_s": 0.0, "claim_id": "CLM-5006", "event": "flow", "message": "assessment: Policy Analyst and Fraud Analyst running in parallel"}
+{"time": "2026-10-26T02:45:46.582", "elapsed_s": 0.01, "claim_id": "CLM-5006", "event": "crew_done", "crew": "assessment", "seconds": 0.0, "total_tokens": 3000, "prompt_tokens": 2700, "completion_tokens": 300, "cached_prompt_tokens": 0, "reasoning_tokens": 0, "successful_requests": 1}
+{"time": "2026-10-26T02:45:46.582", "elapsed_s": 0.01, "claim_id": "CLM-5006", "event": "flow", "message": "assessment: coverage=excluded, fraud_score=0.10, 3 line(s) denied, payout Rs 0.00 (calculator)", "coverage_status": "excluded"}
+{"time": "2026-10-26T02:45:46.583", "elapsed_s": 0.01, "claim_id": "CLM-5006", "event": "flow", "message": "router 2: reject because not covered: incident is 37 days BEFORE cover began", "router": "route_claim", "route": "reject", "fraud_score": 0.1, "payout": 0.0}
+{"time": "2026-10-26T02:45:46.585", "elapsed_s": 0.01, "claim_id": "CLM-5006", "event": "flow", "message": "rejected: incident is 37 days BEFORE cover began"}
+{"time": "2026-10-26T02:45:46.585", "elapsed_s": 0.01, "claim_id": "CLM-5006", "event": "run_finished", "total_seconds": 0.01, "trace_id": "0756a75e3904b94fafdff5890814ebbb", "llm_errors": [], "tool_calls": 0, "tasks": 0, "errors": 0, "retried_llm_failures": 0, "status": "rejected", "route": "reject", "final_payout": 0.0}

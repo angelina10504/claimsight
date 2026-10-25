@@ -1,0 +1,196 @@
+{
+  "claim_id": "CLM-5017",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5017",
+    "policy_no": "POL-3017",
+    "registration": "HR64IF1158",
+    "incident_date": "2026-06-21",
+    "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+    "damaged_parts": [
+      "fender",
+      "front bumper",
+      "grille"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5017",
+      "invoice_date": "2026-06-24",
+      "registration": "HR64IF1158",
+      "line_items": [
+        {
+          "description": "Front Bumper - replacement",
+          "amount": 9090,
+          "material": "plastic"
+        },
+        {
+          "description": "Clutch plate wear - replacement",
+          "amount": 6500,
+          "material": "metal"
+        },
+        {
+          "description": "Grille - replacement",
+          "amount": 2760,
+          "material": "plastic"
+        },
+        {
+          "description": "Fender - replacement",
+          "amount": 6170,
+          "material": "metal"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 7470,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 5580,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 37570,
+      "total": 44333
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5017",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 9090.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Clutch plate wear - replacement",
+        "amount": 6500.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Grille - replacement",
+        "amount": 2760.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Fender - replacement",
+        "amount": 6170.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 7470.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 5580.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 37570.0,
+    "total_depreciation": 0.0,
+    "after_depreciation": 37570.0,
+    "gst": 6762.6,
+    "deductible": 1000.0,
+    "payout": 43332.6,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Front Bumper - replacement",
+        "material": "plastic",
+        "amount": 9090.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 9090.0
+      },
+      {
+        "description": "Clutch plate wear - replacement",
+        "material": "metal",
+        "amount": 6500.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 6500.0
+      },
+      {
+        "description": "Grille - replacement",
+        "material": "plastic",
+        "amount": 2760.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 2760.0
+      },
+      {
+        "description": "Fender - replacement",
+        "material": "metal",
+        "amount": 6170.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 6170.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 7470.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 7470.0
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 5580.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 5580.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Front Bumper - replacement: Rs 9,090  - 0.0% depreciation (Rs 0)  = Rs 9,090\n  Clutch plate wear - replacement: Rs 6,500  - 0.0% depreciation (Rs 0)  = Rs 6,500\n  Grille - replacement: Rs 2,760  - 0.0% depreciation (Rs 0)  = Rs 2,760\n  Fender - replacement: Rs 6,170  - 0.0% depreciation (Rs 0)  = Rs 6,170\n  Painting and finishing: Rs 7,470  - 0.0% depreciation (Rs 0)  = Rs 7,470\n  Labour charges: Rs 5,580  - 0.0% depreciation (Rs 0)  = Rs 5,580\nSubtotal after depreciation: Rs 37,570.00\nGST: Rs 6,762.60\nLess deductible: Rs 1,000.00\nPayout: Rs 43,332.60"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 43332.6,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: 6 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 43,332.60 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 43,332.60"
+  ],
+  "id": "ffba6dc2-23ed-4aeb-a379-7fd9875a1895"
+}

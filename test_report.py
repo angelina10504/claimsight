@@ -16,6 +16,12 @@ reasons and nothing else, and that it never leaks personal data.
 Run:  uv run python test_report.py
 """
 
+import os
+# No offline test sends anything to Langfuse: without this, a test that
+# starts the A2A server would pick up the real keys from .env and post
+# spans, which is how an automated run came to report a 401.
+os.environ.setdefault("CLAIMSIGHT_OFFLINE", "1")
+
 import json
 import sys
 import tempfile
@@ -154,6 +160,74 @@ def main() -> None:
         "computed in code" in rendered and "16,081.97" in rendered)
     run("markdown saves too", reporting.save(r, markdown=True).exists())
 
+    # ------------------------------------------------ what is final and what is not
+    print("\nThe money, at each stage of a claim\n")
+    money_lines = [dict(LINES[0], admitted=False, reason="priced far above market rate"),
+                   dict(LINES[1], admitted=True, reason="")]
+
+    def money_state(claim_id, status, final, route="human_review"):
+        write(state(claim_id, "covered", ["Section I item 6"], status, route,
+                    lines=money_lines, final=final))
+        return reporting.for_claim(claim_id)
+
+    waiting = money_state("CLM-7010", "awaiting_review", 0.0)
+    run("a claim under review has no authorised amount at all",
+        waiting.settlement_state == "pending_human_review"
+        and waiting.authorised_payout is None,
+        f"state={waiting.settlement_state}, authorised={waiting.authorised_payout}")
+    shown = reporting.render(waiting)
+    run("the report says PENDING HUMAN REVIEW instead of a final nought",
+        "PENDING HUMAN REVIEW" in shown and "Final payout" not in shown)
+    run("it still shows what the claim is assessed as worth",
+        "Assessed as worth:  Rs 16,081.97" in shown)
+    run("a questioned line reads as disputed, not denied",
+        "DISPUTED" in shown and "DENIED" not in shown,
+        [ln.strip() for ln in shown.splitlines() if "Windshield" in ln])
+    run("the markdown report says the same",
+        "PENDING HUMAN REVIEW" in reporting.to_markdown(waiting)
+        and "disputed" in reporting.to_markdown(waiting))
+    text = reporting.explanation(waiting)
+    run("the claimant is told nothing is authorised yet",
+        "No payment has been authorised yet" in text, text[-130:])
+    run("and is not told a figure was refused",
+        "Rs 0.00" not in text and "nothing is payable" not in text)
+
+    approved = money_state("CLM-7011", "approved", 16081.97, route="auto_approve")
+    run("an approved claim does have an authorised amount",
+        approved.settlement_state == "authorised"
+        and approved.authorised_payout == 16081.97)
+    run("its lines read as paid and not paid, not disputed",
+        "DISPUTED" not in reporting.render(approved)
+        and "PAID" in reporting.render(approved))
+    run("the claimant is told it is authorised",
+        "authorised for payment" in reporting.explanation(approved),
+        reporting.explanation(approved)[-90:])
+
+    refused = money_state("CLM-7012", "rejected", 0.0, route="reject")
+    run("a refused claim shows nothing payable",
+        refused.settlement_state == "refused" and refused.authorised_payout == 0.0)
+    run("and says so to the claimant",
+        "nothing is payable" in reporting.explanation(refused))
+
+    adjusted = money_state("CLM-7013", "approved_by_adjuster", 12000.0)
+    run("an adjuster's own figure is the authorised one",
+        adjusted.settlement_state == "authorised"
+        and adjusted.authorised_payout == 12000.0)
+    rendered = reporting.render(adjusted)
+    run("the report notes it differs from the assessed amount",
+        "authorised a different amount" in rendered,
+        [ln.strip() for ln in rendered.splitlines() if "different" in ln])
+    run("a line the adjuster refused reads as denied",
+        "DENIED" in rendered)
+    run("the claimant is told an adjuster decided it",
+        "adjuster reviewed it and authorised" in reporting.explanation(adjusted))
+
+    held = money_state("CLM-7014", "awaiting_evidence", 0.0, route="needs_evidence")
+    run("a claim on hold is not a refusal either",
+        held.settlement_state == "pending_evidence" and held.authorised_payout is None)
+    run("and the claimant is told nothing has been refused",
+        "no amount has been refused" in reporting.explanation(held))
+
     # ------------------------------------------------ coverage could not be settled
     print("\nA claim whose coverage the wording does not settle\n")
     write(state("CLM-7002", "uncertain", ["searched Section I; nothing settles a kerb impact"],
@@ -182,7 +256,9 @@ def main() -> None:
                                                             reason="not covered")],
                 doubts=["the exclusion names no policy clause"], payout=0.0))
     r = reporting.for_claim("CLM-7003")
-    run("the reason is marked NOT cited", r.coverage_reasons[0].grounded is False)
+    run("a refusal in the agent's own words is not treated as grounded",
+        r.coverage_reasons[0].grounded is False,
+        reporting._check_mark(r.coverage_reasons[0]))
     run("the rendered report flags it to the reader",
         "NO CLAUSE CITED" in reporting.render(r))
 
@@ -221,7 +297,8 @@ def main() -> None:
                 "approved", "auto_approve", final=16081.97), log=period_log)
     r = reporting.for_claim("CLM-7007")
     marks = [reporting._check_mark(ref) for ref in r.coverage_reasons]
-    run("a clause reason is marked as cited", marks[0] == "clause cited", marks[0])
+    run("a clause reason is checked against the policy and verified",
+        marks[0] == "clause verified", marks[0])
     run("a period reason is verified against the tool, not treated as a missing clause",
         marks[1] == "tool verified", marks[1])
 

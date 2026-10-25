@@ -1,0 +1,37 @@
+{
+  "claim_id": "CLM-5019",
+  "policy_no": "POL-3019",
+  "registration": "HR54QH6000",
+  "incident_date": "2026-06-12",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "damaged_parts": [
+    "front bumper"
+  ],
+  "invoice": {
+    "invoice_no": "INV-CLM-5019",
+    "invoice_date": "2026-06-15",
+    "registration": "HR54QH6000",
+    "line_items": [
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 9280,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2870,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1480,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 13630,
+    "total": 16083
+  },
+  "is_complete": true,
+  "missing_fields": [],
+  "notes": "stand-in intake"
+}

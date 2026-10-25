@@ -29,13 +29,14 @@ import sys
 from pathlib import Path
 
 from crewai import Agent, Crew, Process, Task
+from crewai.knowledge.knowledge_config import KnowledgeConfig
 from crewai.mcp import MCPServerStdio, create_static_tool_filter
 from crewai.knowledge.source.text_file_knowledge_source import TextFileKnowledgeSource
 
 SRC = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SRC))
 
-from config import get_llm                                   # noqa: E402
+from config import get_llm, knowledge_limits, max_rpm                                   # noqa: E402
 from monitoring import crew_callbacks                        # noqa: E402
 import guardrails                                            # noqa: E402
 from models import AssessmentDecision                        # noqa: E402
@@ -97,6 +98,7 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
         embedder=EMBEDDER,
         verbose=verbose,
         allow_delegation=False,
+        knowledge_config=KnowledgeConfig(**knowledge_limits()),
     )
 
     fraud_analyst = Agent(
@@ -188,9 +190,15 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
             "1. Set coverage_status to exactly one of three values:\n"
             "   'excluded' ONLY if the incident is outside the policy period, or the coverage "
             "report names the clause that rules the cause out. Then admit no lines and use "
-            "route = reject. Every coverage_reason must name its clause (for example "
-            "'Section II exclusion 4') or quote the policy wording exactly, in quotes. A "
-            "rejection with no clause is sent to a person instead, so cite the clause.\n"
+            "route = reject.\n"
+            "   A refusal is checked against the policy document itself, so a coverage_reason "
+            "must either name a clause that really exists in this policy (its sections are "
+            "'Section I' and 'Section II', its exclusions are under 'GENERAL EXCEPTIONS', and "
+            "its endorsements are numbered 'IMT. n') or quote the wording exactly, in quotes. "
+            "An invented reference such as 'Section II exclusion 4' does not count and sends "
+            "the claim to a person. Nor does citing a clause that lists what the policy "
+            "COVERS, such as Section I item 6, as a reason to refuse: quote the exclusion "
+            "that applies, not the cover.\n"
             "   'uncertain' if the coverage report could not find the clause either way, or "
             "the evidence disagrees with itself. Then fill uncertainty_reasons with what could "
             "not be established and what would settle it, admit the lines you would admit if "
@@ -224,6 +232,9 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
         tasks=[coverage_task, fraud_task, decision_task],
         process=Process.sequential,
         verbose=verbose,
-        max_rpm=10,          # stay inside the free-tier request limit
+        cache=True,          # an identical repeat tool call is served from the
+                             # first result instead of being run and re-sent
+        max_rpm=max_rpm(),   # spacing, so two parallel analysts do not breach
+                             # the provider's per-minute token allowance at once
         **crew_callbacks(monitor),     # step and task callbacks -> data/logs/<claim>.jsonl
     )

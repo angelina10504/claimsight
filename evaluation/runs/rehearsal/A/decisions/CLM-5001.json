@@ -1,0 +1,134 @@
+{
+  "claim_id": "CLM-5001",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5001",
+    "policy_no": "POL-3001",
+    "registration": "HR30EH7924",
+    "incident_date": "2026-07-07",
+    "narrative": "Vehicle was hit by another car while parked outside a market.",
+    "damaged_parts": [
+      "grille"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5001",
+      "invoice_date": "2026-07-12",
+      "registration": "HR30EH7924",
+      "line_items": [
+        {
+          "description": "Grille - replacement",
+          "amount": 2570,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 780,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 430,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 3780,
+      "total": 4460
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5001",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Grille - replacement",
+        "amount": 2570.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 780.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 430.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 3780.0,
+    "total_depreciation": 1382.5,
+    "after_depreciation": 2397.5,
+    "gst": 431.55,
+    "deductible": 1000.0,
+    "payout": 1829.05,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Grille - replacement",
+        "material": "plastic",
+        "amount": 2570.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 1285.0,
+        "payable": 1285.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 780.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 97.5,
+        "payable": 682.5
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 430.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 430.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Grille - replacement: Rs 2,570  - 50.0% depreciation (Rs 1,285)  = Rs 1,285\n  Painting and finishing: Rs 780  - 12.5% depreciation (Rs 98)  = Rs 682\n  Labour charges: Rs 430  - 0.0% depreciation (Rs 0)  = Rs 430\nSubtotal after depreciation: Rs 2,397.50\nGST: Rs 431.55\nLess deductible: Rs 1,000.00\nPayout: Rs 1,829.05"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 1829.05,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 1,829.05 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 1,829.05"
+  ],
+  "id": "8c2d82ee-866f-47a3-9c4c-9a64d5fae7bd"
+}

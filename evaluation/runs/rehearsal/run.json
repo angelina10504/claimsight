@@ -1,0 +1,49 @@
+{
+  "created": "2026-10-25T21:15:44+00:00",
+  "stand_in": true,
+  "configs": {
+    "A": {
+      "stand_in": true,
+      "provider": "none (stand-in)",
+      "model": "none (stand-in)",
+      "temperature": 0.1,
+      "llm_retries": 5,
+      "max_rpm": 8,
+      "knowledge": {
+        "results_limit": 3,
+        "score_threshold": 0.6
+      },
+      "intake_prompt_version": "e1eaa9702021",
+      "decision_code": "bcb2355b68aa",
+      "fraud_threshold": 0.5,
+      "high_value": 50000,
+      "config": "A",
+      "description": "single LLM, same evidence, same schema",
+      "prompt_version": "cd2b1b73b872",
+      "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails"
+    },
+    "B": {
+      "stand_in": true,
+      "provider": "none (stand-in)",
+      "model": "none (stand-in)",
+      "temperature": 0.1,
+      "llm_retries": 5,
+      "max_rpm": 8,
+      "knowledge": {
+        "results_limit": 3,
+        "score_threshold": 0.6
+      },
+      "intake_prompt_version": "e1eaa9702021",
+      "decision_code": "bcb2355b68aa",
+      "fraud_threshold": 0.5,
+      "high_value": 50000,
+      "config": "B",
+      "description": "ClaimSight Phase 2 architecture",
+      "prompt_version": "b19039a518f1",
+      "tool_configuration": "tools over MCP (./claimsight_tools): Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks"
+    }
+  },
+  "not_available": {
+    "C": "ClaimSight + vision is Phase 3; the Damage Analyst does not exist yet"
+  }
+}

@@ -36,6 +36,12 @@ ROOT = Path(__file__).resolve().parent.parent
 LOGS = ROOT / "data" / "logs"
 MAX_TEXT = 600          # characters kept from long outputs
 
+# Every count the provider reports for a crew. A reasoning model spends tokens
+# that never appear in the completion, and cached prompt tokens are charged
+# differently, so the total alone is not enough. No cost is ever estimated.
+USAGE_FIELDS = ("total_tokens", "prompt_tokens", "completion_tokens",
+                "cached_prompt_tokens", "reasoning_tokens", "successful_requests")
+
 _lock = threading.Lock()
 _active: Optional["ClaimMonitor"] = None     # the claim currently running
 _listeners_registered = False
@@ -92,6 +98,8 @@ class ClaimMonitor:
         self.last_task_end = self.started
         self.counts = {"tool_calls": 0, "tasks": 0, "errors": 0, "retried_llm_failures": 0}
         self._seen_tool_calls: list = []        # recent (tool, input, result) keys
+        self.llm_error_kinds: set = set()       # e.g. {"per_minute_rate_limit"}
+        self.crew_usage: dict = {}              # crew name -> usage_fields(...)
         _active = self
         register_listeners()
         self.record("run_started", trace_id=_trace_id())
@@ -175,9 +183,15 @@ class ClaimMonitor:
 
     def finish(self, **fields) -> dict:
         summary = {"total_seconds": round(time.time() - self.started, 2),
-                   "trace_id": _trace_id(), **self.counts, **fields}
+                   "trace_id": _trace_id(), "llm_errors": sorted(self.llm_error_kinds),
+                   **self.counts, **fields}
         self.record("run_finished", **summary)
         return summary
+
+
+def usage_fields(usage: Any) -> dict:
+    """A crew's token usage as the provider reported it, field by field."""
+    return {name: getattr(usage, name, 0) or 0 for name in USAGE_FIELDS}
 
 
 def current() -> Optional[ClaimMonitor]:
@@ -238,6 +252,7 @@ def register_listeners() -> None:
             kind = "malformed_tool_call"
         else:
             kind = "other"
+        _active.llm_error_kinds.add(kind)
         _active.record("llm_call_failed", kind=kind, agent=getattr(event, "agent_role", None),
                        error=_short(message))
 

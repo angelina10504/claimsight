@@ -21,10 +21,14 @@ here calls a language model: accepting evidence decides whether someone gets
 paid, and that must be a rule a person can read.
 """
 
+import hashlib
 import json
+import os
 import re
 import shutil
 import sys
+import tempfile
+import uuid
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any, List, Optional, Tuple
@@ -36,6 +40,14 @@ sys.path.insert(0, str(SRC))
 from models import EvidenceRequest   # noqa: E402
 
 EVIDENCE = ROOT / "data" / "evidence"
+
+# An item moves pending -> processing -> applied. "processing" exists so that a
+# run which dies part-way can be told apart from one that finished: on the next
+# attempt those items are put back to pending and tried again, rather than
+# being lost (marked applied without a decision) or applied twice.
+PENDING, PROCESSING, APPLIED, REFUSED = "pending", "processing", "applied", "refused"
+MAX_ATTEMPTS = 3
+
 FILES_OK = {".jpg", ".jpeg", ".png", ".webp", ".pdf", ".txt", ".json", ".csv"}
 MAX_FILE_MB = 20
 
@@ -89,6 +101,27 @@ def same_item(asked: str, sent: str) -> bool:
 
 
 # ---------------------------------------------------------------- the ledger
+def write_json(path: Path, data) -> None:
+    """Write a JSON file so a reader never sees a half-written one.
+
+    The content goes to a temporary file in the same folder and is then moved
+    over the target, which is atomic on one filesystem. Writing in place would
+    leave a truncated ledger or intake behind if the process died mid-write,
+    and a corrupt ledger loses the claimant's evidence."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    handle, temporary = tempfile.mkstemp(dir=str(path.parent), prefix=f".{path.name}.",
+                                         suffix=".tmp")
+    try:
+        with os.fdopen(handle, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, default=str)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temporary, path)
+    except BaseException:
+        Path(temporary).unlink(missing_ok=True)
+        raise
+
+
 def path_for(claim_id: str) -> Path:
     return EVIDENCE / f"{claim_id}.json"
 
@@ -101,8 +134,35 @@ def ledger(claim_id: str) -> dict:
 
 
 def save_ledger(book: dict) -> None:
-    EVIDENCE.mkdir(parents=True, exist_ok=True)
-    path_for(book["claim_id"]).write_text(json.dumps(book, indent=2, default=str))
+    write_json(path_for(book["claim_id"]), book)
+
+
+def state_of(item: dict) -> str:
+    """This item's state, understanding ledgers written before states existed,
+    where the only record was applied: true/false."""
+    if item.get("state"):
+        return item["state"]
+    if not item.get("accepted"):
+        return REFUSED
+    return APPLIED if item.get("applied") else PENDING
+
+
+def fingerprint(item: str, kind: str, value: Any = None, file: Optional[str] = None) -> str:
+    """What makes two submissions the same submission.
+
+    The same value for the same item is one piece of evidence however many
+    times it is sent; for a file it is the bytes that count, so the same
+    photograph under a different name is still the same photograph."""
+    parts = [_norm(item), kind]
+    if file:
+        path = Path(file)
+        try:
+            parts.append(hashlib.sha256(path.read_bytes()).hexdigest())
+        except OSError:
+            parts.append(f"unreadable:{path.name}")
+    else:
+        parts.append(_norm(str(value)))
+    return hashlib.sha256("|".join(parts).encode()).hexdigest()[:16]
 
 
 def accepted(claim_id: str) -> List[dict]:
@@ -110,8 +170,20 @@ def accepted(claim_id: str) -> List[dict]:
 
 
 def unapplied(claim_id: str) -> List[dict]:
-    """Accepted evidence the Flow has not acted on yet."""
-    return [item for item in accepted(claim_id) if not item.get("applied")]
+    """Accepted evidence the Flow has not acted on yet.
+
+    Items left in "processing" by a run that died are included: they were never
+    applied, so they are still owed a reassessment."""
+    return [item for item in accepted(claim_id)
+            if state_of(item) in (PENDING, PROCESSING)
+            and item.get("attempts", 0) < MAX_ATTEMPTS]
+
+
+def stuck(claim_id: str) -> List[dict]:
+    """Evidence that has failed MAX_ATTEMPTS times. A person has to look."""
+    return [item for item in accepted(claim_id)
+            if state_of(item) in (PENDING, PROCESSING)
+            and item.get("attempts", 0) >= MAX_ATTEMPTS]
 
 
 # ---------------------------------------------------------------- checking
@@ -181,9 +253,11 @@ def submit(claim_id: str, item: str, *, value: Any = None, file: Optional[str] =
     if (value is None) == (file is None):
         return {"accepted": False, "verdict": "send either a value or a file, not both"}
 
-    entry = {"item": item, "note": note, "kind": "file" if file else "value",
+    entry = {"id": f"ev-{uuid.uuid4().hex[:10]}",
+             "item": item, "note": note, "kind": "file" if file else "value",
              "submitted_at": datetime.now().isoformat(timespec="seconds"),
-             "applied": False}
+             "state": PENDING, "attempts": 0, "last_error": None,
+             "applied": False}          # kept so older readers still work
 
     if file is not None:
         ok, kept, why = check_file(Path(file).expanduser())
@@ -218,21 +292,61 @@ def submit(claim_id: str, item: str, *, value: Any = None, file: Optional[str] =
         entry["verdict"] += (f" (ClaimSight did not ask for this; it asked for: "
                              f"{', '.join(asked)})")
 
+    entry["state"] = PENDING if ok else REFUSED
+    entry["fingerprint"] = fingerprint(item, entry["kind"], value,
+                                       entry.get("original_path"))
+
     book = ledger(claim_id)
+    # The same evidence sent twice is one piece of evidence. Without this, a
+    # claimant pressing send again would queue a second reassessment of
+    # something already decided.
+    for existing in book["items"]:
+        if existing.get("fingerprint") == entry["fingerprint"] and existing.get("accepted"):
+            return {**existing, "duplicate": True,
+                    "verdict": f"already on file as {existing.get('id', 'an earlier item')} "
+                               f"({state_of(existing)}): {existing.get('verdict', '')}"}
     book["items"].append(entry)
     save_ledger(book)
     return entry
 
 
-def mark_applied(claim_id: str, entries: List[dict]) -> None:
-    """Note that the Flow has acted on this evidence, so a later resume does not
-    apply it twice."""
-    stamps = {e["submitted_at"] for e in entries}
+def _set_state(claim_id: str, entries: List[dict], state: str,
+               error: Optional[str] = None, count_attempt: bool = False) -> None:
+    """Move these items to a state and save the ledger.
+
+    Items are matched by their id, not by their timestamp: two submissions can
+    share a second, and a timestamp is not an identifier."""
+    ids = {e.get("id") for e in entries if e.get("id")}
+    stamps = {e.get("submitted_at") for e in entries if not e.get("id")}
     book = ledger(claim_id)
     for item in book["items"]:
-        if item.get("submitted_at") in stamps:
-            item["applied"] = True
+        if item.get("id") in ids or (not item.get("id")
+                                     and item.get("submitted_at") in stamps):
+            item["state"] = state
+            item["applied"] = state == APPLIED
+            item["last_error"] = error
+            if count_attempt:
+                item["attempts"] = item.get("attempts", 0) + 1
     save_ledger(book)
+
+
+def mark_processing(claim_id: str, entries: List[dict]) -> None:
+    """About to act on this evidence. Recorded before the Flow runs so a run
+    that dies leaves a trace, and counted as an attempt so a claim cannot
+    retry for ever."""
+    _set_state(claim_id, entries, PROCESSING, count_attempt=True)
+
+
+def mark_applied(claim_id: str, entries: List[dict]) -> None:
+    """The Flow finished and the decision was saved. Only now is the evidence
+    spent, so a later resume will not act on it again."""
+    _set_state(claim_id, entries, APPLIED)
+
+
+def mark_pending(claim_id: str, entries: List[dict], error: str) -> None:
+    """The Flow failed. The evidence goes back in the queue with the reason, so
+    the claimant does not have to send it again."""
+    _set_state(claim_id, entries, PENDING, error=error)
 
 
 # ---------------------------------------------------------------- applying
@@ -289,6 +403,12 @@ def summary(claim_id: str) -> List[str]:
     for item in ledger(claim_id)["items"]:
         mark = "accepted" if item.get("accepted") else "REJECTED"
         what = item.get("file") or item.get("value")
-        applied = " (applied)" if item.get("applied") else ""
-        lines.append(f"{mark}{applied}: {item['item']} = {what} - {item['verdict']}")
+        state = state_of(item)
+        attempts = item.get("attempts", 0)
+        tail = f" [{state}]" if item.get("accepted") else ""
+        if attempts > 1:
+            tail += f" after {attempts} attempts"
+        if item.get("last_error"):
+            tail += f"; last failure: {item['last_error'][:80]}"
+        lines.append(f"{mark}{tail}: {item['item']} = {what} - {item['verdict']}")
     return lines

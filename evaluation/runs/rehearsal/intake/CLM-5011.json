@@ -1,0 +1,37 @@
+{
+  "claim_id": "CLM-5011",
+  "policy_no": "POL-3011",
+  "registration": "HR34JI9786",
+  "incident_date": "2026-10-22",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "damaged_parts": [
+    "side mirror"
+  ],
+  "invoice": {
+    "invoice_no": "INV-CLM-5011",
+    "invoice_date": "2026-10-23",
+    "registration": "HR34JI9786",
+    "line_items": [
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3070,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 1170,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 440,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 4680,
+    "total": 5522
+  },
+  "is_complete": true,
+  "missing_fields": [],
+  "notes": "stand-in intake"
+}

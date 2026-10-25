@@ -170,8 +170,20 @@ class ClaimReport(BaseModel):
         description="Reasons the computed payout should not be acted on as it stands",
     )
     settlement_explanation: str = ""
-    proposed_payout: float = 0.0
-    final_payout: float = 0.0
+    proposed_payout: float = Field(
+        0.0, description="What the calculator says the claim is worth as assessed")
+    settlement_state: str = Field(
+        "", description="pending_human_review, pending_evidence, authorised, "
+                        "refused, or not_assessed",
+    )
+    authorised_payout: Optional[float] = Field(
+        None,
+        description="What a person has actually authorised. None while nobody has "
+                    "decided: a nought there would read as a refusal.",
+    )
+    final_payout: float = Field(
+        0.0, description="Kept for older readers; 0.0 while nothing is authorised. "
+                         "Use authorised_payout and settlement_state instead.")
 
     evidence: List[EvidenceReference] = Field(
         default_factory=list, description="Every document, tool result and guardrail check used"

@@ -1,0 +1,54 @@
+{
+  "claim_id": "CLM-5017",
+  "policy_no": "POL-3017",
+  "registration": "HR64IF1158",
+  "incident_date": "2026-06-21",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "damaged_parts": [
+    "fender",
+    "front bumper",
+    "grille"
+  ],
+  "invoice": {
+    "invoice_no": "INV-CLM-5017",
+    "invoice_date": "2026-06-24",
+    "registration": "HR64IF1158",
+    "line_items": [
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 9090,
+        "material": "plastic"
+      },
+      {
+        "description": "Clutch plate wear - replacement",
+        "amount": 6500,
+        "material": "metal"
+      },
+      {
+        "description": "Grille - replacement",
+        "amount": 2760,
+        "material": "plastic"
+      },
+      {
+        "description": "Fender - replacement",
+        "amount": 6170,
+        "material": "metal"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 7470,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 5580,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 37570,
+    "total": 44333
+  },
+  "is_complete": true,
+  "missing_fields": [],
+  "notes": "stand-in intake"
+}

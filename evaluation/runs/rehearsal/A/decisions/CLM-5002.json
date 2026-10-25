@@ -1,0 +1,134 @@
+{
+  "claim_id": "CLM-5002",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5002",
+    "policy_no": "POL-3002",
+    "registration": "HR47XP6925",
+    "incident_date": "2026-09-28",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "windshield"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5002",
+      "invoice_date": "2026-09-29",
+      "registration": "HR47XP6925",
+      "line_items": [
+        {
+          "description": "Windshield - replacement",
+          "amount": 10400,
+          "material": "glass"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 3050,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 1430,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 14880,
+      "total": 17558
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5002",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 10400.0,
+        "material": "glass",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 3050.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1430.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 14880.0,
+    "total_depreciation": 381.25,
+    "after_depreciation": 14498.75,
+    "gst": 2609.78,
+    "deductible": 1000.0,
+    "payout": 16108.53,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Windshield - replacement",
+        "material": "glass",
+        "amount": 10400.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 10400.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 3050.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 381.25,
+        "payable": 2668.75
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 1430.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 1430.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Windshield - replacement: Rs 10,400  - 0.0% depreciation (Rs 0)  = Rs 10,400\n  Painting and finishing: Rs 3,050  - 12.5% depreciation (Rs 381)  = Rs 2,669\n  Labour charges: Rs 1,430  - 0.0% depreciation (Rs 0)  = Rs 1,430\nSubtotal after depreciation: Rs 14,498.75\nGST: Rs 2,609.78\nLess deductible: Rs 1,000.00\nPayout: Rs 16,108.53"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 16108.53,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 16,108.53 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 16,108.53"
+  ],
+  "id": "39d57294-5808-405f-bdd1-089a1f02004e"
+}

@@ -1,0 +1,127 @@
+{
+  "claim_id": "CLM-5018",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5018",
+    "policy_no": "POL-3010",
+    "registration": "HR70NF4981",
+    "incident_date": "2026-10-22",
+    "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+    "damaged_parts": [
+      "rear bumper"
+    ],
+    "invoice": {
+      "invoice_no": "INV-CLM-5018",
+      "invoice_date": "2026-10-24",
+      "registration": "HR70NF4981",
+      "line_items": [
+        {
+          "description": "Rear Bumper - replacement",
+          "amount": 7810,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 2450,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 1370,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 11630,
+      "total": 13723
+    },
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "stand-in intake"
+  },
+  "decision": {
+    "claim_id": "CLM-5018",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I: loss of or damage to the vehicle insured"
+    ],
+    "fraud_score": 0.9,
+    "fraud_flags": [
+      "same parts already claimed"
+    ],
+    "line_decisions": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 7810.0,
+        "material": "plastic",
+        "admitted": false,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2450.0,
+        "material": "paint",
+        "admitted": false,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1370.0,
+        "material": "labour",
+        "admitted": false,
+        "reason": "same damage already claimed"
+      }
+    ],
+    "recommended_route": "human_review",
+    "summary": "stand-in decision"
+  },
+  "settlement": {
+    "admitted_subtotal": 0.0,
+    "total_depreciation": 0.0,
+    "after_depreciation": 0.0,
+    "gst": 0.0,
+    "deductible": 1000.0,
+    "payout": 0.0,
+    "capped_at_idv": false,
+    "lines": [],
+    "excluded": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 7810.0,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2450.0,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1370.0,
+        "reason": "same damage already claimed"
+      }
+    ],
+    "explanation": "Admitted lines:\nExcluded lines:\n  Rear Bumper - replacement: Rs 7,810 - same damage already claimed\n  Painting and finishing: Rs 2,450 - same damage already claimed\n  Labour charges: Rs 1,370 - same damage already claimed\nSubtotal after depreciation: Rs 0.00\nGST: Rs 0.00\nLess deductible: Rs 1,000.00\nPayout: Rs 0.00"
+  },
+  "route": "human_review",
+  "status": "awaiting_review",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.90, 3 line(s) denied, payout Rs 0.00 (calculator)",
+    "router 2: human_review because fraud score 0.90 >= 0.5",
+    "paused: queued for an adjuster (data/review_queue)"
+  ],
+  "id": "5610ab8c-2e02-4810-a439-384d2a7cbb0b"
+}

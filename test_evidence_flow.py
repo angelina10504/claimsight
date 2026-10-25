@@ -23,6 +23,12 @@ Run:  uv run python test_evidence_flow.py
       uv run python test_evidence_flow.py --make-demo-claim   build CLM-9002 for a live demo
 """
 
+import os
+# No offline test sends anything to Langfuse: without this, a test that
+# starts the A2A server would pick up the real keys from .env and post
+# spans, which is how an automated run came to report a 401.
+os.environ.setdefault("CLAIMSIGHT_OFFLINE", "1")
+
 import json
 import shutil
 import sys
@@ -80,6 +86,10 @@ def build_claim(folder: Path, claim_id: str, *, drop_date: bool) -> dict:
     is what makes the Flow stop and ask."""
     claim = json.loads((REAL_CLAIMS / f"{SOURCE_CLAIM}.json").read_text())
     claim["claim_id"] = claim_id
+    # A demonstration fixture, never part of the official 60. The manifest is
+    # what selects official claims, and this marks the file too, so no
+    # split-based filter can pick it up either.
+    claim["split"] = "demo"
     if drop_date:
         claim["incident_date"] = None
     folder.mkdir(parents=True, exist_ok=True)
@@ -296,6 +306,123 @@ def main() -> None:
         f"status={final['status']}, resumed={final['resumed']}")
     run("and it still did not read the documents again",
         calls["intake"] == mark["intake"])
+
+    # ---------------------------------------------------- 10. a failed reassessment
+    print("\n10. The reassessment fails part-way\n")
+    third = "CLM-9103"
+    build_claim(claim_flow.CLAIMS, third, drop_date=True)
+    claim_flow.run_or_resume(third, interactive=False)
+    waiting_state = claim_flow.saved_state(third)
+    sent = evidence.submit(third, "incident date", value="2026-05-30",
+                           state=waiting_state)
+    intake_path = claim_flow.INTAKE / f"{third}.json"
+    intake_before = intake_path.read_text() if intake_path.exists() else None
+    decision_before = (claim_flow.DECISIONS / f"{third}.json").read_text()
+
+    def explode(inputs, verbose):
+        calls["assessment"] += 1
+        raise RuntimeError("Error code: 429 - rate limit reached")
+
+    good_assessment = claim_flow.run_assessment_step
+    claim_flow.run_assessment_step = explode
+    outcome = claim_flow.resume_claim(third, interactive=False)
+    claim_flow.run_assessment_step = good_assessment
+
+    run("the resume reports failure rather than a decision", not outcome["resumed"],
+        outcome["why"][:110])
+    ledger_items = [i for i in evidence.ledger(third)["items"] if i.get("accepted")]
+    run("the evidence is NOT marked applied",
+        all(evidence.state_of(i) != evidence.APPLIED for i in ledger_items),
+        [evidence.state_of(i) for i in ledger_items])
+    run("it is back in the queue, so the claimant need not send it again",
+        len(evidence.unapplied(third)) == 1,
+        [evidence.state_of(i) for i in ledger_items])
+    run("the failure is recorded against it",
+        "429" in (ledger_items[0].get("last_error") or ""),
+        ledger_items[0].get("last_error"))
+    run("the attempt was counted", ledger_items[0].get("attempts") == 1,
+        f"attempts={ledger_items[0].get('attempts')}")
+    run("the saved intake was rolled back, not left half-patched",
+        (intake_path.read_text() if intake_path.exists() else None) == intake_before)
+    run("no stale decision was written",
+        (claim_flow.DECISIONS / f"{third}.json").read_text() == decision_before)
+    run("the claim still reads as waiting for evidence",
+        claim_flow.saved_state(third)["status"] == "awaiting_evidence")
+
+    # ---------------------------------------------------- 11. retry succeeds
+    print("\n11. Trying again, with the model working\n")
+    retry = claim_flow.resume_claim(third, interactive=False)
+    run("the retry goes through", retry["resumed"], retry["why"][:90])
+    run("the claim now has a decision", retry["state"]["status"] == "approved",
+        f"{retry['state']['status']}, Rs {retry['state']['final_payout']:,.2f}")
+    after = [i for i in evidence.ledger(third)["items"] if i.get("accepted")]
+    run("only now is the evidence marked applied",
+        evidence.state_of(after[0]) == evidence.APPLIED)
+    run("it took two attempts, and says so", after[0].get("attempts") == 2,
+        f"attempts={after[0].get('attempts')}")
+    run("a further resume does nothing",
+        not claim_flow.resume_claim(third, interactive=False)["resumed"])
+
+    # ---------------------------------------------------- 12. duplicates
+    print("\n12. The same evidence sent twice\n")
+    state = claim_flow.saved_state(third)
+    again = evidence.submit(third, "incident date", value="2026-05-30", state=state)
+    run("the second submission is recognised as the same one",
+        again.get("duplicate") is True, again["verdict"][:100])
+    run("it did not add a second ledger entry",
+        len([i for i in evidence.ledger(third)["items"]
+             if i["item"] == "incident date" and i.get("accepted")]) == 1)
+    run("and it did not queue another reassessment",
+        not evidence.unapplied(third))
+
+    photo_a = tmp / "same.jpg"
+    photo_a.write_bytes(b"\xff\xd8\xff" + b"7" * 4096)
+    photo_b = tmp / "renamed.jpg"
+    photo_b.write_bytes(photo_a.read_bytes())
+    first_photo = evidence.submit(third, "windshield photograph", file=str(photo_a))
+    same_bytes = evidence.submit(third, "windshield photograph", file=str(photo_b))
+    run("the same photograph under another name is still the same photograph",
+        same_bytes.get("duplicate") is True, same_bytes["verdict"][:90])
+    other = tmp / "different.jpg"
+    other.write_bytes(b"\xff\xd8\xff" + b"9" * 4096)
+    run("a genuinely different photograph is accepted",
+        not evidence.submit(third, "windshield photograph",
+                            file=str(other)).get("duplicate"))
+
+    print("\n13. Identifiers, old ledgers and safe writes\n")
+    ids = [i["id"] for i in evidence.ledger(third)["items"] if i.get("id")]
+    run("every item has its own identifier", len(ids) == len(set(ids)) and len(ids) >= 3,
+        f"{len(ids)} ids, all different")
+    run("identifiers are stable across reads",
+        ids == [i["id"] for i in evidence.ledger(third)["items"] if i.get("id")])
+
+    old_format = {"claim_id": "CLM-9104", "items": [
+        {"item": "invoice total", "kind": "value", "value": 1000, "accepted": True,
+         "applied": True, "verdict": "ok", "submitted_at": "2026-10-01T10:00:00"},
+        {"item": "incident date", "kind": "value", "value": "2026-05-30",
+         "accepted": True, "applied": False, "verdict": "ok",
+         "submitted_at": "2026-10-01T10:00:01"}]}
+    evidence.write_json(evidence.path_for("CLM-9104"), old_format)
+    states = [evidence.state_of(i) for i in evidence.ledger("CLM-9104")["items"]]
+    run("a ledger written before states existed still reads correctly",
+        states == [evidence.APPLIED, evidence.PENDING], states)
+    run("and its unapplied item is still found",
+        len(evidence.unapplied("CLM-9104")) == 1)
+
+    target = tmp / "atomic.json"
+    evidence.write_json(target, {"keep": "this"})
+    try:
+        # A tuple key cannot be JSON, and default=str does not apply to keys,
+        # so this fails after the temporary file has been partly written.
+        evidence.write_json(target, {("a", "b"): 1})
+    except TypeError:
+        pass
+    run("a write that fails leaves the previous file intact",
+        json.loads(target.read_text()) == {"keep": "this"},
+        target.read_text()[:60])
+    run("and leaves no temporary files behind",
+        not [f for f in tmp.iterdir() if f.name.startswith(".atomic.json")],
+        [f.name for f in tmp.iterdir() if f.name.startswith(".")])
 
     print(f"\n{passed}/{total} evidence-cycle checks as expected")
     print(f"(temporary files in {tmp})")

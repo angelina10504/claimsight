@@ -1,0 +1,12 @@
+{"time": "2026-10-26T02:45:47.618", "elapsed_s": 0.0, "claim_id": "CLM-5017", "event": "run_started", "trace_id": "4a5ff3a548bd21845f2a662e10bb9167"}
+{"time": "2026-10-26T02:45:47.618", "elapsed_s": 0.0, "claim_id": "CLM-5017", "event": "guardrail", "kind": "input_screening", "passed": true, "verdict": "clean", "injection_matches": [], "abusive_matches": []}
+{"time": "2026-10-26T02:45:47.619", "elapsed_s": 0.0, "claim_id": "CLM-5017", "event": "flow", "message": "intake: running Intake crew"}
+{"time": "2026-10-26T02:45:47.619", "elapsed_s": 0.0, "claim_id": "CLM-5017", "event": "crew_done", "crew": "intake", "seconds": 0.0, "total_tokens": 500, "prompt_tokens": 450, "completion_tokens": 50, "cached_prompt_tokens": 0, "reasoning_tokens": 0, "successful_requests": 1}
+{"time": "2026-10-26T02:45:47.619", "elapsed_s": 0.0, "claim_id": "CLM-5017", "event": "flow", "message": "intake: 6 invoice lines, complete=True"}
+{"time": "2026-10-26T02:45:47.621", "elapsed_s": 0.0, "claim_id": "CLM-5017", "event": "flow", "message": "router 1: file complete -> assessment"}
+{"time": "2026-10-26T02:45:47.622", "elapsed_s": 0.0, "claim_id": "CLM-5017", "event": "flow", "message": "assessment: Policy Analyst and Fraud Analyst running in parallel"}
+{"time": "2026-10-26T02:45:47.623", "elapsed_s": 0.0, "claim_id": "CLM-5017", "event": "crew_done", "crew": "assessment", "seconds": 0.0, "total_tokens": 1000, "prompt_tokens": 900, "completion_tokens": 100, "cached_prompt_tokens": 0, "reasoning_tokens": 0, "successful_requests": 1}
+{"time": "2026-10-26T02:45:47.623", "elapsed_s": 0.01, "claim_id": "CLM-5017", "event": "flow", "message": "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 43,332.60 (calculator)", "coverage_status": "covered"}
+{"time": "2026-10-26T02:45:47.625", "elapsed_s": 0.01, "claim_id": "CLM-5017", "event": "flow", "message": "router 2: auto_approve because covered, low fraud risk, normal value", "router": "route_claim", "route": "auto_approve", "fraud_score": 0.1, "payout": 43332.6}
+{"time": "2026-10-26T02:45:47.626", "elapsed_s": 0.01, "claim_id": "CLM-5017", "event": "flow", "message": "auto-approved: pay Rs 43,332.60"}
+{"time": "2026-10-26T02:45:47.627", "elapsed_s": 0.01, "claim_id": "CLM-5017", "event": "run_finished", "total_seconds": 0.01, "trace_id": "4a5ff3a548bd21845f2a662e10bb9167", "llm_errors": [], "tool_calls": 0, "tasks": 0, "errors": 0, "retried_llm_failures": 0, "status": "approved", "route": "auto_approve", "final_payout": 43332.6}

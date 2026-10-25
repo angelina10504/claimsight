@@ -1,0 +1,58 @@
+{
+  "claim_id": "CLM-5006",
+  "config": "B",
+  "fault_type": "date_outside_policy",
+  "split": "dev",
+  "model": "none (stand-in)",
+  "prompt_version": "b19039a518f1",
+  "intake_prompt_version": "e1eaa9702021",
+  "decision_code": "bcb2355b68aa",
+  "tool_configuration": "tools over MCP (./claimsight_tools): Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": true,
+  "code_version": "ba74af4-dirty",
+  "started_at": "2026-10-25T21:15:46+00:00",
+  "seconds": 0.02,
+  "status": "rejected",
+  "route": "reject",
+  "coverage_status": "excluded",
+  "fraud_score": 0.1,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Front Door - replacement",
+      "amount": 12600.0,
+      "admitted": false,
+      "reason": "incident outside the policy period"
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 4510.0,
+      "admitted": false,
+      "reason": "incident outside the policy period"
+    },
+    {
+      "description": "Labour charges",
+      "amount": 2690.0,
+      "admitted": false,
+      "reason": "incident outside the policy period"
+    }
+  ],
+  "proposed_payout": 0.0,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 3000,
+      "prompt_tokens": 2700,
+      "completion_tokens": 300,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 0,
+      "successful_requests": 1
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": "0756a75e3904b94fafdff5890814ebbb"
+}

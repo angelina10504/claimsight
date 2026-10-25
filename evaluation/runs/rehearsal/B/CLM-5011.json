@@ -1,0 +1,58 @@
+{
+  "claim_id": "CLM-5011",
+  "config": "B",
+  "fault_type": "clean",
+  "split": "dev",
+  "model": "none (stand-in)",
+  "prompt_version": "b19039a518f1",
+  "intake_prompt_version": "e1eaa9702021",
+  "decision_code": "bcb2355b68aa",
+  "tool_configuration": "tools over MCP (./claimsight_tools): Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": true,
+  "code_version": "ba74af4-dirty",
+  "started_at": "2026-10-25T21:15:47+00:00",
+  "seconds": 0.02,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.1,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Side Mirror - replacement",
+      "amount": 3070.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 1170.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 440.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 2538.52,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 3000,
+      "prompt_tokens": 2700,
+      "completion_tokens": 300,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 0,
+      "successful_requests": 1
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": "4e3a415e06207bdad3b75da0e6c517a9"
+}
