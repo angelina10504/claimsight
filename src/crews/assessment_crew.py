@@ -18,12 +18,18 @@ failure seen in the Intake crew), so the two jobs are kept apart.
 
 No agent computes money. The Lead marks each invoice line admitted or not, and
 the Flow passes those lines to the settlement calculator.
+
+Tools come from the ClaimSight MCP server (src/mcp_server.py), each agent seeing
+only the tools it needs. Set USE_MCP=false in .env to fall back to calling the
+same functions directly, e.g. if the server will not start during a demo.
 """
 
+import os
 import sys
 from pathlib import Path
 
 from crewai import Agent, Crew, Process, Task
+from crewai.mcp import MCPServerStdio, create_static_tool_filter
 from crewai.knowledge.source.text_file_knowledge_source import TextFileKnowledgeSource
 
 SRC = Path(__file__).resolve().parent.parent
@@ -40,6 +46,27 @@ from tools.assessment_tools import (                         # noqa: E402
 
 # Local embeddings, as in test_policy_knowledge.py, so the index is reused
 EMBEDDER = {"provider": "ollama", "config": {"model_name": "nomic-embed-text"}}
+
+USE_MCP = os.getenv("USE_MCP", "true").lower() != "false"
+
+
+def tool_access(*names: str) -> dict:
+    """Agent kwargs giving access to exactly these tools: over MCP by default,
+    or as direct CrewAI tools when USE_MCP=false.
+
+    The server is launched as 'python src/mcp_server.py' on purpose: CrewAI
+    prefixes each MCP tool name with the launch command, and a full interpreter
+    path would push the real tool name past the 64-character limit."""
+    if USE_MCP:
+        server = MCPServerStdio(
+            command="python",
+            args=["src/mcp_server.py"],
+            tool_filter=create_static_tool_filter(allowed_tool_names=list(names)),
+        )
+        return {"mcps": [server]}
+    direct = {"check_policy_period": PolicyPeriodTool, "check_part_prices": PriceCheckTool,
+              "find_prior_claims": PriorClaimsTool}
+    return {"tools": [direct[n]() for n in names]}
 
 
 def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
@@ -62,7 +89,7 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
             "start with 'The Company shall not be liable to make any payment in respect of'."
         ),
         llm=llm,
-        tools=[PolicyPeriodTool()],
+        **tool_access("check_policy_period"),
         knowledge_sources=[policy_wording],
         embedder=EMBEDDER,
         verbose=verbose,
@@ -79,7 +106,7 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
             "or a claim history; you look it up."
         ),
         llm=llm,
-        tools=[PriceCheckTool(), PriorClaimsTool()],
+        **tool_access("check_part_prices", "find_prior_claims"),
         verbose=verbose,
         allow_delegation=False,
     )
@@ -104,7 +131,7 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
             "What happened: {narrative}\n"
             "Policy schedule:\n{policy}\n"
             "Invoice lines:\n{line_items}\n\n"
-            "1. Call check_policy_period with policy {policy_no} and incident date {incident_date}.\n"
+            "1. Use the check_policy_period tool with policy {policy_no} and incident date {incident_date}.\n"
             "2. Using the policy wording, decide whether the cause described is an insured peril "
             "under Section I. Collisions, impacts, being hit by another vehicle, reversing into "
             "an object and stone damage are all 'accidental external means' (Section I, item 6).\n"
@@ -129,8 +156,8 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
             "What happened: {narrative}\n"
             "Parts claimed: {damaged_parts}\n"
             "Invoice lines:\n{line_items}\n\n"
-            "1. Call check_part_prices with every invoice line (description and amount).\n"
-            "2. Call find_prior_claims with policy {policy_no}, claim {claim_id}, incident date "
+            "1. Use the check_part_prices tool with every invoice line (description and amount).\n"
+            "2. Use the find_prior_claims tool with policy {policy_no}, claim {claim_id}, incident date "
             "{incident_date} and the parts claimed.\n"
             "3. Consider whether the parts billed fit what the claimant says happened.\n\n"
             "Write a FRAUD REPORT with four headings:\n"
