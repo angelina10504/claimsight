@@ -1,0 +1,16 @@
+# ClaimSight dashboard (dashboard/app.py). Local only: it listens on
+# 127.0.0.1, never on a public interface, and sends no usage statistics.
+[server]
+address = "127.0.0.1"
+headless = true
+
+[browser]
+gatherUsageStats = false
+serverAddress = "127.0.0.1"
+
+[theme]
+base = "light"
+primaryColor = "#0F766E"
+backgroundColor = "#FAF8F3"
+secondaryBackgroundColor = "#F1EEE6"
+textColor = "#1F2A44"

@@ -87,7 +87,7 @@ def _short(value: Any) -> str:
 
 
 class ClaimMonitor:
-    def __init__(self, claim_id: str, fresh: bool = True):
+    def __init__(self, claim_id: str, fresh: bool = True, **started_fields):
         global _active
         self.claim_id = claim_id
         self.path = LOGS / f"{claim_id}.jsonl"
@@ -102,7 +102,7 @@ class ClaimMonitor:
         self.crew_usage: dict = {}              # crew name -> usage_fields(...)
         _active = self
         register_listeners()
-        self.record("run_started", trace_id=_trace_id())
+        self.record("run_started", trace_id=_trace_id(), **started_fields)
 
     # ------------------------------------------------------------ writing
     def record(self, event: str, **fields) -> None:

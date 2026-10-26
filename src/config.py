@@ -28,8 +28,8 @@ PROVIDER = os.getenv("LLM_PROVIDER", "groq").lower()
 # use for the evaluation; each model has its own daily allowance, so the
 # smaller one is also the fallback when the larger is spent. Switch with
 # CLAIMSIGHT_GROQ_MODEL in .env rather than by editing this file, and note
-# that describe() puts the model in every run's log either way.
-GROQ_MODEL = os.getenv("CLAIMSIGHT_GROQ_MODEL", "openai/openai/gpt-oss-20b")
+# that every Flow run records the model in its log's run_started entry.
+GROQ_MODEL = os.getenv("CLAIMSIGHT_GROQ_MODEL", "openai/openai/gpt-oss-120b")
 GROQ_VISION_MODEL = os.getenv("CLAIMSIGHT_GROQ_VISION_MODEL", "openai/qwen/qwen3.8-27b")
 GROQ_BASE_URL = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
 

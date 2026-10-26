@@ -188,7 +188,7 @@ def agent_card() -> AgentCard:
 
 
 def build_app() -> Starlette:
-    observability.start()          # one trace per claim, across ADK and CrewAI
+    observability.start()          # this process's CrewAI spans; ADK's are a separate trace
     card = agent_card()
     handler = DefaultRequestHandler(agent_executor=ClaimSightExecutor(),
                                     task_store=InMemoryTaskStore(), agent_card=card)

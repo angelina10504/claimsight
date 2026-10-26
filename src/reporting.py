@@ -65,6 +65,28 @@ def settlement_state(status: str) -> str:
     return "not_assessed"
 
 
+def money_line(status: str, final_payout: Optional[float],
+               proposed: Optional[float] = None) -> str:
+    """The claim's money in a few words, for a terminal summary.
+
+    Only an authorised or refused claim has a final figure. A claim waiting
+    for a person shows the calculator's proposal, labelled as one; a claim
+    waiting for evidence has no figure at all. Rs 0.00 on either would read
+    as a decision nobody made."""
+    state = settlement_state(status)
+    if state == "authorised":
+        return f"Rs {float(final_payout or 0.0):,.2f}"
+    if state == "refused":
+        return "Rs 0.00 (refused)"
+    if state == "pending_human_review":
+        if proposed is None:
+            return "none authorised (awaiting review)"
+        return f"proposed Rs {float(proposed):,.2f}, not authorised (awaiting review)"
+    if state == "pending_evidence":
+        return "not assessed (awaiting evidence)"
+    return "none (not assessed)"
+
+
 def line_label(admitted: bool, state: str, decided_by_person: bool) -> str:
     """What to call one invoice line, given where the claim has got to.
 

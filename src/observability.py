@@ -1,16 +1,24 @@
 """
-Tracing for ClaimSight: one timeline per claim, across both frameworks.
+Tracing for ClaimSight: one timeline per claim, in each process.
 
 The monitoring log (src/monitoring.py) records what happened on this machine.
 This module sends the same run to Langfuse, where a claim appears as a tree:
 the Flow, each crew, each agent, each LLM call with its tokens and seconds, and
 each tool call. That is what makes a slow or expensive step findable.
 
-Both frameworks report into one trace, because they share OpenTelemetry:
+Both frameworks report through the provider set here, because they share
+OpenTelemetry:
 
     CrewAI   openinference-instrumentation-crewai  (crews, agents, tasks)
     the LLM  openinference-instrumentation-openai  (calls, tokens, latency)
     ADK      its own OpenTelemetry spans, which land in the provider set here
+
+Within one process, ADK and CrewAI spans therefore share one trace; that is
+what test_observability.py verifies, in memory. The live demo is two processes
+(run_assistant.py for ADK, src/a2a_server.py for CrewAI), and no trace context
+is passed over A2A, so there a claim appears as two traces, not one. What has
+been verified remotely is a single synthetic span (check_langfuse.py), not a
+live claim's trace.
 
 Tracing is OFF unless LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY are set, so
 the project runs exactly as before without them.

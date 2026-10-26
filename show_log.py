@@ -9,10 +9,13 @@ import json
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent / "src"))
+from reporting import money_line                 # noqa: E402
+
 LOGS = Path(__file__).parent / "data" / "logs"
 
 
-def line(entry: dict, full: bool) -> str:
+def line(entry: dict, full: bool, proposed=None) -> str:
     def cut(text, n=110):
         text = str(text).replace("\n", " ")
         return text if full or len(text) <= n else text[:n] + " ..."
@@ -57,10 +60,11 @@ def line(entry: dict, full: bool) -> str:
             return f"GUARD   {entry.get('tool')} result {mark}{detail}"
         return f"GUARD   {kind} {mark}"
     if e == "run_started":
-        return "START"
+        # logs written before the model was recorded say nothing about it
+        return f"START   model={entry['model']}" if entry.get("model") else "START"
     if e == "run_finished":
         return (f"END     status={entry.get('status')}  route={entry.get('route')}  "
-                f"payout=Rs {entry.get('final_payout', 0):,.2f}\n"
+                f"payout={money_line(entry.get('status'), entry.get('final_payout'), proposed)}\n"
                 f"{'':8}{entry['total_seconds']}s total, {entry['tasks']} tasks, "
                 f"{entry['tool_calls']} tool calls, {entry['retried_llm_failures']} failed LLM calls, "
                 f"{entry['errors']} errors")
@@ -77,9 +81,12 @@ def main() -> None:
         sys.exit(f"No log for {ids[0]} yet. Run: uv run python run_flow.py {ids[0]}")
 
     print(f"Monitoring log  {ids[0]}   ({path.relative_to(Path(__file__).parent)})\n")
+    proposed = None          # the calculator's figure, from the routing entry
     for raw in path.read_text().splitlines():
         entry = json.loads(raw)
-        print(f"{entry['elapsed_s']:>7.1f}s  {line(entry, '--full' in args)}")
+        if entry.get("event") == "flow" and entry.get("payout") is not None:
+            proposed = entry["payout"]
+        print(f"{entry['elapsed_s']:>7.1f}s  {line(entry, '--full' in args, proposed)}")
 
 
 if __name__ == "__main__":

@@ -45,3 +45,6 @@ server.log
 .chroma/
 chroma/
 db/
+
+# dashboard: live-run locks, backups and the evidence sandbox
+dashboard/.runtime/

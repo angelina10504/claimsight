@@ -29,6 +29,7 @@ import observability                      # noqa: E402
 observability.start()                     # before the crews or ADK are imported
 
 from claim_flow import FRAUD_THRESHOLD, HIGH_VALUE, ClaimFlow, resume_claim   # noqa: E402
+from reporting import money_line                                              # noqa: E402
 
 CLAIMS = ROOT / "data" / "claims"
 DEMO_SET = ["CLM-5000", "CLM-5004", "CLM-5005", "CLM-5006", "CLM-5007", "CLM-5008"]
@@ -95,6 +96,7 @@ def main() -> None:
             rows.append({"claim_id": claim_id, "pattern": claim["ground_truth"]["fault_type"],
                          "route": s.route, "expected": expected_route(claim),
                          "status": s.status, "payout": s.final_payout,
+                         "proposed": (s.settlement or {}).get("payout"),
                          "expected_payout": claim["ground_truth"]["expected_payout"]})
         except Exception as exc:                       # noqa: BLE001
             print(f"\n{claim_id} FAILED: {exc}")
@@ -114,7 +116,7 @@ def main() -> None:
             continue
         mark = "" if r["route"] == r["expected"] else "  <- differs"
         print(f"{r['claim_id']:<10} {r['pattern']:<20} {r['route']:<13} {r['expected']:<13} "
-              f"{r['status']:<21} Rs {r['payout']:,.2f}{mark}")
+              f"{r['status']:<21} {money_line(r['status'], r['payout'], r['proposed'])}{mark}")
     done = [r for r in rows if "error" not in r]
     if done:
         right = sum(r["route"] == r["expected"] for r in done)

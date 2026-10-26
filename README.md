@@ -101,7 +101,10 @@ Names only; the values go in `.env`, which is never committed. See
 `A2A_HOST`, `A2A_PORT`, `CLAIMSIGHT_A2A_URL`,
 `CLAIMSIGHT_LLM_RETRIES`, `CLAIMSIGHT_LLM_TIMEOUT`, `CLAIMSIGHT_MAX_RPM`,
 `CLAIMSIGHT_KNOWLEDGE_RESULTS`, `CLAIMSIGHT_KNOWLEDGE_THRESHOLD`,
-`LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_HOST`,
+`CLAIMSIGHT_GROQ_MODEL` (default `openai/openai/gpt-oss-20b`; set
+`openai/openai/gpt-oss-120b` explicitly to use the larger model),
+`LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_HOST` (or
+`LANGFUSE_BASE_URL`),
 `LANGFUSE_TRACE_CONTENT`, `CLAIMSIGHT_OFFLINE`, `CLAIMSIGHT_TRACING`,
 `CREWAI_TRACING_ENABLED`, `OLLAMA_BASE_URL`, `USE_MCP`.
 
@@ -122,6 +125,30 @@ uv run python show_log.py CLM-5000            # the timeline from the callbacks
 uv run python src/a2a_server.py
 uv run python run_assistant.py --demo
 ```
+
+### The dashboard
+
+```bash
+uv run streamlit run dashboard/app.py --server.address 127.0.0.1
+```
+
+A local Streamlit workspace over the same saved results: an overview, a claim
+investigation page (assessment, invoice lines, settlement, the explanation from
+`src/reporting.py`, the documents), the evidence cycle, and each claim's agent
+timeline from its monitoring log. It listens on 127.0.0.1 only.
+
+- **Presentation mode** (the default) reads saved results. It calls no model,
+  starts no process and writes nothing, so it works with every quota spent.
+- **Live assessment** runs `run_flow.py <claim> --no-input` for one development
+  claim, only from its button after a confirmation. It spends Groq tokens and
+  replaces that claim's saved result; the old one is copied aside first and can
+  be restored if the run fails. It is the CrewAI Flow directly, not the ADK →
+  A2A path.
+- **Evidence & Recovery** drives the real evidence cycle in its own workspace
+  (`dashboard/.runtime/`) with the stand-in crews from `test_evidence_flow.py`,
+  including a simulated 429 during the reassessment. No model is called.
+
+Pages can be bookmarked: `?page=Claim+Investigation&claim=CLM-5004`.
 
 ### The full ADK → A2A → CrewAI demo, and what it is not
 
@@ -187,7 +214,10 @@ read `DISPUTED` rather than `DENIED`.
 
 ## Tests
 
-All of these run offline. None calls Groq or Gemini, and none exports a trace.
+### Fully offline
+
+These call no model and export no trace: Groq and Gemini are never reached,
+and the crews are stand-ins where a crew is needed.
 
 ```bash
 uv run python test_settlement.py        # the calculator against the dataset
@@ -203,8 +233,22 @@ uv run python test_privacy.py           # what actually reaches the model
 uv run python test_llm_limits.py        # rate limits, retries, token recording
 uv run python test_observability.py     # tracing, in memory
 uv run python test_a2a.py               # the A2A protocol, stand-in crews
-uv run python test_policy_knowledge.py  # the policy RAG (needs Ollama)
-uv run python check_langfuse.py         # the one script that talks to Langfuse
+uv run python test_evaluation.py        # the evaluation harness, stand-in crews
+uv run python test_dashboard.py         # the dashboard: pages, data, live guard, sandbox
+```
+
+### Calls a real model
+
+```bash
+uv run python test_policy_knowledge.py  # the policy RAG: Groq for the answers,
+                                        # Ollama for the embeddings; costs tokens
+```
+
+### Talks to Langfuse, on purpose
+
+```bash
+uv run python check_langfuse.py         # sends ONE synthetic span (no claim
+                                        # data, no model call) to check the keys
 ```
 
 `test_audit.py --table` prints the settlement assumptions with each clause it
@@ -219,20 +263,27 @@ Offline, and reproducible:
 | settlement against the dataset | 55/55 within ₹1 |
 | settlement against the policy wording | 39/39, all 8 depreciation bands matched |
 | deterministic fraud checks, dev split | every rule-catchable fault, 0 false alarms |
-| policy questions answered from the wording | 4/4 |
 | routing | 28/28 |
 | evidence cycle | 56/56 |
 | reports | 58/58 |
 | privacy (payload inspected) | 24/24 |
 | rate limits and cost recording | 28/28 |
-| tracing | 40/40 |
+| tracing (in memory) | 49/49 |
+| evaluation harness (stand-in crews) | 55/55 |
+| dashboard (AppTest, stand-in crews) | 68/68 |
 | MCP | 4/4 tools, 4/4 bad inputs rejected |
 | A2A protocol | 5/5 |
 
+With a real model (`test_policy_knowledge.py`): policy questions answered from
+the wording, 4/4.
+
 With live models, verified by hand: CLM-5000 auto-approved at ₹41,869.40, and
-CLM-5004 routed to human review over an overpriced windshield with ₹16,081.97
-assessed. Measured on `gpt-oss-120b`: 44,352 tokens and 91 seconds for
-CLM-5000 (after two 429s), 39,609 tokens and 49 seconds for CLM-5004.
+CLM-5004 routed to human review over an overpriced windshield, with ₹16,081.97
+proposed and not yet authorised. Their saved logs record 44,352 tokens and 91
+seconds for CLM-5000 (after two 429s), and 39,609 tokens and 49 seconds for
+CLM-5004. Those logs predate model recording, so they do not name the model;
+the configuration committed at the time hard-coded `gpt-oss-20b`. Runs from
+now on record the model in their log.
 
 Accuracy figures come from the **20 development claims**. The other **40 are
 held out** for the final evaluation and are not used for prompt tuning or for
@@ -269,7 +320,12 @@ generated test set with unseen prices and garage formats.
   200,000 tokens a day and limits tokens per minute, and a claim costs roughly
   40,000 tokens, so a full evaluation has to be spread over several days.
 - **Remote Langfuse export needs verifying on the machine that runs it**, with
-  `check_langfuse.py`. A key issued for one region is refused by the other.
+  `check_langfuse.py`. A key issued for one region is refused by another.
+- **Tracing is verified locally, not as one live distributed trace.** In one
+  process, ADK and CrewAI spans share a trace (`test_observability.py`, in
+  memory), and remote export is verified with a single synthetic span. The live
+  demo runs ADK and CrewAI in two processes and passes no trace context over
+  A2A, so a live claim appears in Langfuse as two traces, not one.
 - **Monitoring keeps one active claim at a time** (`src/monitoring.py`). That
   is fine for the sequential demos; concurrent claims would mix their events,
   so per-request context is needed before any deployment.

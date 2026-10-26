@@ -338,7 +338,7 @@ def run_or_resume(claim_id: str, interactive: bool = True, verbose: bool = False
             return outcome["state"]
     flow = ClaimFlow()
     # One span per claim, so the Flow, both crews, every LLM call and every
-    # tool call appear under it as one tree in Langfuse.
+    # tool call in this process appear under it as one tree in Langfuse.
     with observability.claim_span(claim_id):
         flow.kickoff(inputs={"claim_id": claim_id, "use_saved_intake": use_saved_intake,
                              "interactive": interactive, "verbose": verbose})
@@ -383,7 +383,11 @@ class ClaimFlow(Flow[ClaimState]):
 
     @start()
     def intake(self):
-        monitoring.ClaimMonitor(self.state.claim_id)     # fresh log: data/logs/<claim>.jsonl
+        # Fresh log: data/logs/<claim>.jsonl. The model goes in it, so a saved
+        # log says what produced it rather than leaving that to be assumed.
+        import config
+        monitoring.ClaimMonitor(self.state.claim_id, provider=config.PROVIDER,
+                                model=config.PROFILES[config.PROVIDER]["text"])
         self.screen_claimant_text()
         saved = INTAKE / f"{self.state.claim_id}.json"
         if self.state.use_saved_intake and saved.exists():

@@ -1,5 +1,5 @@
 """
-Test the tracing: one trace per claim, across both frameworks, carrying no PII.
+Test the tracing: one trace per claim within a process, carrying no PII.
 
 Costs no tokens and needs no Langfuse account. Instead of sending spans to
 Langfuse it collects them in memory, which is the same path with a different
@@ -7,7 +7,8 @@ exporter at the end, so what is tested is what would be sent.
 
     tracing stays off until the Langfuse keys are set
     a CrewAI run produces spans for the crew and the agent
-    an ADK run produces spans in the same provider, so one claim is one trace
+    an ADK run in the same process lands in the same provider and trace (the
+      live demo runs ADK and CrewAI in two processes, which this does not cover)
     the claim span wraps them and carries the claim id
     a phone number in a span never leaves the machine
     with LANGFUSE_TRACE_CONTENT=false, no text leaves at all
@@ -209,7 +210,7 @@ def main() -> None:
         kept.get("llm.model_name") == "gpt-oss-120b")
 
     # ---------------------------------------------------------------- both frameworks
-    print("\n5. ADK reports into the same provider, so one claim is one trace\n")
+    print("\n5. ADK in the same process reports into the same provider and trace\n")
     before = len(memory.get_finished_spans())
     import asyncio
 
