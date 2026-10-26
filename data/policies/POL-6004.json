@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-6004",
+  "insured_name": "Ethan Balan",
+  "phone": "04361802487",
+  "address": "51/165, Kale Zila, Raichur 426394",
+  "make": "Tata",
+  "model": "Nexon XZ+",
+  "registration": "HR66SO2758",
+  "vehicle_age_years": 0.4,
+  "idv": 902000,
+  "deductible": 1000,
+  "policy_start": "2026-04-26",
+  "policy_end": "2027-04-25",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

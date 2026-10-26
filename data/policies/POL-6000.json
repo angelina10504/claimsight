@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-6000",
+  "insured_name": "Abhimanyu Tella",
+  "phone": "03176901307",
+  "address": "36/632, Bobal Street, Kamarhati 208161",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR74YG8647",
+  "vehicle_age_years": 1.2,
+  "idv": 1012000,
+  "deductible": 1000,
+  "policy_start": "2026-01-02",
+  "policy_end": "2027-01-01",
+  "zero_depreciation": true,
+  "ncb_percent": 35
+}

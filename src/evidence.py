@@ -76,8 +76,11 @@ def outstanding(state: dict) -> List[EvidenceRequest]:
     for gap in ((state.get("intake") or {}).get("missing_fields") or []):
         if any(same_item(gap, done) for done in satisfied):
             continue
-        out.append(EvidenceRequest(item=gap, from_whom="claimant",
-                                   why="the claim cannot be assessed without it"))
+        photo = gap.startswith("photograph showing") or "clearer photograph" in gap
+        out.append(EvidenceRequest(
+            item=gap, from_whom="claimant",
+            why=("the photograph on file does not show this billed part, so it cannot be "
+                 "checked" if photo else "the claim cannot be assessed without it")))
 
     # The agent's wording and the code's doubt describe ONE open question.
     why = list(dict.fromkeys(

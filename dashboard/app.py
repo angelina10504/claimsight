@@ -25,7 +25,8 @@ import flow_runner                                        # noqa: E402
 from styles import CSS, INK, LINE, MUTED, TEAL            # noqa: E402
 
 ROOT = HERE.parent
-PAGES = ("Overview", "Claim Investigation", "Evidence & Recovery", "Agent Activity")
+PAGES = ("Overview", "Claim Walkthrough", "Evidence & Recovery", "Agent Activity")
+RENAMED = {"Claim Investigation": "Claim Walkthrough"}      # old bookmarks still open
 MODES = ("Presentation", "Live assessment")
 DEMO_FIRST = ("CLM-5000", "CLM-5004")
 
@@ -86,8 +87,9 @@ def live_run_notice(claim_id: str) -> None:
 # ---------------------------------------------------------------- sidebar
 # A link such as ?page=Agent+Activity&claim=CLM-5004 opens there, which makes
 # bookmarks for a presentation. Both values are checked against fixed lists.
-if "page" not in st.session_state and st.query_params.get("page") in PAGES:
-    st.session_state["page"] = st.query_params["page"]
+_asked = RENAMED.get(st.query_params.get("page"), st.query_params.get("page"))
+if "page" not in st.session_state and _asked in PAGES:
+    st.session_state["page"] = _asked
 if "claim_id" not in st.session_state and da.is_known(st.query_params.get("claim")):
     st.session_state["claim_id"] = st.query_params["claim"]
 
@@ -105,13 +107,14 @@ with st.sidebar:
     else:
         st.caption("Live runs use Groq tokens and replace the claim's saved result. "
                    "Each run is started by hand.")
-    if page in ("Claim Investigation", "Agent Activity"):
+    if page in ("Claim Walkthrough", "Agent Activity"):
         st.divider()
         options = claim_options()
         if st.session_state.get("claim_id") not in options:
             st.session_state["claim_id"] = options[0] if options else None
         st.selectbox("Claim", options, key="claim_id", format_func=describe_option,
-                     help="Type to search. Saved claims are listed first.")
+                     help="Type to search. Saved claims are listed first. Development and "
+                          "photo claims only: the held-out claims are not shown.")
 
 
 # ---------------------------------------------------------------- overview
@@ -201,8 +204,12 @@ def page_overview() -> None:
                      rows, numeric=(3,)))
 
 
-# ---------------------------------------------------------------- investigation
-def page_investigation() -> None:
+# ---------------------------------------------------------------- walkthrough
+STAGE_ANCHOR = {"intake": "cs-documents", "gate": "cs-flow", "assessment": "cs-agents",
+                "settlement": "cs-decision", "router": "cs-decision", "outcome": "cs-decision"}
+
+
+def page_walkthrough() -> None:
     claim_id = st.session_state.get("claim_id")
     if not claim_id:
         st.info("No claims are available.")
@@ -213,185 +220,270 @@ def page_investigation() -> None:
 
     head, badge_col = st.columns([3, 2])
     with head:
-        ui.html(f"<div class='cs-eyebrow'>Claim investigation · {ui.e(da.split_of(claim_id))} "
+        ui.html(f"<div class='cs-eyebrow'>Claim walkthrough · {ui.e(da.split_of(claim_id))} "
                 f"claim</div><h1 style='margin:0'>{ui.e(claim_id)}</h1>")
     with badge_col:
         route = da.ROUTE.get((record.state or {}).get("route"), "Not routed")
         ui.html(f"<div style='text-align:right;margin-top:1.4rem'>{status_badge(record.status)}"
                 f"&nbsp;{ui.badge('Route: ' + route, 'info')}</div>")
+    ui.html("<div class='cs-lede' style='margin:.4rem 0 .8rem 0'>Read top to bottom: what went "
+            "in, which agents acted on it, how it moved through the Flow, and what was decided. "
+            "Everything is read from the saved state and the claim's log; nothing is re-run.</div>")
     saved_label(record)
     live_run_notice(claim_id)
     if record.problem and record.source in ("unreadable", "none") and record.status != "not_assessed":
         ui.banner(ui.e(f"This claim's saved record is unavailable: {record.problem}."), "bad", "!")
+    if not record.log:
+        ui.banner("No monitoring log is saved for this claim, so no agent activity can be shown. "
+                  "A claim gets one when it runs through the Flow.", "neutral", "○")
 
-    # A. summary
-    ui.section("A · Claim summary")
-    left, right = st.columns([1, 1.25])
-    with left:
-        vehicle = " ".join(str(policy.get(k)) for k in ("make", "model") if policy.get(k)) or "—"
-        ui.html(ui.card("Claim", "") .replace("<p></p>", ui.kv([
-            ("Policy", submission.get("policy_no") or "—"),
-            ("Vehicle", vehicle),
-            ("Registration", policy.get("registration") or "—"),
-            ("Vehicle age", f"{policy['vehicle_age_years']} years"
-                if policy.get("vehicle_age_years") is not None else "—"),
-            ("Incident date", submission.get("incident_date") or "Not provided"),
-            ("Status", status_badge(record.status), True),
-            ("Final route", da.ROUTE.get((record.state or {}).get("route"), "Not routed")),
-        ])))
-    with right:
-        narrative = ((record.state or {}).get("intake") or {}).get("narrative") \
-            or submission.get("narrative") or "No narrative on file."
-        ui.html(ui.card("What the claimant said", "").replace(
-            "<p></p>", f"<div class='cs-quote'>{ui.e(narrative)}</div>"
-            "<div class='cs-note' style='margin-top:.6rem'>As the agents read it, after input "
-            "screening.</div>"))
+    walk_photo(claim_id, record)
+    ui.anchor("cs-documents")
+    ui.section("2 · The documents", "what the agents read")
+    documents(claim_id, record, submission, policy)
+    walk_agents(record)
+    walk_flow(record)
+    walk_decision(record)
+    if mode == MODES[1]:
+        live_panel(claim_id)
 
-    if record.source not in ("flow", "assessment_only"):
-        st.write("")
-        ui.banner("This claim has no saved assessment, so there is nothing to explain yet. "
-                  "Its documents are below." + (" In Live mode it can be run from this page."
-                                                if flow_runner.eligible(claim_id) else ""),
-                  "neutral", "○")
-        documents(claim_id, record, submission, policy)
-        if mode == MODES[1]:
-            live_panel(claim_id)
+
+def walk_photo(claim_id: str, record) -> None:
+    photos = da.claim_photos(claim_id)
+    ui.section("1 · The photograph", "Damage Analyst")
+    if not photos:
+        ui.html("<div class='cs-note'>This claim has no photograph, so the Damage Analyst is "
+                "skipped and the claim is assessed on its documents.</div>")
         return
+    findings = da.damage_findings(record)
+    by_photo = {f.get("photo"): f for f in findings["photos"]}
+    for photo in photos:
+        left, right = st.columns([1.15, 1])
+        with left:
+            data = da.photo_bytes(claim_id, photo["name"])
+            if data:
+                st.image(data, width="stretch")
+                st.caption(f"{photo['name']} · from the public research dataset, as submitted "
+                           "with the claim.")
+            else:
+                st.warning("The photograph listed on this claim is not on file.")
+        with right:
+            found = by_photo.get(photo["name"])
+            if not found:
+                ui.html(ui.card("What the Damage Analyst reported",
+                                "Nothing is recorded yet. The Damage Analyst's findings are "
+                                "saved when the claim runs through the Flow with its photograph; "
+                                "this claim has not been run since the agent was added."))
+                continue
+            lists = "".join(
+                f"<div class='cs-photo-list'><div class='h'>{ui.e(title)}</div>"
+                f"{ui.chips(found.get(key) or [])}</div>"
+                for title, key in (("Damaged", "damaged"), ("Undamaged: seen clearly, intact",
+                                                            "undamaged"),
+                                   ("Not visible: not evidence either way", "not_visible")))
+            facts = ui.kv([("Readable", "yes" if found.get("readable") else "no"),
+                           ("Damage types", ", ".join(found.get("damage_types") or []) or "—"),
+                           ("Severity", found.get("severity") or "not recorded"),
+                           ("Recorded in", findings["source"] or "—")])
+            note = (f"<div class='cs-note' style='margin-top:.5rem'>{ui.e(found.get('notes'))}</div>"
+                    if found.get("notes") else "")
+            ui.html(ui.card("What the Damage Analyst reported", lists + facts + note,
+                            raw_body=True))
+            photo_vs_invoice(record, found)
 
-    decision = (record.state or {}).get("decision") if record.source == "flow" \
-        else record.legacy["decision"]
-    decision = decision or {}
 
-    # B. assessment overview
-    ui.section("B · Assessment overview")
-    coverage = str(decision.get("coverage_status") or
-                   ("covered" if decision.get("is_covered") else "excluded")).lower()
-    cov_tone = {"covered": "good", "excluded": "bad", "uncertain": "warn"}.get(coverage, "neutral")
-    score = decision.get("fraud_score")
-    flags = decision.get("fraud_flags") or []
-    review_reason = record.report.route_reason if record.source == "flow" else ""
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        ui.html(ui.card("Policy coverage", ui.badge(coverage.capitalize(), cov_tone)
-                        + (f"<div class='cs-note' style='margin-top:.5rem'>"
-                           f"{ui.e('; '.join(decision.get('uncertainty_reasons') or []))}</div>"
-                           if decision.get("uncertainty_reasons") else ""), raw_body=True))
-    with c2:
-        tone = "warn" if (score or 0) >= 0.5 else "good"
-        ui.html(ui.card("Fraud-risk score",
-                        f"<span style='font-size:1.6rem;font-weight:700;color:{INK}'>"
-                        f"{ui.e(f'{score:.2f}' if score is not None else '—')}</span> "
-                        f"{ui.badge('review threshold 0.50', tone)}"
-                        "<div class='cs-note' style='margin-top:.4rem'>A risk score from 0 to 1, "
-                        "not a probability.</div>", raw_body=True))
-    with c3:
-        body = "".join(f"<div style='margin-bottom:.3rem'>• {ui.e(f)}</div>" for f in flags) \
-            or "None raised."
-        ui.html(ui.card("Fraud indicators", body, raw_body=True))
-    with c4:
-        doubts = (record.state or {}).get("coverage_doubts") or []
-        # plain text: card() escapes it
-        if record.status == "awaiting_review":
-            body = review_reason or "Sent to a person by the routing rules."
-        elif doubts:
-            body = doubts[0]
-        else:
-            body = review_reason or "Not applicable."
-        ui.html(ui.card("Why it was routed this way", body))
+def photo_vs_invoice(record, found: dict) -> None:
+    check = da.photo_comparison(record, found)
+    if check is None:
+        st.caption("No extracted invoice is saved, so the billed parts cannot be compared "
+                   "with the photograph.")
+        return
+    st.write("")
+    lines = [f"Billed parts: {', '.join(check.get('billed_parts') or []) or 'none named'}."]
+    acted = check.get("recorded")
+    for flag in check.get("flags") or []:
+        lines.append(f"FLAGGED: {flag}."
+                     + (" → Added to the fraud flags, and the router sent the claim to a "
+                        "person." if acted else ""))
+    for part in check.get("unchecked_parts") or []:
+        lines.append(f"Unchecked: the {part} is billed but not visible in this photograph. "
+                     "Not a fraud flag.")
+    for item in check.get("requests") or []:
+        lines.append(f"→ The claimant was asked for a {item}, through the evidence loop.")
+    for item in check.get("supplied") or []:
+        lines.append(f"→ The claimant sent the {item}. Claimant photographs are not sent to a "
+                     "model, so the router sent the claim to a person to inspect it.")
+    if check.get("not_billed"):
+        lines.append(f"Damaged in the photograph but not billed: {', '.join(check['not_billed'])}.")
+    tone = "bad" if check.get("flags") else "warn" if check.get("unchecked_parts") else "good"
+    label = ("Billed part shown undamaged" if check.get("flags") else
+             "Some billed parts unchecked" if check.get("unchecked_parts") else
+             "Every billed part seen damaged")
+    ui.html(ui.card("Billed parts against the photograph",
+                    ui.badge(label, tone) + "".join(
+                        f"<div style='margin-top:.35rem;color:{INK}'>{ui.e(l)}</div>" for l in lines)
+                    + "<div class='cs-note' style='margin-top:.5rem'>"
+                    + ("Checked by the Flow, in code, after intake; this is what the route "
+                       "acted on." if acted else
+                       "Computed now by the same code (check_billed_parts_against_photo). This "
+                       "run was saved before the Flow made the check, so it did not affect "
+                       "the route.")
+                    + " A part is flagged only when the photograph shows it intact.</div>",
+                    raw_body=True))
 
-    # C. invoice lines
-    ui.section("C · Invoice and line-item assessment")
-    rows = []
-    for line in da.line_rows(record):
-        ref = line["reference"]
-        ref_text = (f"₹{ref['market_price']:,.0f}"
-                    + (f" <span class='cs-chip'>{ref['ratio']}× market</span>" if ref.get("ratio") else "")
-                    if ref else "<span class='cs-note'>none recorded</span>")
-        rows.append([ui.e(line["description"]), ui.e(ui.rupees(line["amount"])),
-                     ui.badge(line["status"], line["tone"]),
-                     ui.e(line["reason"]) or "<span class='cs-note'>—</span>", ref_text])
-    ui.html(ui.table(["Item", "Billed", "Assessment", "Reason", "Reference price"], rows,
-                     numeric=(1,)))
-    if any(r["status"].startswith("Disputed") for r in da.line_rows(record)):
-        ui.html("<div class='cs-note' style='margin-top:.4rem'>A disputed line is the agents' "
-                "recommendation, not a final refusal: it becomes denied only if an adjuster "
-                "decides so.</div>")
 
-    # D. settlement
-    ui.section("D · Settlement breakdown", "Python calculator")
+def walk_agents(record) -> None:
+    ui.anchor("cs-agents")
+    ui.section("3 · The six agents", "from the claim's log")
+    agents = da.agent_walkthrough(record)
+    checks = da.flow_checks(record)
+    if checks:
+        stopped = [c for c in checks if not c["passed"]]
+        ui.html(f"<div class='cs-note'>Before the agents, the Flow's own checks: "
+                + ui.e(", ".join(sorted({c['what'] for c in checks})))
+                + (" — all passed." if not stopped else
+                   f" — {len(stopped)} stopped something.") + "</div>")
+    ui.html("<div class='cs-note'>The Claimant Assistant (Google ADK, on Gemini) can start a claim "
+            "over A2A, but runs in its own process; a claim's log does not record whether it "
+            "was started that way or from the terminal.</div>")
+    titles = {"intake": "Intake crew", "assessment": "Assessment crew"}
+    shown = None
+    for n, agent in enumerate(agents, start=1):
+        if agent["crew"] != shown:
+            shown = agent["crew"]
+            tokens = agent["crew_tokens"]
+            ui.html(f"<div class='cs-crew'>{ui.e(titles[shown])} <span>· "
+                    + ui.e(f"{tokens:,} tokens for the whole crew, as the provider reported; "
+                           "the log records tokens per crew, not per agent" if tokens else
+                           "tokens not recorded for this crew") + "</span></div>")
+        agent_card(n, agent)
+
+
+def agent_card(n: int, agent: dict) -> None:
+    if agent["ran"]:
+        timing = (f"{agent['seconds']:.1f}s" if agent["seconds"] is not None else "time not recorded")
+        status = ui.badge(f"Ran · {timing}", "good", "✓")
+        extra = (f" · started {agent['started']:.1f}s into the run"
+                 if agent["started"] is not None else "")
+        if agent["vision_tokens"]:
+            extra += f" · vision call {agent['vision_tokens']:,} tokens"
+        why = f"<div class='why'>{ui.e(extra.lstrip(' ·'))}</div>" if extra else ""
+    else:
+        never = agent["reason"].startswith("No monitoring log")
+        status = ui.badge("Not run yet" if never else "Skipped", "neutral", "–")
+        why = f"<div class='why'>{ui.e(agent['reason'])}</div>"
+    ui.html(f"<div class='cs-agent{'' if agent['ran'] else ' skipped'}'>"
+            f"<div class='num'>{n}</div><div><span class='nm'>{ui.e(agent['name'])}</span>"
+            f"<span class='fw'>{ui.e(agent['framework'])}"
+            + (f" · MCP tools: {ui.e(', '.join(agent['tools']))}" if agent["tools"] else "")
+            + f"</span><div class='ds'>{ui.e(agent['does'])}</div>{why}</div>"
+            f"<div>{status}</div></div>")
+    if not agent["ran"]:
+        return
+    with st.expander(f"{agent['name']}: what it was asked, what it concluded, its tools"):
+        st.caption("Asked (the first line of its task)")
+        st.markdown(ui.e(agent["asked"] or "not recorded"))
+        st.caption("Concluded" + (f" · returned a {agent['structured']}" if agent["structured"]
+                                  else "") + " · the log keeps the first 600 characters")
+        st.code(agent["concluded"] or "not recorded", language=None, wrap_lines=True)
+        if agent["tools_called"]:
+            st.caption("Tool calls, over MCP")
+            for call in agent["tools_called"]:
+                st.markdown(f"**{ui.e(call['tool'])}** · {ui.e(call['at'])}s"
+                            + (" · returned an error" if call["error"] else ""))
+                st.code(call["input"], language="json", wrap_lines=True)
+                st.code(call["result"], language="json", wrap_lines=True)
+        elif agent["tools"]:
+            st.caption("It made no tool call in this run.")
+        if agent["guardrails"]:
+            ui.html("<div class='cs-note' style='margin:.4rem 0 .2rem 0'>Guardrails on its "
+                    "work</div>" + " ".join(
+                        ui.badge(f"{g['what']}{' (' + g['tool'] + ')' if g['tool'] else ''}: "
+                                 + ("passed" if g["passed"] else "stopped the output"),
+                                 "good" if g["passed"] else "warn")
+                        for g in agent["guardrails"]))
+        if agent["citations"]:
+            st.caption("Policy clauses cited in its decision, checked against the policy wording")
+            for c in agent["citations"]:
+                verdict = ("verified" if c["verified"] else "not verified"
+                           if c["verified"] is False else "not checked")
+                tone = "good" if c["verified"] else "warn" if c["verified"] is False else "neutral"
+                ui.html(f"<div style='margin-bottom:.4rem'>{ui.badge(verdict, tone)} "
+                        f"<span style='color:{INK}'>{ui.e(c['clause'])}</span></div>")
+
+
+def walk_flow(record) -> None:
+    ui.anchor("cs-flow")
+    ui.section("4 · The flow", "CrewAI Flow")
+    flow = da.flow_stages(record.log, record.state)
+    if not flow["recorded"]:
+        ui.html("<div class='cs-note'>No log, so the stages cannot be shown.</div>")
+        return
+    for stage in flow["stages"]:
+        stage["anchor"] = STAGE_ANCHOR[stage["key"]]
+    ui.html(ui.stage_strip(flow["stages"], flow["loop"]))
+    ui.html("<div class='cs-note' style='margin-top:.4rem'>Each stage's text is what the Flow "
+            "logged; click a stage to jump to what it produced. The gate, the settlement and "
+            "the router are Python, not a model.</div>")
+
+
+def walk_decision(record) -> None:
+    ui.anchor("cs-decision")
+    ui.section("5 · The decision", "Python rules and calculator")
+    if record.source not in ("flow", "assessment_only"):
+        ui.html("<div class='cs-note'>No decision is saved for this claim.</div>")
+        return
     m = da.money(record)
+    route = da.ROUTE.get((record.state or {}).get("route"), "Not routed")
+    reason = record.report.route_reason if record.source == "flow" else \
+        "Assessed outside the Flow, so never routed."
     left, right = st.columns([1.3, 1])
     with left:
+        ui.html(ui.card("Route", "").replace("<p></p>", ui.kv([
+            ("Route", route),
+            ("Why", reason or "—"),
+            ("Status", status_badge(record.status), True),
+            ("Settlement state", m["label"]),
+        ])))
+    with right:
+        ui.html(ui.payline("Proposed payout", ui.rupees(m["proposed"]), "info"))
+        tone = "good" if m["state"] == "authorised" else "bad" if m["state"] == "refused" else "warn"
+        ui.html(ui.payline("Final payment", da.final_payment_text(record), tone))
+        ui.html("<div class='cs-note' style='margin-top:.5rem'>Proposed is what the calculator "
+                "says the claim is worth. Nothing is paid until it is authorised.</div>")
+    with st.expander("Line by line, and the settlement breakdown"):
+        line_table(record)
         b = m["breakdown"]
         if b:
-            ui.html("<div class='cs-card'>" + "".join([
+            ui.html("<div class='cs-card' style='margin-top:.8rem'>" + "".join([
                 ui.money_row("Admitted subtotal", ui.rupees(b.get("admitted_subtotal"))),
                 ui.money_row("Less depreciation", "− " + ui.rupees(b.get("total_depreciation"))),
                 ui.money_row("After depreciation", ui.rupees(b.get("after_depreciation"))),
                 ui.money_row("GST at 18%", "+ " + ui.rupees(b.get("gst"))),
                 ui.money_row("Less deductible", "− " + ui.rupees(b.get("deductible"))),
                 ui.money_row("Proposed settlement", ui.rupees(b.get("payout")), total=True),
-            ]) + ("<div class='cs-note'>Capped at the insured declared value.</div>"
-                  if b.get("capped_at_idv") else "") + "</div>")
-        else:
-            ui.html(ui.card("No settlement breakdown",
-                            m["explanation"] or "Nothing was computed for this claim."))
-    with right:
-        ui.html(ui.payline("Proposed settlement", ui.rupees(m["proposed"]), "info"))
-        final = da.final_payment_text(record)
-        tone = "good" if m["state"] == "authorised" else "bad" if m["state"] == "refused" else "warn"
-        ui.html(ui.payline("Final payment", final, tone))
-        ui.html(f"<div class='cs-note' style='margin-top:.5rem'>{ui.e(m['label'])}</div>")
-
-    # E. explanation
-    if record.source == "flow":
-        explain(record)
-    documents(claim_id, record, submission, policy)
-    if mode == MODES[1]:
-        live_panel(claim_id)
+            ]) + "</div>")
+        elif m["explanation"]:
+            st.code(m["explanation"], language=None)
 
 
-def explain(record) -> None:
-    report = record.report
-    ui.section("E · Explainable decision", "from the recorded run")
-    ui.html(f"<div class='cs-card'><div class='cs-quote'>{ui.e(da.explanation(record))}</div>"
-            "<div class='cs-note' style='margin-top:.6rem'>Assembled by src/reporting.py from the "
-            "saved state and log. No model writes this explanation.</div></div>")
-    st.write("")
-    left, right = st.columns(2)
-    with left:
-        refs = report.coverage_reasons
-        body = "".join(
-            f"<div style='margin-bottom:.55rem'>"
-            f"{ui.badge('verified' if r.grounded else 'not verified' if r.grounded is False else 'not checked', 'good' if r.grounded else 'warn' if r.grounded is False else 'neutral')}"
-            f"<div style='margin-top:.25rem;color:{INK}'>{ui.e(r.detail)}</div>"
-            f"<div class='cs-note'>{ui.e(r.source)}</div></div>" for r in refs) \
-            or "No policy reference was given."
-        ui.html(ui.card("Policy references", body, raw_body=True))
-    with right:
-        tools = [r for r in report.evidence if r.kind == "tool"]
-        body = "".join(
-            f"<div style='margin-bottom:.45rem'><strong style='color:{INK}'>"
-            f"{ui.e(r.source.split(' (')[0])}</strong>"
-            f"<div class='cs-note'>{ui.e(r.source.split(' (', 1)[1].rstrip(')') if ' (' in r.source else '')}"
-            f"</div></div>" for r in tools) or "No tool call was recorded."
-        route_line = (f"<div style='margin-top:.5rem'><strong style='color:{INK}'>Routing</strong>"
-                      f"<div class='cs-note'>{ui.e(report.route_reason or '—')}</div></div>")
-        pay = (f"<div style='margin-top:.5rem'><strong style='color:{INK}'>Payment</strong>"
-               f"<div class='cs-note'>{ui.e(da.final_payment_text(record))}</div></div>")
-        ui.html(ui.card("Tool findings and routing", body + route_line + pay, raw_body=True))
-
-    with st.expander("Technical evidence: every tool result, guardrail check and analyst report"):
-        for ref in report.evidence:
-            when = f" · {ref.at_seconds:.1f}s" if ref.at_seconds is not None else ""
-            st.markdown(f"**{ref.kind}** · {ref.source}{when}")
-            st.code(da.sanitise(ref.detail)[:1500], language=None)
-    with st.expander("Settlement calculator's own explanation"):
-        st.code(da.money(record)["explanation"] or "—", language=None)
+def line_table(record) -> None:
+    rows = []
+    for line in da.line_rows(record):
+        ref = line["reference"]
+        ref_text = (f"₹{ref['market_price']:,.0f}"
+                    + (f" <span class='cs-chip'>{ui.e(ref['ratio'])}× market</span>"
+                       if ref.get("ratio") else "")
+                    if ref else "<span class='cs-note'>none recorded</span>")
+        rows.append([ui.e(line["description"]), ui.e(ui.rupees(line["amount"])),
+                     ui.badge(line["status"], line["tone"]),
+                     ui.e(line["reason"]) or "<span class='cs-note'>—</span>", ref_text])
+    if rows:
+        ui.html(ui.table(["Item", "Billed", "Assessment", "Reason", "Reference price"], rows,
+                         numeric=(1,)))
 
 
 def documents(claim_id, record, submission, policy) -> None:
-    ui.section("F · Supporting documents")
     tabs = st.tabs(["Invoice", "Claim submission", "Policy schedule", "Reports"])
     with tabs[0]:
         pdf = da.invoice_pdf(claim_id)
@@ -412,6 +504,8 @@ def documents(claim_id, record, submission, policy) -> None:
                            ("Incident date", submission.get("incident_date") or "Not provided"),
                            ("Invoice date", submission.get("invoice_date") or "—"),
                            ("Photos", submission.get("photos"))]))
+            ui.html(f"<div class='cs-quote' style='margin-top:.7rem'>"
+                    f"{ui.e(submission.get('narrative') or 'No narrative on file.')}</div>")
         else:
             st.info("No submission is on file.")
     with tabs[2]:
@@ -502,6 +596,10 @@ def live_progress() -> None:
     if p["phase"] == "running":
         st.info(f"Running {claim_id} live · {p['elapsed']:.0f}s · steps appear as the Flow "
                 f"logs them.")
+        flow = da.flow_stages(p["entries"])
+        for stage in flow["stages"]:
+            stage["anchor"] = "cs-flow"
+        ui.html(ui.stage_strip(flow["stages"], flow["loop"]))
         steps = da.timeline(p["entries"])[-6:]
         ui.html("<div class='cs-tl'>" + "".join(
             ui.timeline_item(s["at"], s["title"], s["detail"], s["tone"]) for s in steps)
@@ -801,5 +899,5 @@ def observability_notes(facts) -> None:
 
 
 # ---------------------------------------------------------------- route
-{"Overview": page_overview, "Claim Investigation": page_investigation,
+{"Overview": page_overview, "Claim Walkthrough": page_walkthrough,
  "Evidence & Recovery": page_evidence, "Agent Activity": page_activity}[page]()

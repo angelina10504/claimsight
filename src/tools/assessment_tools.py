@@ -9,6 +9,8 @@ decide what to check and how to weigh the results; the tools only report facts.
   check_part_prices     - is any line billed far above the market rate?
   find_prior_claims     - has this vehicle already claimed for the same parts?
   calculate_settlement  - the payout for the lines the agents admit
+  check_billed_parts_against_photo - are the billed parts damaged in the photo?
+                        (defined in photo_check.py, re-exported here)
 """
 
 import json
@@ -23,20 +25,14 @@ from pydantic import BaseModel, Field
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from settlement import calculate_settlement, explain   # noqa: E402
+# Kept in modules with no CrewAI import, so the dashboard can use them too.
+from parts import MARKET_PRICES, part_name as _part_name   # noqa: E402,F401
+from photo_check import check_billed_parts_against_photo   # noqa: E402,F401
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 POLICIES = ROOT / "data" / "policies"
 CLAIMS = ROOT / "data" / "claims"
 
-# Reference market prices for replacement parts (Rs, before GST). A real
-# insurer would pull these from a parts catalogue; here they match the
-# generator's catalogue so the check is fair to genuine bills.
-MARKET_PRICES = {
-    "front bumper": 9000, "rear bumper": 8500, "headlight": 7200,
-    "taillight": 4300, "side mirror": 3100, "grille": 2800,
-    "bonnet": 12500, "front door": 14000, "rear door": 13200,
-    "fender": 6800, "windshield": 11000, "door glass": 4800,
-}
 OVERPRICED_RATIO = 1.5      # a part billed at 1.5x market or more is flagged
 PAINT_MAX_SHARE = 0.45      # painting above 45% of parts cost is unusual
 LABOUR_MAX_SHARE = 0.20     # labour above 20% of parts + painting is unusual
@@ -76,14 +72,6 @@ def _as_date(value, what: str = "date"):
         return date.fromisoformat(value.strip()), None
     except ValueError:
         return None, bad
-
-
-def _part_name(description: str) -> Optional[str]:
-    text = description.lower()
-    for part in sorted(MARKET_PRICES, key=len, reverse=True):   # "door glass" before "door"
-        if part in text:
-            return part
-    return None
 
 
 # ------------------------------------------------------------- the checks

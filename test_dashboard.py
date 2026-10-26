@@ -8,6 +8,10 @@ temporary folder, including broken files. Live mode is tested with a fake
 process. The evidence sandbox runs for real, offline, in its own folder.
 
     every page renders, and imports no agent framework
+    the walkthrough shows each agent ran or skipped, and why, from the log
+    the current flow stage is labelled, and a paused claim draws the evidence loop
+    a billed part is flagged only when the photograph shows it intact
+    held-out claims cannot be picked
     a pending claim never shows a final payment of Rs 0.00
     a disputed line is not shown as denied until a person decides
     missing, malformed and old-format files are handled, not crashed on
@@ -53,6 +57,11 @@ def heavy_modules() -> list:
     return sorted({m for m in sys.modules if any(m == h or m.startswith(h + ".") for h in HEAVY)})
 
 
+def ui_escape(text: str) -> str:
+    from html import escape
+    return escape(text or "")
+
+
 def page_text(at) -> str:
     parts = [m.value for m in at.markdown] + [str(x.value) for x in at.caption] + \
             [str(x.value) for x in at.info] + [str(x.value) for x in at.success] + \
@@ -93,8 +102,13 @@ def main() -> None:
         run("it says no model is called", "No model is called" in overview)
 
         seen = {}
-        for page in ("Claim Investigation", "Agent Activity"):
-            for claim in ("CLM-5000", "CLM-5004", "CLM-5005", "CLM-5010", "CLM-5020"):
+        at.sidebar.radio(key="page").set_value("Claim Walkthrough").run()
+        options = " ".join(at.sidebar.selectbox(key="claim_id").options)
+        run("held-out claims are not in the picker; development and photo claims are",
+            "CLM-5020" not in options and "CLM-5059" not in options
+            and "CLM-5000" in options and "CLM-6001" in options, options[:120])
+        for page in ("Claim Walkthrough", "Agent Activity"):
+            for claim in ("CLM-5000", "CLM-5004", "CLM-5005", "CLM-5010", "CLM-6001"):
                 at.sidebar.radio(key="page").set_value(page).run()
                 at.sidebar.selectbox(key="claim_id").set_value(claim).run()
                 seen[(page, claim)] = (page_text(at), [str(x.value)[:160] for x in at.exception])
@@ -105,27 +119,64 @@ def main() -> None:
 
     failures = {k: v[1] for k, v in seen.items() if v[1]}
     run("every page renders for an approved, a pending, an older, an unassessed and a "
-        "held-out claim", not failures, json.dumps({f"{k[0]}/{k[1]}": v for k, v in failures.items()})[:300])
+        "photo claim", not failures, json.dumps({f"{k[0]}/{k[1]}": v for k, v in failures.items()})[:300])
     run("no process was started while presenting", not calls, str(calls)[:200])
     run("no agent framework or model client was imported",
         set(heavy_modules()) == before, str(sorted(set(heavy_modules()) - before)))
 
-    pending = seen[("Claim Investigation", "CLM-5004")][0]
+    pending = seen[("Claim Walkthrough", "CLM-5004")][0]
     run("a pending claim shows its proposed settlement",
         "₹16,081.97" in pending and "Proposed settlement" in pending)
     run("and its final payment as pending human review, not ₹0.00",
         "Pending human review" in pending and "₹0.00 authorised" not in pending)
     run("the overpriced windshield is disputed, not denied",
         "Disputed, awaiting a decision" in pending and "Denied by adjuster" not in pending)
-    run("the fraud score is labelled a risk score, not a probability",
-        "not a probability" in pending)
+    run("the walkthrough says the intake agents were skipped, and why",
+        "intake saved by an earlier run was reused" in pending)
+    run("and that the Damage Analyst was skipped for want of a photograph",
+        "No photograph on this claim, so the Damage Analyst is skipped" in pending)
+    # Expected values come from the saved run itself, so re-running the claim
+    # does not break the test.
+    log5004 = reporting.load_log("CLM-5004")
+    span = next(s for s in da.task_spans(log5004) if "Policy Analyst" in s["agent"])
+    crew = next(e for e in log5004 if e.get("event") == "crew_done"
+                and e.get("crew") == "assessment")
+    reason = reporting.build_report(reporting.load_state("CLM-5004"), log5004).route_reason
+    run("the analysts are shown as run, with their MCP tools and timings",
+        f"Ran · {span['seconds']:.1f}s" in pending and "check_policy_period" in pending
+        and "find_prior_claims" in pending)
+    run("tokens are given per crew, not invented per agent",
+        f"{int(crew['total_tokens']):,} tokens for the whole crew" in pending)
+    run("the current stage is named in words", "▶ Current · Done" in pending
+        and "human_review because" in pending)
+    run("the decision shows route, reason, proposed payout and settlement state",
+        all(t in pending for t in ("Route: Human review", ui_escape(reason),
+                                   "Proposed payout", "Settlement state",
+                                   reporting.SETTLEMENT_STATE["pending_human_review"])),
+        reason)
     run("the routing reason is escaped once, not twice", "&amp;gt;" not in pending)
-    approved = seen[("Claim Investigation", "CLM-5000")][0]
+    approved = seen[("Claim Walkthrough", "CLM-5000")][0]
     run("an approved claim shows its authorised payment",
         "₹41,869.40 authorised" in approved)
-    unassessed = seen[("Claim Investigation", "CLM-5010")][0]
+    run("and every assessment agent as run, with the Damage Analyst skipped",
+        approved.count("Ran · ") == 5 and "Damage Analyst is skipped" in approved)
+    run("a verified policy citation is marked verified", "verified" in approved)
+    unassessed = seen[("Claim Walkthrough", "CLM-5010")][0]
     run("a claim with no saved decision says so, rather than inventing one",
-        "no saved assessment" in unassessed)
+        "No decision is saved for this claim" in unassessed
+        and "No monitoring log is saved" in unassessed)
+    photo = seen[("Claim Walkthrough", "CLM-6001")][0]
+    state6001 = reporting.load_state("CLM-6001") or {}
+    if (state6001.get("intake") or {}).get("photo_damage"):
+        run("a photo claim shows its photograph beside the Damage Analyst's three lists",
+            "05bf64c441a8b9f6e0b9.jpg" in photo and "Undamaged: seen clearly, intact" in photo
+            and "Not visible: not evidence either way" in photo)
+        run("and says whether the Flow acted on the photo check",
+            ("this is what the route acted on" in photo) == bool(state6001.get("photo_check"))
+            and ("did not affect the route" in photo) == (not state6001.get("photo_check")))
+    else:
+        run("a photo claim shows its photograph and says plainly no findings are saved yet",
+            "05bf64c441a8b9f6e0b9.jpg" in photo and "Nothing is recorded yet" in photo)
     every = " ".join(v[0] for v in seen.values()) + overview
     leaked = [w for w in LABELS if w in every]
     run("no label from the dataset appears on any page", not leaked, str(leaked))
@@ -133,7 +184,8 @@ def main() -> None:
     run("no policyholder name, phone or address appears",
         not any(str(policy[k]) in every for k in ("insured_name", "phone", "address")))
     activity = seen[("Agent Activity", "CLM-5004")][0]
-    run("an old log without a model says 'Not recorded'", "Not recorded" in activity)
+    run("an old log without a model says 'Not recorded'",
+        "Not recorded" in seen[("Agent Activity", "CLM-5000")][0])
     run("the timeline names the MCP tool calls", "check_part_prices" in activity)
     run("and does not claim one trace spans ADK and CrewAI",
         "no single trace spans both" in activity)
@@ -157,7 +209,14 @@ def main() -> None:
     try:
         real5004 = json.loads((ROOT / "data" / "decisions" / "CLM-5004.json").read_text())
         (data / "decisions" / "CLM-5004.json").write_text(json.dumps(real5004))
-        shutil.copy(ROOT / "data" / "logs" / "CLM-5004.jsonl", data / "logs" / "CLM-5004.jsonl")
+        # An old-format log: written before runs recorded their model.
+        old = [json.loads(l) for l in (ROOT / "data" / "logs" / "CLM-5004.jsonl")
+               .read_text().splitlines() if l.strip()]
+        for entry in old:
+            entry.pop("model", None)
+            entry.pop("provider", None)
+        (data / "logs" / "CLM-5004.jsonl").write_text(
+            "\n".join(json.dumps(e) for e in old) + "\n")
 
         record = da.load_record("CLM-5004")
         money = da.money(record)
@@ -228,8 +287,8 @@ def main() -> None:
         run("the manifest gives 60 claims, 20 development and 40 held out",
             da.dataset_counts() == {"total": 60, "dev": 20, "held_out": 40})
         run("and carries no fault type", all("fault_type" not in e for e in da.manifest()))
-        sub = da.claim_submission("CLM-5020")
-        run("a held-out claim's submission carries no label",
+        sub = da.claim_submission("CLM-5005")
+        run("a claim's submission carries no label",
             sub and not any(w in json.dumps(sub) for w in LABELS), str(sub)[:120])
         pol = da.policy_details("POL-3004")
         run("policy details drop the name, phone and address",
@@ -239,6 +298,67 @@ def main() -> None:
             not any(da.is_known(b) for b in bad)
             and all(da.load_record(b).status == "unavailable" for b in bad if b is not None))
         run("so is a bad policy number", da.policy_details("../POL-3004") is None)
+        run("a held-out claim cannot be opened at all",
+            "CLM-5020" not in da.known_claims() and da.claim_submission("CLM-5020") is None)
+
+        # ---- the walkthrough's readers
+        shutil.copy(ROOT / "data" / "photo_manifest.json", data / "photo_manifest.json")
+        run("photo claims are known, without their fault type",
+            da.is_known("CLM-6001") and all("fault_type" not in e for e in da.photo_manifest()))
+        run("a photograph missing from the folder is reported, not read",
+            da.claim_photos("CLM-6001") == [{"name": "05bf64c441a8b9f6e0b9.jpg",
+                                             "available": False}]
+            and da.photo_bytes("CLM-6001", "05bf64c441a8b9f6e0b9.jpg") is None)
+        run("a photo name that is not the claim's own is refused",
+            da.photo_bytes("CLM-6001", "../manifest.json") is None)
+        intake = {"invoice": {"line_items": [
+                      {"description": "Fender - replacement", "amount": 6800},
+                      {"description": "Front Door - replacement", "amount": 14000},
+                      {"description": "Rear Bumper - replacement", "amount": 8500}]},
+                  "photo_damage": [{"photo": "05bf64c441a8b9f6e0b9.jpg", "damaged": ["fender"],
+                                    "undamaged": ["front door"],
+                                    "not_visible": ["rear bumper"], "readable": True,
+                                    "damage_types": ["tear"], "severity": "moderate",
+                                    "notes": "call 9876543210"}]}
+        photo_record = da.ClaimRecord("CLM-6001", "flow", "approved", state={"intake": intake})
+        found = da.damage_findings(photo_record)
+        run("the Damage Analyst's findings come from the intake record",
+            found["source"] == "the intake record" and found["photos"][0]["damaged"] == ["fender"])
+        run("with personal details masked in its note",
+            "9876543210" not in found["photos"][0]["notes"], found["photos"][0]["notes"])
+        check = da.photo_comparison(photo_record, found["photos"][0])
+        run("a billed part shown undamaged is flagged; one not visible is only unchecked",
+            check["unsupported_parts"] == ["front door"]
+            and check["unchecked_parts"] == ["rear bumper"], str(check.get("note")))
+
+        paused = [{"event": "run_started", "elapsed_s": 0.0},
+                  {"event": "flow", "message": "intake: running Intake crew"},
+                  {"event": "flow", "message": "intake: 3 invoice lines, complete=False"},
+                  {"event": "flow", "message": "router 1: file incomplete -> evidence request "
+                                                "['incident date']"},
+                  {"event": "flow", "message": "evidence request: incident date"},
+                  {"event": "run_finished", "status": "awaiting_evidence"}]
+        flow = da.flow_stages(paused, {"status": "awaiting_evidence"})
+        states = {s["key"]: s["state"] for s in flow["stages"]}
+        run("a claim paused for evidence draws the loop as current, assessment skipped",
+            flow["current"] == "loop" and flow["loop"]["state"] == "now"
+            and "incident date" in flow["loop"]["detail"]
+            and states["assessment"] == "skipped" and states["gate"] == "done", str(states))
+        stopped = da.agent_walkthrough(da.ClaimRecord("CLM-5000", "flow", "awaiting_evidence",
+                                                      log=paused))
+        run("and its assessment agents say why they did not run",
+            all("completeness check" in a["reason"] for a in stopped if a["crew"] == "assessment"))
+        running = da.flow_stages(paused[:3] + [{"event": "flow", "message": "router 1: file "
+                                                "complete -> assessment"},
+                                               {"event": "flow", "message": "assessment: Policy "
+                                                "Analyst and Fraud Analyst running in parallel"}])
+        run("a run in progress highlights the stage it is in",
+            running["current"] == "assessment")
+        failed = da.flow_stages(paused[:3] + [{"event": "error", "where": "intake",
+                                               "error_type": "RateLimitError"}])
+        run("a failed run marks the stage it stopped at",
+            [s["state"] for s in failed["stages"]][1] == "fail" or
+            any(s["state"] == "fail" for s in failed["stages"]))
     finally:
         da.DATA = saved["DATA"]
         reporting.DECISIONS, reporting.REVIEW_QUEUE = saved["DEC"], saved["RQ"]
@@ -278,7 +398,7 @@ def main() -> None:
 
         at = AppTest.from_file(str(ROOT / "dashboard" / "app.py"), default_timeout=90)
         at.run()
-        at.sidebar.radio(key="page").set_value("Claim Investigation").run()
+        at.sidebar.radio(key="page").set_value("Claim Walkthrough").run()
         at.sidebar.selectbox(key="claim_id").set_value("CLM-5001").run()
         run("in presentation mode there is no live button", not [b for b in at.button
                                                                 if b.key == "run-CLM-5001"])

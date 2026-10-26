@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-6009",
+  "insured_name": "Yachana Keer",
+  "phone": "02611713808",
+  "address": "08/605, Dash Ganj, Nagercoil-740815",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR35QF5276",
+  "vehicle_age_years": 0.4,
+  "idv": 1008000,
+  "deductible": 1000,
+  "policy_start": "2026-04-26",
+  "policy_end": "2027-04-25",
+  "zero_depreciation": true,
+  "ncb_percent": 35
+}

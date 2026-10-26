@@ -32,6 +32,37 @@ class ExtractedInvoice(BaseModel):
     total: Optional[float] = None
 
 
+class PhotoDamage(BaseModel):
+    """What one photograph shows, part by part. Recorded by the Damage Analyst
+    from the vision model's verdicts; it never sees the invoice.
+
+    damaged, undamaged and not_visible together cover the fixed 12-part list
+    in vision.PARTS exactly once. not_visible is not undamaged, exactly as an
+    "uncertain" coverage status is not "excluded": only a part shown intact is
+    evidence against a billed line."""
+
+    photo: str = Field(..., description="The photograph's file name")
+    damaged: List[str] = Field(
+        default_factory=list, description="Parts visible in the photo and visibly damaged")
+    undamaged: List[str] = Field(
+        default_factory=list, description="Parts clearly visible in the photo and clearly intact")
+    not_visible: List[str] = Field(
+        default_factory=list,
+        description="Parts out of frame, unclear, or that could not be placed at "
+                    "the front or the rear of the vehicle. Not evidence either way.",
+    )
+    damage_types: List[str] = Field(default_factory=list)
+    severity: Literal["minor", "moderate", "severe"] = "minor"
+    readable: bool = Field(..., description="False if the photograph showed nothing usable")
+    notes: str = ""
+
+
+class PhotoFindings(BaseModel):
+    """The Damage Analyst's task output: one PhotoDamage per photograph."""
+
+    photos: List[PhotoDamage] = Field(default_factory=list)
+
+
 class ClaimIntake(BaseModel):
     """The output of the Intake crew: everything known before assessment."""
 
@@ -46,6 +77,12 @@ class ClaimIntake(BaseModel):
                     "'front bumper'",
     )
     invoice: ExtractedInvoice
+    photo_damage: List[PhotoDamage] = Field(
+        default_factory=list,
+        description="What the claimant's photographs show, from the Damage Analyst. "
+                    "Kept apart from damaged_parts, which comes from the invoice: "
+                    "the two are compared later, in code.",
+    )
     is_complete: bool = Field(
         ..., description="True if the claim has enough evidence to assess"
     )
@@ -189,6 +226,11 @@ class ClaimReport(BaseModel):
         default_factory=list, description="Every document, tool result and guardrail check used"
     )
     outstanding_evidence: List[EvidenceRequest] = Field(default_factory=list)
+
+    photo_check: List[str] = Field(
+        default_factory=list,
+        description="The photograph against the invoice, line by line, as the Flow "
+                    "checked it in code. Empty for a claim with no photograph.")
 
     route: str = ""
     status: str = ""

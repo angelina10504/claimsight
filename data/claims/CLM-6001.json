@@ -1,0 +1,60 @@
+{
+  "claim_id": "CLM-6001",
+  "policy_no": "POL-6001",
+  "incident_date": "2026-07-15",
+  "invoice_date": "2026-07-16",
+  "narrative": "Side-swiped by a truck while changing lanes.",
+  "photos": [
+    "05bf64c441a8b9f6e0b9.jpg"
+  ],
+  "invoice_pdf": "data/invoices/CLM-6001.pdf",
+  "invoice_subtotal": 28850,
+  "invoice_total": 34043,
+  "line_items": [
+    {
+      "description": "Fender - replacement",
+      "material": "metal",
+      "amount": 6300,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Front Door - replacement",
+      "material": "metal",
+      "amount": 14000,
+      "admitted": false,
+      "reason": "billed part not visible in damage evidence"
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 5760,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 2790,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "fender"
+    ],
+    "photo_damage_types": [
+      "scratch",
+      "tear"
+    ],
+    "fault_type": "phantom_part",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": "front door",
+    "duplicate_of": null,
+    "expected_payout": 12699.8,
+    "fraud_source": "planted in paperwork"
+  },
+  "split": "photo"
+}

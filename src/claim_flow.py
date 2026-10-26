@@ -38,7 +38,11 @@ import evidence                              # noqa: E402
 import guardrails                            # noqa: E402
 import observability                         # noqa: E402
 import monitoring                            # noqa: E402
-from tools.assessment_tools import check_policy_period, settle   # noqa: E402
+from tools.assessment_tools import (                             # noqa: E402
+    check_billed_parts_against_photo,
+    check_policy_period,
+    settle,
+)
 from tools.settlement import check_invoice_tax                   # noqa: E402
 
 CLAIMS = ROOT / "data" / "claims"
@@ -69,6 +73,9 @@ class ClaimState(BaseModel):
     coverage_doubts: List[str] = Field(default_factory=list)
     evidence_applied: List[str] = Field(default_factory=list)
     payout_doubts: List[str] = Field(default_factory=list)
+    # The photograph against the invoice, checked in code after intake.
+    photo_check: Dict = Field(default_factory=dict)
+    photo_doubts: List[str] = Field(default_factory=list)
     resumed: bool = False             # this run continued a claim that was waiting
     trail: List[str] = Field(default_factory=list)
 
@@ -134,6 +141,68 @@ def completeness_gaps(intake: dict) -> list:
     return gaps
 
 
+CLEARER_PHOTO = "a clearer photograph of the damage"
+
+
+def photo_request(part: str) -> str:
+    return f"photograph showing the {part}"
+
+
+def check_photos(intake: dict, supplied: list = ()) -> dict:
+    """Compare the parts billed with what the Damage Analyst saw, in code.
+
+    {} when the claim has no photo findings: nothing to compare. Otherwise the
+    result of check_billed_parts_against_photo, plus what follows from it:
+
+      flags       a billed part the photograph shows UNDAMAGED. Positive
+                  evidence against the line, so a person must look.
+      requests    a billed part the photograph does not show. Not evidence of
+                  anything, so it is not a flag: the claimant is asked for a
+                  photograph of it, through the ordinary evidence loop.
+      supplied    a requested photograph that has arrived. A claimant's photo
+                  is not sent to a cloud model (vision.photo_clearance), so
+                  nothing has examined it: a person must, before payment.
+
+    `supplied` is the evidence items already accepted for this claim.
+
+    Several photographs are read together: a part seen damaged in any of them
+    is damaged; seen intact in one and not damaged in any, undamaged."""
+    findings = [p for p in (intake.get("photo_damage") or []) if isinstance(p, dict)]
+    if not findings:
+        return {}
+    readable = [p for p in findings if p.get("readable")]
+    damaged = {x for p in readable for x in p.get("damaged") or []}
+    undamaged = {x for p in readable for x in p.get("undamaged") or []} - damaged
+    not_visible = {x for p in findings for x in p.get("not_visible") or []} - damaged - undamaged
+    lines = [{"description": l.get("description", ""), "amount": l.get("amount")}
+             for l in ((intake.get("invoice") or {}).get("line_items") or [])]
+    result = check_billed_parts_against_photo(
+        lines, sorted(damaged), sorted(undamaged), sorted(not_visible),
+        photo_readable=bool(readable))
+    if result.get("error"):
+        return {**result, "photos": [p.get("photo") for p in findings],
+                "requests": [], "supplied": []}
+
+    def sent(item):
+        return any(evidence.same_item(item, done) for done in supplied)
+
+    wanted = ([CLEARER_PHOTO] if not readable and result.get("billed_parts") else
+              [photo_request(part) for part in result.get("unchecked_parts") or []])
+    return {**result, "photos": [p.get("photo") for p in findings],
+            "requests": [w for w in wanted if not sent(w)],
+            "supplied": [w for w in wanted if sent(w)]}
+
+
+def photo_doubts(check: dict) -> list:
+    """Why the photograph means a person must decide, in the router's words."""
+    out = [f"the photograph shows the {part} undamaged, but it is billed "
+           f"({line})" for part, line in zip(check.get("unsupported_parts") or [],
+                                             check.get("unsupported_lines") or [])]
+    out += [f"the claimant sent the {item}; claimant photographs are not sent to a model, "
+            f"so a person must inspect it" for item in check.get("supplied") or []]
+    return out
+
+
 def cites_policy(reason: str) -> bool:
     """Is this coverage reason grounded in the policy document?
 
@@ -197,7 +266,7 @@ def payout_doubts(intake: dict) -> list:
 
 
 def decide_route(decision: dict, settlement: dict, guardrail_flags: list,
-                 doubts: list, payout_problems: list = ()) -> tuple:
+                 doubts: list, payout_problems: list = (), photo_problems: list = ()) -> tuple:
     """The routing rules, in order. Pure function, so it can be tested without
     running a crew. Returns (route, why)."""
     payout = settlement.get("payout", 0.0)
@@ -215,6 +284,8 @@ def decide_route(decision: dict, settlement: dict, guardrail_flags: list,
     if status == "excluded":
         reasons = decision.get("coverage_reasons") or []
         return "reject", f"not covered: {reasons[0] if reasons else 'excluded'}"
+    if photo_problems:
+        return "human_review", f"photo check: {photo_problems[0]}"
     if score >= FRAUD_THRESHOLD:
         return "human_review", f"fraud score {score:.2f} >= {FRAUD_THRESHOLD}"
     if payout > HIGH_VALUE:
@@ -413,6 +484,20 @@ class ClaimFlow(Flow[ClaimState]):
         if agent_said != (not gaps) and not self.state.resumed:
             self.log(f"intake: Intake Officer said complete={agent_said}; "
                      f"the completeness check overrides it")
+
+        # The photograph against the invoice. Run on every pass, a reused
+        # intake included, so a resumed claim is checked against what has
+        # arrived since.
+        supplied = [item["item"] for item in evidence.accepted(self.state.claim_id)]
+        self.state.photo_check = check_photos(self.state.intake, supplied)
+        self.state.photo_doubts = photo_doubts(self.state.photo_check)
+        if self.state.photo_check:
+            c = self.state.photo_check
+            self.log(f"photo check: {c.get('note') or c.get('error')}", kind="photo_check",
+                     flagged=c.get("unsupported_parts") or [],
+                     unchecked=c.get("unchecked_parts") or [],
+                     requests=c.get("requests") or [], supplied=c.get("supplied") or [])
+            gaps = gaps + list(c.get("requests") or [])
         self.state.intake["is_complete"] = not gaps
         self.state.intake["missing_fields"] = gaps
         lines = len(self.state.intake["invoice"]["line_items"])
@@ -458,6 +543,14 @@ class ClaimFlow(Flow[ClaimState]):
                   ("covered" if d.get("is_covered") else "excluded")).lower()
         self.state.coverage_doubts = coverage_doubts(self.state.intake, d)
         self.state.payout_doubts = payout_doubts(self.state.intake)
+        # A part the photograph shows intact is a fraud signal found by code,
+        # not by the Fraud Analyst: it is added to the decision's flags so the
+        # report carries it, and the router acts on it, whatever the score.
+        flags = d.setdefault("fraud_flags", [])
+        for flag in self.state.photo_check.get("flags") or []:
+            flag = f"{flag} (photo check, in code)"
+            if flag not in flags:
+                flags.append(flag)
 
         if status == "excluded" and not self.state.coverage_doubts:
             self.state.settlement = {"payout": 0.0, "explanation": "Not covered: no settlement."}
@@ -481,7 +574,8 @@ class ClaimFlow(Flow[ClaimState]):
     def route_claim(self):
         d, payout = self.state.decision, self.state.settlement["payout"]
         route, why = decide_route(d, self.state.settlement, self.state.guardrail_flags,
-                                  self.state.coverage_doubts, self.state.payout_doubts)
+                                  self.state.coverage_doubts, self.state.payout_doubts,
+                                  self.state.photo_doubts)
         suggested = d.get("recommended_route", "").lower().replace("-", "_").replace(" ", "_")
         if suggested and suggested != route:
             why += f" (the Lead suggested {suggested}; the rule decides)"

@@ -1,0 +1,53 @@
+{
+  "claim_id": "CLM-6006",
+  "policy_no": "POL-6006",
+  "incident_date": "2026-06-08",
+  "invoice_date": "2026-06-10",
+  "narrative": "Vehicle was hit by another car while parked outside a market.",
+  "photos": [
+    "45a0eab401c7f999a0d6.jpg"
+  ],
+  "invoice_pdf": "data/invoices/CLM-6006.pdf",
+  "invoice_subtotal": 5050,
+  "invoice_total": 5959,
+  "line_items": [
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3260,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 1070,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 720,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "side mirror"
+    ],
+    "photo_damage_types": [
+      "missing_part",
+      "scratch"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "duplicate_of": null,
+    "expected_payout": 2877.77,
+    "fraud_source": null
+  },
+  "split": "photo"
+}

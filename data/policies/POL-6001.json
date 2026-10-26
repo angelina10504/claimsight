@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-6001",
+  "insured_name": "Zayan Doctor",
+  "phone": "08014517712",
+  "address": "H.No. 209, Dewan, Ambarnath 683042",
+  "make": "Tata",
+  "model": "Nexon XZ+",
+  "registration": "HR38UE8148",
+  "vehicle_age_years": 6.0,
+  "idv": 470000,
+  "deductible": 1000,
+  "policy_start": "2026-06-28",
+  "policy_end": "2027-06-27",
+  "zero_depreciation": false,
+  "ncb_percent": 20
+}

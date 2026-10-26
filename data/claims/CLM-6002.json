@@ -1,0 +1,54 @@
+{
+  "claim_id": "CLM-6002",
+  "policy_no": "POL-6002",
+  "incident_date": "2026-05-18",
+  "invoice_date": "2026-05-20",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "photos": [
+    "11069_14_56_23_CBAE8D26.jpg"
+  ],
+  "invoice_pdf": "data/invoices/CLM-6002.pdf",
+  "invoice_subtotal": 12520,
+  "invoice_total": 14774,
+  "line_items": [
+    {
+      "description": "Rear Bumper - replacement",
+      "material": "plastic",
+      "amount": 8480,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 2400,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1640,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "rear bumper"
+    ],
+    "photo_damage_types": [
+      "dent",
+      "puncture",
+      "scratch"
+    ],
+    "fault_type": "clean",
+    "is_covered": true,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "duplicate_of": null,
+    "expected_payout": 13773.6,
+    "fraud_source": null
+  },
+  "split": "photo"
+}

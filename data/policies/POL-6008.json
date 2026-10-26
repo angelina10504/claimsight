@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-6008",
+  "insured_name": "Timothy Basak",
+  "phone": "+915098386611",
+  "address": "997, Hora Ganj, Kalyan-Dombivli 878811",
+  "make": "Hyundai",
+  "model": "i20 Sportz",
+  "registration": "HR27JX6406",
+  "vehicle_age_years": 3.4,
+  "idv": 514000,
+  "deductible": 1000,
+  "policy_start": "2026-02-21",
+  "policy_end": "2027-02-20",
+  "zero_depreciation": false,
+  "ncb_percent": 25
+}

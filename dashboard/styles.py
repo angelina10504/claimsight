@@ -154,6 +154,35 @@ section[data-testid="stSidebar"] hr {{ border-color: rgba(255,255,255,.14); }}
 .cs-banner {{ border-radius: 12px; padding: .7rem 1rem; font-size: .9rem;
   display: flex; gap: .6rem; align-items: center; margin-bottom: .9rem; }}
 
+.cs-stages {{ display: flex; gap: .45rem; }}
+.cs-stage {{ flex: 1 1 0; min-width: 0; text-decoration: none !important; background: {SURFACE};
+  border: 1px solid {LINE}; border-radius: 12px; padding: .65rem .7rem; color: {INK} !important; }}
+.cs-stage .n {{ font-size: .8rem; font-weight: 600; color: {NAVY}; }}
+.cs-stage .st {{ display: inline-block; font-size: .7rem; font-weight: 600; border-radius: 999px;
+  padding: .08rem .5rem; margin: .35rem 0; }}
+.cs-stage .d {{ font-size: .74rem; color: {MUTED}; line-height: 1.35; overflow-wrap: anywhere; }}
+.cs-stage.current {{ border: 2px solid {AMBER}; box-shadow: 0 0 0 3px {AMBER_SOFT}; }}
+.cs-stage.done.current {{ border-color: {TEAL}; box-shadow: 0 0 0 3px {TEAL_SOFT}; }}
+.cs-stage.skipped, .cs-stage.todo {{ background: {SLATE_SOFT}; }}
+.cs-loop {{ margin-top: .55rem; border: 1px dashed {AMBER}; border-radius: 12px;
+  padding: .55rem .8rem; font-size: .85rem; color: {INK}; }}
+
+.cs-agent {{ background: {SURFACE}; border: 1px solid {LINE}; border-radius: 12px;
+  padding: .7rem .9rem; display: grid; grid-template-columns: 2.2rem 1fr auto;
+  gap: .2rem .8rem; align-items: start; margin-bottom: .35rem; }}
+.cs-agent .num {{ font-weight: 700; color: {TEAL}; font-size: 1.05rem; }}
+.cs-agent .nm {{ font-weight: 600; color: {NAVY}; }}
+.cs-agent .fw {{ font-size: .74rem; color: {MUTED}; margin-left: .4rem; }}
+.cs-agent .ds {{ font-size: .84rem; color: {MUTED}; margin-top: .15rem; }}
+.cs-agent .why {{ font-size: .82rem; color: {INK}; margin-top: .25rem; }}
+.cs-agent.skipped {{ background: {SLATE_SOFT}; opacity: .78; }}
+.cs-agent.skipped .num, .cs-agent.skipped .nm {{ color: {MUTED}; }}
+.cs-crew {{ font-size: .78rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+  color: {MUTED}; margin: .8rem 0 .35rem 0; }}
+.cs-crew span {{ text-transform: none; letter-spacing: 0; font-weight: 400; }}
+.cs-photo-list {{ margin-bottom: .6rem; }}
+.cs-photo-list .h {{ font-size: .78rem; font-weight: 600; color: {NAVY}; margin-bottom: .2rem; }}
+
 div[data-testid="stExpander"] {{ background: {SURFACE}; border-radius: 12px; }}
 .stButton > button[kind="primary"] {{ background: {TEAL}; border-color: {TEAL}; }}
 </style>

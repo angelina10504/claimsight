@@ -1,0 +1,72 @@
+[
+  {
+    "claim_id": "CLM-6000",
+    "policy_no": "POL-6000",
+    "photo": "02bef207b833406d1922.jpg",
+    "fault_type": "clean",
+    "split": "photo"
+  },
+  {
+    "claim_id": "CLM-6001",
+    "policy_no": "POL-6001",
+    "photo": "05bf64c441a8b9f6e0b9.jpg",
+    "fault_type": "phantom_part",
+    "split": "photo"
+  },
+  {
+    "claim_id": "CLM-6002",
+    "policy_no": "POL-6002",
+    "photo": "11069_14_56_23_CBAE8D26.jpg",
+    "fault_type": "clean",
+    "split": "photo"
+  },
+  {
+    "claim_id": "CLM-6003",
+    "policy_no": "POL-6003",
+    "photo": "25d358295867a039f976.jpg",
+    "fault_type": "inflated_amount",
+    "split": "photo"
+  },
+  {
+    "claim_id": "CLM-6004",
+    "policy_no": "POL-6004",
+    "photo": "28ddaa6bf15d0903504c.jpg",
+    "fault_type": "clean",
+    "split": "photo"
+  },
+  {
+    "claim_id": "CLM-6005",
+    "policy_no": "POL-6005",
+    "photo": "3e11454bec2714794d36.jpg",
+    "fault_type": "date_outside_policy",
+    "split": "photo"
+  },
+  {
+    "claim_id": "CLM-6006",
+    "policy_no": "POL-6006",
+    "photo": "45a0eab401c7f999a0d6.jpg",
+    "fault_type": "clean",
+    "split": "photo"
+  },
+  {
+    "claim_id": "CLM-6007",
+    "policy_no": "POL-6007",
+    "photo": "70378_10_8_36_872.jpg",
+    "fault_type": "excluded_wear_tear",
+    "split": "photo"
+  },
+  {
+    "claim_id": "CLM-6008",
+    "policy_no": "POL-6008",
+    "photo": "7a3c615f4433bc6de522.jpg",
+    "fault_type": "clean",
+    "split": "photo"
+  },
+  {
+    "claim_id": "CLM-6009",
+    "policy_no": "POL-6009",
+    "photo": "8af77e02012020_150813image489587.jpg",
+    "fault_type": "phantom_part",
+    "split": "photo"
+  }
+]

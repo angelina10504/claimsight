@@ -1,0 +1,59 @@
+{
+  "claim_id": "CLM-6009",
+  "policy_no": "POL-6009",
+  "incident_date": "2026-10-23",
+  "invoice_date": "2026-10-24",
+  "narrative": "Vehicle was hit by another car while parked outside a market.",
+  "photos": [
+    "8af77e02012020_150813image489587.jpg"
+  ],
+  "invoice_pdf": "data/invoices/CLM-6009.pdf",
+  "invoice_subtotal": 11620,
+  "invoice_total": 13712,
+  "line_items": [
+    {
+      "description": "Side Mirror - replacement",
+      "material": "plastic",
+      "amount": 3280,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Door Glass - replacement",
+      "material": "glass",
+      "amount": 4800,
+      "admitted": false,
+      "reason": "billed part not visible in damage evidence"
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 2130,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 1410,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "side mirror"
+    ],
+    "photo_damage_types": [
+      "missing_part"
+    ],
+    "fault_type": "phantom_part",
+    "is_covered": true,
+    "is_fraudulent": true,
+    "phantom_part": "door glass",
+    "duplicate_of": null,
+    "expected_payout": 7047.6,
+    "fraud_source": "planted in paperwork"
+  },
+  "split": "photo"
+}

@@ -1,10 +1,12 @@
 """
 Intake crew.
 
-Two agents, run sequentially:
+Run sequentially:
   Document Reader   - turns raw invoice text into structured line items
   Claim Assembler   - merges that with the submission and policy, judges
                       completeness
+  Damage Analyst    - only when the claim has photographs: records what each
+                      photograph shows, part by part, as PhotoDamage
 
 Design note: the invoice, submission and policy are fetched in plain Python and
 handed to the agents as inputs. Reading a known file is not a decision, so it
@@ -13,8 +15,19 @@ where the model emits its final structured answer as a call to a tool that
 does not exist. Tools are reserved for agents that genuinely choose what to
 look up (the Fraud Analyst, later).
 
-The Damage Analyst (vision over the claimant's photos) joins this crew once the
-photo labels exist; until then damaged_parts is derived from the invoice.
+The Damage Analyst is the sixth ClaimSight agent, alongside the Document
+Reader, Claims Intake Officer, Policy Analyst, Fraud Analyst and Assessment
+Lead. The vision call itself is made in fetch_inputs, like reading the invoice
+PDF: it is data gathering, not a choice. The agent turns that result into
+PhotoDamage objects and nothing more. It never sees the invoice, and it
+decides nothing.
+
+damaged_parts is still derived from the invoice, and the photo findings are
+kept apart in photo_damage: the two are compared later, in code
+(check_billed_parts_against_photo), and that comparison is the point. So the
+Claims Intake Officer is never shown the photo findings, and photo_damage is
+attached by run_intake, not written by an agent. A claim with no photographs
+runs exactly as before.
 """
 
 import sys
@@ -28,7 +41,13 @@ sys.path.insert(0, str(SRC))
 from config import get_llm, max_rpm                            # noqa: E402
 from monitoring import crew_callbacks, usage_fields            # noqa: E402
 import guardrails                                              # noqa: E402
-from models import ClaimIntake, ExtractedInvoice               # noqa: E402
+import vision                                                  # noqa: E402
+from models import (                                           # noqa: E402
+    ClaimIntake,
+    ExtractedInvoice,
+    PhotoDamage,
+    PhotoFindings,
+)
 from tools.claim_tools import (                                # noqa: E402
     ReadClaimSubmission,
     ReadInvoicePDF,
@@ -39,7 +58,7 @@ from tools.claim_tools import (                                # noqa: E402
 PII_FIELDS = ("insured_name", "phone", "address")
 
 
-def fetch_inputs(claim_id: str) -> dict:
+def fetch_inputs(claim_id: str, monitor=None) -> dict:
     """Deterministic data gathering. No LLM involved.
 
     Everything an agent is about to read is cleaned here, because this is the
@@ -53,7 +72,12 @@ def fetch_inputs(claim_id: str) -> dict:
     The invoice matters most: it is a document nobody wrote for a machine, and
     it carries the customer's name in plain sight. The policy schedule gives us
     that name, so it can be removed exactly rather than guessed at. If anything
-    personal survives, safe_for_cloud raises and the claim stops here."""
+    personal survives, safe_for_cloud raises and the claim stops here.
+
+    A claim with photographs also gets "photo_findings": the vision model's
+    verdicts on each photo. vision.inspect_photo refuses a photo that is not
+    cleared for a cloud model, and the model's own notes are cleaned like any
+    other text, since it may have read something off the image."""
     import json
 
     submission_text = ReadClaimSubmission()._run(claim_id)
@@ -74,7 +98,7 @@ def fetch_inputs(claim_id: str) -> dict:
         invoice_text = guardrails.safe_for_cloud(
             invoice_text, policy_on_file, what=f"the invoice for {claim_id}")
 
-    return {
+    inputs = {
         "claim_id": claim_id,
         "invoice_text": invoice_text,
         "submission": guardrails.safe_for_cloud(
@@ -83,8 +107,18 @@ def fetch_inputs(claim_id: str) -> dict:
         "policy": policy_text,
     }
 
+    photos = submission.get("photos") or []
+    if photos:
+        findings = [{k: v for k, v in seen.items() if k != "visible_parts"}
+                    for seen in vision.inspect_claim_photos(photos, monitor=monitor)]
+        inputs["photo_findings"] = guardrails.safe_for_cloud(
+            json.dumps(findings, indent=2), policy_on_file,
+            what=f"the photo findings for {claim_id}")
+    return inputs
 
-def build_intake_crew(verbose: bool = True, monitor=None) -> Crew:
+
+def build_intake_crew(verbose: bool = True, monitor=None,
+                      with_photos: bool = False) -> Crew:
     guardrails.install()       # tool-result checks and PII redaction on every LLM call
     llm = get_llm("text")
 
@@ -178,9 +212,52 @@ def build_intake_crew(verbose: bool = True, monitor=None) -> Crew:
         output_pydantic=ClaimIntake,
     )
 
+    agents = [document_reader, claim_assembler]
+    tasks = [extract_invoice, assemble_claim]
+
+    if with_photos:
+        damage_analyst = Agent(
+            role="Damage Analyst",
+            goal=(
+                "Record what each photograph of the vehicle shows, part by "
+                "part, exactly as the photo inspection reported it."
+            ),
+            backstory=(
+                "You keep the photographic record of a motor claim. You do not "
+                "see the invoice and you do not judge the claim: a part that "
+                "was not visible stays not visible, because a guess written "
+                "into the record would later be read as evidence."
+            ),
+            llm=llm,
+            verbose=verbose,
+            allow_delegation=False,
+        )
+        record_photos = Task(
+            description=(
+                "Below is the inspection of each photograph on claim {claim_id}, "
+                "one entry per photograph.\n\n"
+                "--- PHOTO INSPECTION START ---\n{photo_findings}\n"
+                "--- PHOTO INSPECTION END ---\n\n"
+                "Return one PhotoDamage per photograph, copying photo, damaged, "
+                "undamaged, not_visible, damage_types, severity, readable and "
+                "notes exactly as given. Do not move a part from one list to "
+                "another, do not add or drop a part, and do not add any opinion "
+                "about the claim."
+            ),
+            expected_output=(
+                "A PhotoFindings with one PhotoDamage per photograph, matching "
+                "the inspection exactly."
+            ),
+            agent=damage_analyst,
+            context=[],              # never the invoice or the intake record
+            output_pydantic=PhotoFindings,
+        )
+        agents.append(damage_analyst)
+        tasks.append(record_photos)
+
     return Crew(
-        agents=[document_reader, claim_assembler],
-        tasks=[extract_invoice, assemble_claim],
+        agents=agents,
+        tasks=tasks,
         process=Process.sequential,
         verbose=verbose,
         cache=True,
@@ -189,10 +266,44 @@ def build_intake_crew(verbose: bool = True, monitor=None) -> Crew:
     )
 
 
+def photo_damage(recorded, inspected: list, monitor=None) -> list:
+    """The Damage Analyst's record, checked against the inspection it copied.
+
+    The agent only transcribes, so any difference from the inspection is the
+    agent's own invention. Where its record of a photo differs in any part
+    list, or a photo is missing, the inspection is used instead and the
+    difference is logged."""
+    by_photo = {p.photo: p for p in (getattr(recorded, "photos", None) or [])}
+    checked = []
+    for seen in inspected:
+        expected = PhotoDamage(**{k: v for k, v in seen.items() if k != "visible_parts"})
+        got = by_photo.get(seen["photo"])
+        same = got is not None and all(
+            set(getattr(got, f)) == set(getattr(expected, f))
+            for f in ("damaged", "undamaged", "not_visible")) \
+            and got.readable == expected.readable
+        if not same and monitor is not None:
+            monitor.record("photo_record_corrected", photo=seen["photo"],
+                           missing=got is None)
+        checked.append(got if same else expected)
+    return checked
+
+
 def run_intake(claim_id: str, verbose: bool = True, monitor=None) -> ClaimIntake:
-    inputs = fetch_inputs(claim_id)
-    crew = build_intake_crew(verbose=verbose, monitor=monitor)
+    import json
+
+    inputs = fetch_inputs(claim_id, monitor=monitor)
+    with_photos = "photo_findings" in inputs
+    crew = build_intake_crew(verbose=verbose, monitor=monitor, with_photos=with_photos)
     result = crew.kickoff(inputs=inputs)
     if monitor is not None:      # the Flow puts this in its intake crew_done entry
         monitor.crew_usage["intake"] = usage_fields(getattr(result, "token_usage", None))
-    return result.pydantic
+    # Tasks run in order: invoice, intake record, then (with photos) the photo
+    # record - so the intake is the second output, not necessarily the last.
+    intake = result.tasks_output[1].pydantic
+    if intake is not None:
+        intake.photo_damage = (photo_damage(result.tasks_output[2].pydantic,
+                                            json.loads(inputs["photo_findings"]),
+                                            monitor=monitor)
+                               if with_photos else [])
+    return intake

@@ -1,0 +1,52 @@
+{
+  "claim_id": "CLM-6005",
+  "policy_no": "POL-6005",
+  "incident_date": "2026-02-09",
+  "invoice_date": "2026-02-12",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "photos": [
+    "3e11454bec2714794d36.jpg"
+  ],
+  "invoice_pdf": "data/invoices/CLM-6005.pdf",
+  "invoice_subtotal": 21830,
+  "invoice_total": 25759,
+  "line_items": [
+    {
+      "description": "Rear Door - replacement",
+      "material": "metal",
+      "amount": 14470,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "material": "paint",
+      "amount": 4040,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "material": "labour",
+      "amount": 3320,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "ground_truth": {
+    "damaged_parts": [
+      "rear door"
+    ],
+    "photo_damage_types": [
+      "dent"
+    ],
+    "fault_type": "date_outside_policy",
+    "is_covered": false,
+    "is_fraudulent": false,
+    "phantom_part": null,
+    "duplicate_of": null,
+    "expected_payout": 0.0,
+    "fraud_source": "planted in paperwork"
+  },
+  "split": "photo"
+}

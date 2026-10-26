@@ -99,3 +99,35 @@ def steps(items: list) -> None:
                     f"<div class='t'>{e(title)}</div></div>"
                     for i, (title, state) in enumerate(items, start=1))
     html(f"<div class='cs-steps'>{cells}</div>")
+
+
+def chips(items, empty: str = "none") -> str:
+    if not items:
+        return f"<span class='cs-note'>{e(empty)}</span>"
+    return "".join(f"<span class='cs-chip'>{e(i)}</span>" for i in items)
+
+
+def stage_strip(stages: list, loop=None) -> str:
+    """The Flow's stages left to right. Each says its state in words; the
+    current one is outlined and labelled, never marked by colour alone."""
+    cells = []
+    for i, s in enumerate(stages, start=1):
+        fg, bg = TONES.get(s["tone"], TONES["neutral"])
+        label = ("▶ Current · " if s["current"] else "") + s["label"]
+        cells.append(
+            f"<a class='cs-stage {s['state']}{' current' if s['current'] else ''}' "
+            f"href='#{e(s.get('anchor') or 'cs-flow')}'>"
+            f"<div class='n'>{i} · {e(s['title'])}</div>"
+            f"<div class='st' style='color:{fg};background:{bg}'>{e(label)}</div>"
+            f"<div class='d'>{e(s['detail']) or '&nbsp;'}</div></a>")
+    out = f"<div class='cs-stages'>{''.join(cells)}</div>"
+    if loop:
+        fg, bg = TONES["warn" if loop["state"] == "now" else "good"]
+        tag = "▶ Current · waiting for evidence" if loop["state"] == "now" else "Evidence loop · done"
+        out += (f"<div class='cs-loop'><span class='cs-badge' style='color:{fg};background:{bg}'>"
+                f"↺ {e(tag)}</span> <span>{e(loop['detail'])}</span></div>")
+    return out
+
+
+def anchor(name: str) -> None:
+    html(f"<div id='{e(name)}'></div>")

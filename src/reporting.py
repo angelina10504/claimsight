@@ -268,6 +268,15 @@ def _log_references(log: List[dict]) -> List[EvidenceReference]:
     return out
 
 
+def _photo_references(check: dict) -> List[EvidenceReference]:
+    if not check or check.get("error"):
+        return []
+    return [EvidenceReference(
+        kind="photo", source="check_billed_parts_against_photo (in code)",
+        detail=check.get("note", ""),
+        grounded=None)]
+
+
 def _submitted_references(claim_id: str) -> List[EvidenceReference]:
     """Evidence the claimant sent in, with the verdict it was given. Rejected
     items stay on the record: what was turned away and why is part of the
@@ -281,6 +290,28 @@ def _submitted_references(claim_id: str) -> List[EvidenceReference]:
                    f"- {item.get('verdict', '')}"
                    + (" (applied to the claim)" if item.get("applied") else ""),
             grounded=bool(item.get("accepted"))))
+    return out
+
+
+def photo_lines(check: dict) -> List[str]:
+    """The Flow's photo check in sentences: what was seen, and what follows."""
+    if not check:
+        return []
+    if check.get("error"):
+        return [f"not compared: {check['error']}"]
+    out = [f"photograph(s): {', '.join(p for p in check.get('photos') or [] if p) or 'on file'}"
+           f"; billed parts: {', '.join(check.get('billed_parts') or []) or 'none named'}"]
+    if str(check.get("note", "")).startswith("the photograph could not be read"):
+        out.append("the photograph could not be read")
+    out.append(f"seen damaged: {', '.join(check.get('damaged') or []) or 'none'}; "
+               f"seen intact: {', '.join(check.get('undamaged') or []) or 'none'}")
+    out += [f"FLAGGED: {flag}" for flag in check.get("flags") or []]
+    for item in check.get("requests") or []:
+        out.append(f"requested from the claimant: {item} (not a fraud flag)")
+    for item in check.get("supplied") or []:
+        out.append(f"{item}: sent by the claimant; a person must inspect it")
+    if not (check.get("flags") or check.get("requests") or check.get("supplied")):
+        out.append("every billed part is seen damaged in the photograph")
     return out
 
 
@@ -361,12 +392,14 @@ def build_report(state: dict, log: Optional[List[dict]] = None) -> ClaimReport:
         final_payout=float(state.get("final_payout") or 0.0),
         evidence=_document_references(
             intake, invoice.get("registration") or intake.get("registration")
-        ) + _submitted_references(state.get("claim_id", "")) + _log_references(log),
+        ) + _photo_references(state.get("photo_check") or {})
+        + _submitted_references(state.get("claim_id", "")) + _log_references(log),
         outstanding_evidence=evidence.outstanding(state),
         route=state.get("route", ""),
         status=state.get("status", ""),
         route_reason=_route_reason(state, log),
         guardrail_flags=list(state.get("guardrail_flags") or []),
+        photo_check=photo_lines(state.get("photo_check") or {}),
         run=_run_facts(log),
     )
 
@@ -457,6 +490,11 @@ def render(report: ClaimReport) -> str:
                        f"assessed {_money(r.proposed_payout)})")
     out.append("")
 
+    if r.photo_check:
+        out.append("PHOTOGRAPH AGAINST THE INVOICE (checked in code)")
+        out += [f"  {line}" for line in r.photo_check]
+        out.append("")
+
     if r.outstanding_evidence:
         out.append("STILL NEEDED")
         for request in r.outstanding_evidence:
@@ -525,6 +563,10 @@ def to_markdown(report: ClaimReport) -> str:
     if r.authorised_payout is not None:
         out.append(f"Authorised payout: {_money(r.authorised_payout)}")
     out.append("```")
+    if r.photo_check:
+        out += ["", "## Photograph against the invoice", "",
+                "Checked in code by check_billed_parts_against_photo.", ""]
+        out += [f"- {line}" for line in r.photo_check]
     if r.outstanding_evidence:
         out += ["", "## Still needed", ""]
         out += [f"- From the {q.from_whom}: **{q.item}** — because {q.why}"
@@ -563,6 +605,13 @@ def explanation(report: ClaimReport) -> str:
             f"{line.description} ({line.reason or 'no reason recorded'})" for line in denied) + ".")
     if r.fraud_flags:
         parts.append("Checks raised: " + "; ".join(r.fraud_flags[:2]) + ".")
+    if r.photo_check:
+        flagged = [l for l in r.photo_check if l.startswith("FLAGGED")]
+        parts.append("The photograph was compared with the invoice"
+                     + (": a billed part appears undamaged in it, so a person will check."
+                        if flagged else
+                        ", and every billed part it shows is damaged." if
+                        r.photo_check[-1].startswith("every billed part") else "."))
 
     claimant_asks = [q for q in r.outstanding_evidence if q.from_whom == "claimant"]
     if claimant_asks:

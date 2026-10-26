@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-6002",
+  "insured_name": "Bhanumati Nazareth",
+  "phone": "04157511426",
+  "address": "254, Palla Street, Khammam-153882",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR15OA2008",
+  "vehicle_age_years": 2.5,
+  "idv": 787000,
+  "deductible": 1000,
+  "policy_start": "2026-04-19",
+  "policy_end": "2027-04-18",
+  "zero_depreciation": true,
+  "ncb_percent": 35
+}

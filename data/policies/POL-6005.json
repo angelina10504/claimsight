@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-6005",
+  "insured_name": "Eiravati Muni",
+  "phone": "+917845470096",
+  "address": "20/982, Sarin, Kollam-399064",
+  "make": "Kia",
+  "model": "Seltos HTK",
+  "registration": "HR30PT3454",
+  "vehicle_age_years": 0.4,
+  "idv": 1104000,
+  "deductible": 1000,
+  "policy_start": "2026-03-06",
+  "policy_end": "2027-03-05",
+  "zero_depreciation": true,
+  "ncb_percent": 35
+}

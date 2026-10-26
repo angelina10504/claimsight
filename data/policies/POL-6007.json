@@ -1,0 +1,16 @@
+{
+  "policy_no": "POL-6007",
+  "insured_name": "Triveni Sanghvi",
+  "phone": "1223689679",
+  "address": "H.No. 079, Rattan Road, Ulhasnagar-084183",
+  "make": "Honda",
+  "model": "City SV",
+  "registration": "HR58ZM9000",
+  "vehicle_age_years": 6.0,
+  "idv": 525000,
+  "deductible": 1000,
+  "policy_start": "2026-03-05",
+  "policy_end": "2027-03-04",
+  "zero_depreciation": false,
+  "ncb_percent": 35
+}
