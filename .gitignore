@@ -48,3 +48,11 @@ db/
 
 # dashboard: live-run locks, backups and the evidence sandbox
 dashboard/.runtime/
+
+# The VehiDE dataset images (~2.3 GB) are not redistributed here.
+# The annotations and the 11 photos used by the photo claims ARE committed.
+# Download the images and place them as:
+#   data/photos/vehiDE/image/image/          (11,621 training images)
+#   data/photos/vehiDE/validation/validation/ (2,324 validation images)
+data/photos/vehiDE/image/
+data/photos/vehiDE/validation/
