@@ -1,0 +1,54 @@
+# What must never enter the image, and what simply does not belong in it.
+# The A2A server needs the source and the committed fixtures (data/claims,
+# data/policies, data/invoices, data/manifest.json, knowledge/policy_wording.txt
+# and the 11 photos in data/photos/); everything below is secret, huge, local,
+# or produced at run time.
+
+# ---------------------------------------------------------------- secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---------------------------------------------------------------- version control / local tooling
+.git
+.gitignore
+.idea/
+.vscode/
+.DS_Store
+*.swp
+server.log
+*.local
+
+# ---------------------------------------------------------------- Python caches / local venv
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# ---------------------------------------------------------------- CrewAI knowledge index caches
+.chroma/
+chroma/
+db/
+
+# ---------------------------------------------------------------- runtime output (regenerated per run)
+# Written while a claim is assessed - claim narratives, registrations, prompts.
+# The image recreates these as empty dirs (see the Dockerfile).
+data/decisions/
+data/review_queue/
+data/intake/
+data/evidence/
+data/logs/
+data/reports/
+dashboard/.runtime/
+
+# ---------------------------------------------------------------- the 2.3 GB VehiDE dataset
+# Gitignored and not redistributed. The annotations and the 11 claim photos
+# live elsewhere under data/photos/ and ARE kept.
+data/photos/vehiDE/
