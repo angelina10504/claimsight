@@ -60,6 +60,15 @@ sys.path.insert(0, str(SRC))
 if "--stand-in" in sys.argv:
     os.environ["CLAIMSIGHT_OFFLINE"] = "1"   # a rehearsal sends nothing anywhere
 
+if "--final-evaluation" in sys.argv:
+    # The sealed held-out 40 are assessed with gpt-oss-20b: the free tier gives
+    # more tokens a day for 20b than 120b, so about 20 claims rather than 10.
+    # Set the override HERE, before config is imported and binds the model, so a
+    # --final-evaluation run records 20b without changing the default in
+    # src/config.py or writing it into .env. An explicit CLAIMSIGHT_GROQ_MODEL
+    # already in the environment still wins.
+    os.environ.setdefault("CLAIMSIGHT_GROQ_MODEL", "openai/openai/gpt-oss-20b")
+
 import observability                         # noqa: E402
 observability.start()                        # before the crews are imported
 
@@ -369,6 +378,42 @@ def select_claims(wanted: list = None) -> list:
     return [by_id[c] for c in wanted]
 
 
+def held_out_claims() -> list:
+    """The 40 sealed held-out claims (split 'test'), in manifest order. Reached
+    ONLY through --final-evaluation; every other path stays dev-only."""
+    return [e for e in json.loads(MANIFEST.read_text()) if e["split"] == "test"]
+
+
+def select_for_run(claims_arg: str, final_evaluation: bool) -> list:
+    """The claim entries a run covers.
+
+    Without --final-evaluation (the default, UNCHANGED): development claims only.
+    claims_arg is a comma-separated list of dev claim ids, or empty for all 20;
+    a non-dev id is refused by select_claims(). This guard is what has kept the
+    held-out 40 sealed all semester.
+
+    With --final-evaluation: the ONLY way to reach split 'test'. claims_arg is
+    then a COUNT N, and the first N test claims in manifest order are taken, so
+    the selection is reproducible and the claims can be named exactly."""
+    if not final_evaluation:
+        wanted = [c.strip() for c in (claims_arg or "").split(",") if c.strip()] or None
+        return select_claims(wanted)
+    pool = held_out_claims()
+    if not pool:
+        raise SystemExit("the manifest has no claims in split 'test'")
+    text = (claims_arg or "").strip()
+    if not text:
+        return pool
+    try:
+        n = int(text)
+    except ValueError:
+        raise SystemExit("with --final-evaluation, --claims is a count N (the first N "
+                         "test claims in manifest order), not a list of ids")
+    if not 1 <= n <= len(pool):
+        raise SystemExit(f"--claims must be between 1 and {len(pool)} for the test split")
+    return pool[:n]
+
+
 def truth_for(claim_id: str) -> dict:
     """The labels, read only to score. Nothing here reaches a crew."""
     claim = json.loads((claim_flow.CLAIMS / f"{claim_id}.json").read_text())
@@ -421,10 +466,30 @@ class Run:
                 f"{config} ({', '.join(changed)}). Start a new --run, or pass "
                 f"--allow-changes to carry on knowing the table will mix the two.")
         merged = {**saved, **now}
-        self.write({"created": self.read("run.json", default={}).get("created") or _now(),
+        existing = self.read("run.json", default={})
+        self.write({**existing,                           # keep any final_evaluation record
+                    "created": existing.get("created") or _now(),
                     "stand_in": self.stand_in, "configs": merged,
                     "not_available": NOT_AVAILABLE}, "run.json")
         return now
+
+    def note_final_evaluation(self, entries) -> dict:
+        """Record indelibly in run.json that --final-evaluation unlocked the
+        sealed test split: the first date it was used, the date of this session,
+        and every test claim the run has covered. So test-split numbers can
+        never be mistaken for dev-set ones. Merges across resumes; keeps the
+        first-used date."""
+        meta = self.read("run.json", default={})
+        before = meta.get("final_evaluation") or {}
+        covered = sorted({*before.get("claims", []),
+                          *(e["claim_id"] for e in entries)})
+        meta["final_evaluation"] = {
+            "used": True, "split": "test",
+            "first_used_at": before.get("first_used_at") or _now(),
+            "selected_on": _today(),
+            "claims": covered}
+        self.write(meta, "run.json")
+        return meta["final_evaluation"]
 
     def done(self, config: str, claim_id: str) -> bool:
         return self.path(config, f"{claim_id}.json").exists()
@@ -569,12 +634,19 @@ def run_unit(run: Run, config: str, entry: dict, settings: dict, steps=None) -> 
 
 
 def evaluate(run: Run, configs=AVAILABLE, claims=None, daily_tokens=DEFAULT_DAILY_TOKENS,
-             max_units=None, allow_changes=False, steps=None, say=print) -> dict:
+             max_units=None, allow_changes=False, steps=None, entries=None,
+             final_evaluation=False, say=print) -> dict:
     """Work through every claim for every configuration, a claim at a time
     (A then B for the same claim), so a run stopped part-way still compares
-    the two on the same claims. Returns what happened this time."""
+    the two on the same claims. Returns what happened this time.
+
+    entries overrides the dev-only default (select_claims); main passes the
+    held-out set here when --final-evaluation is used."""
     settings = run.check_settings(configs, allow_changes)
-    entries = select_claims(claims)
+    if entries is None:
+        entries = select_claims(claims)
+    if final_evaluation:
+        run.note_final_evaluation(entries)
     ran, failed, stopped, in_a_row = [], [], None, 0
     try:
         for entry in entries:
@@ -810,6 +882,12 @@ def report(run: Run, configs=CONFIGS) -> dict:
             scored["end_to_end_tokens_mean"] = (scored["assessment_total_tokens_mean"]
                                                 + intake["total_tokens_mean"])
         summary["configs"][config] = {"available": True, **scored}
+    final = run.read("run.json", default={}).get("final_evaluation")
+    if final:
+        summary["final_evaluation"] = final
+        summary["notes"][-1] = ("Held-out test split, unlocked with --final-evaluation: "
+                                "claims the system had never seen. run.json's "
+                                "final_evaluation holds the date and the exact claim ids.")
     return summary
 
 
@@ -924,16 +1002,60 @@ def write_outputs(run: Run, summary: dict) -> dict:
     return paths
 
 
+# ---------------------------------------------------------------- dry run
+def dry_run(run: Run, configs, entries, daily_tokens: int, final_evaluation: bool,
+            say=print) -> int:
+    """Preview before spending anything: the exact claims and a token estimate.
+    No model is called and nothing is written."""
+    ids = [e["claim_id"] for e in entries]
+    model = settings_for(configs[0], run.stand_in)["model"] if configs else "n/a"
+    units = [(c, e["claim_id"]) for e in entries for c in configs
+             if not run.done(c, e["claim_id"])]
+    already = sum(run.done(c, e["claim_id"]) for e in entries for c in configs)
+    estimate = sum(run.estimate(c, cid) for c, cid in units)
+
+    say("DRY RUN - no model is called, nothing is written\n")
+    say(f"run folder:   {run.dir}")
+    say(f"split:        {'test (held-out, via --final-evaluation)' if final_evaluation else 'dev'}")
+    say(f"model:        {model}")
+    say(f"configs:      {','.join(configs)}")
+    say(f"claims ({len(ids)}):   {', '.join(ids)}")
+    say("")
+    say(f"units to run: {len(units)} claim-configuration(s)"
+        + (f"  ({already} already finished, skipped)" if already else ""))
+    say(f"token estimate: about {estimate:,} tokens in total "
+        f"(~{FIRST_ESTIMATE:,} per claim-configuration before any has finished; "
+        "refines as real claims complete)")
+    if daily_tokens:
+        days = -(-estimate // daily_tokens) if estimate else 0     # ceil division
+        say(f"at a budget of {daily_tokens:,} tokens/day: about {days} day(s) of running")
+    return 0
+
+
 # ---------------------------------------------------------------- command line
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("--run", default="phase2-dev", help="name of the run folder")
+    parser.add_argument("--run", default=None,
+                        help="name of the run folder (default: phase2-dev, or "
+                             "final-evaluation when --final-evaluation is used)")
     parser.add_argument("--configs", default="A,B", help="which to run, e.g. B or A,B")
-    parser.add_argument("--claims", default="", help="comma-separated development claim ids")
-    parser.add_argument("--daily-tokens", type=int, default=DEFAULT_DAILY_TOKENS,
-                        help="stop before passing this many tokens today (0: no limit)")
+    parser.add_argument("--claims", default="",
+                        help="dev: comma-separated development claim ids (empty = all 20). "
+                             "With --final-evaluation: a count N = the first N test claims.")
+    parser.add_argument("--final-evaluation", action="store_true",
+                        help="unlock the sealed held-out test split. The ONLY way to select "
+                             "split 'test'. Records that the flag was used, which claims it "
+                             "covered and the date. Without it, behaviour is unchanged: dev "
+                             "only. Assesses with gpt-oss-20b.")
+    parser.add_argument("--daily-tokens", "--budget", type=int, dest="daily_tokens",
+                        default=DEFAULT_DAILY_TOKENS,
+                        help="cap one day's tokens; stop cleanly before it is passed and "
+                             f"exit 0 (0: no limit). Default {DEFAULT_DAILY_TOKENS:,}.")
     parser.add_argument("--max-units", type=int, default=None,
                         help="stop after this many claim-configuration runs")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="list the claims and estimate the tokens; no model call, "
+                             "nothing written")
     parser.add_argument("--report", action="store_true", help="score what is saved; no model call")
     parser.add_argument("--stand-in", action="store_true",
                         help="stand-in crews: costs nothing, measures nothing")
@@ -949,20 +1071,32 @@ def main(argv=None) -> int:
             raise SystemExit(f"unknown config {config}; choose from {', '.join(CONFIGS)}")
     configs = [c for c in configs if c not in NOT_AVAILABLE]
 
-    run = Run(args.run, stand_in=args.stand_in)
+    # A final-evaluation run goes into its own folder by default, so the sealed
+    # test-split numbers are never mixed with the dev-set table.
+    run_name = args.run or ("final-evaluation" if args.final_evaluation else "phase2-dev")
+    run = Run(run_name, stand_in=args.stand_in)
     saved = run.read("run.json")
     if saved and saved.get("stand_in") != args.stand_in:
-        raise SystemExit(f"run '{args.run}' is a {'stand-in' if saved['stand_in'] else 'real'} "
+        raise SystemExit(f"run '{run_name}' is a {'stand-in' if saved['stand_in'] else 'real'} "
                          f"run; it cannot be continued "
                          f"{'without' if saved['stand_in'] else 'with'} --stand-in")
 
+    if args.dry_run:
+        return dry_run(run, configs, select_for_run(args.claims, args.final_evaluation),
+                       args.daily_tokens, args.final_evaluation)
+
     if not args.report:
-        claims = [c.strip() for c in args.claims.split(",") if c.strip()] or None
-        print(f"evaluating {len(select_claims(claims))} development claim(s), "
+        entries = select_for_run(args.claims, args.final_evaluation)
+        where = "held-out test" if args.final_evaluation else "development"
+        print(f"evaluating {len(entries)} {where} claim(s), "
               f"configs {','.join(configs)}, into {run.dir}")
-        session = evaluate(run, configs=configs, claims=claims,
+        if args.final_evaluation:
+            print(f"  --final-evaluation: the sealed split, assessed with "
+                  f"{settings_for(configs[0], False)['model'] if configs else 'n/a'}")
+        session = evaluate(run, configs=configs, entries=entries,
                            daily_tokens=args.daily_tokens, max_units=args.max_units,
-                           allow_changes=args.allow_changes)
+                           allow_changes=args.allow_changes,
+                           final_evaluation=args.final_evaluation)
         print(f"\n  this session: {len(session['ran'])} finished, {len(session['failed'])} "
               f"failed, {session['remaining']} still to run")
         observability.flush()

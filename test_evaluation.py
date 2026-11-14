@@ -65,6 +65,14 @@ def quiet(fn, *args, **kwargs):
     return result, out.getvalue()
 
 
+def _raises_systemexit(fn) -> bool:
+    try:
+        fn()
+        return False
+    except SystemExit:
+        return True
+
+
 def main() -> None:
     passed = total = 0
 
@@ -271,6 +279,61 @@ def main() -> None:
     run("by default the 20 development claims, from the manifest",
         [e["claim_id"] for e in ep.select_claims()] ==
         [f"CLM-50{n:02d}" for n in range(20)])
+
+    # ------------------------------------------------ the sealed test split
+    print("\n7a. The held-out test split, reached only by --final-evaluation\n")
+    manifest = json.loads((ROOT / "data" / "manifest.json").read_text())
+    test_ids = [e["claim_id"] for e in manifest if e["split"] == "test"]
+
+    # the guard still blocks test claims without the flag
+    default_entries = ep.select_for_run("", final_evaluation=False)
+    run("without the flag, selection stays development-only",
+        all(e["split"] == "dev" for e in default_entries) and len(default_entries) == 20)
+    run("without the flag, a held-out test claim id is refused",
+        _raises_systemexit(lambda: ep.select_for_run("CLM-5020", final_evaluation=False)))
+
+    # the flag selects only test claims
+    unlocked = ep.select_for_run("", final_evaluation=True)
+    run("with the flag, exactly the 40 held-out test claims are selected",
+        all(e["split"] == "test" for e in unlocked) and len(unlocked) == 40)
+
+    # selection is deterministic: the first N in manifest order
+    first20 = [e["claim_id"] for e in ep.select_for_run("20", final_evaluation=True)]
+    run("--claims N takes the first N test claims in manifest order, reproducibly",
+        first20 == test_ids[:20]
+        and first20 == [e["claim_id"] for e in ep.select_for_run("20", True)])
+    run("a count beyond the split, or a non-number, is refused",
+        _raises_systemexit(lambda: ep.select_for_run("41", True))
+        and _raises_systemexit(lambda: ep.select_for_run("CLM-5020", True)))
+
+    # the run records that the flag was used, which claims, and the date
+    recorded = ep.Run("final-rec", stand_in=True)
+    recorded.check_settings(("A", "B"))
+    block = recorded.note_final_evaluation(ep.select_for_run("20", True))
+    reread = recorded.read("run.json")["final_evaluation"]
+    run("the run records the flag, the test claims it covered and the date",
+        block["used"] is True and block["split"] == "test"
+        and block["claims"] == test_ids[:20] and block["selected_on"] == ep._today()
+        and reread == block)
+    first_used = block["first_used_at"]
+    recorded.check_settings(("A", "B"))        # a next-day resume re-writes run.json
+    survived = recorded.read("run.json").get("final_evaluation", {})
+    run("a later resume does not erase the record or move its first-used date",
+        survived.get("used") is True and survived.get("first_used_at") == first_used)
+
+    print("\n7b. --budget caps one day on the command line, and --dry-run spends nothing\n")
+    before_budget = data_listing()
+    _, budget_out = quiet(ep.main, ["--run", "budget-cli", "--stand-in", "--budget", "40000"])
+    run("--budget caps the day; the run stops cleanly before passing it",
+        "today's budget" in budget_out and "40,000" in budget_out)
+
+    _, dry_out = quiet(ep.main, ["--final-evaluation", "--claims", "20", "--dry-run"])
+    run("--dry-run lists the test claims and estimates tokens, calling no model",
+        "DRY RUN" in dry_out and all(c in dry_out for c in test_ids[:20])
+        and "token estimate" in dry_out)
+    run("--dry-run writes nothing and the real data/ folder is untouched",
+        not ep.Run("final-evaluation", stand_in=False).path("run.json").exists()
+        and data_listing() == before_budget)
 
     # ---------------------------------------------------------------- scoring
     print("\n8. Scoring\n")
