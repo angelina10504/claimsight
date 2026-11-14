@@ -1,0 +1,70 @@
+{
+  "claim_id": "CLM-5025",
+  "config": "B",
+  "fault_type": "phantom_part",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "3cd7711447b9",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T12:19:54+00:00",
+  "seconds": 111.36,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.1,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Fender - replacement",
+      "amount": 6700.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Front Door - replacement",
+      "amount": 14000.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Door - replacement",
+      "amount": 14270.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 13440.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 7720.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 46745.16,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 37410,
+      "prompt_tokens": 29988,
+      "completion_tokens": 7422,
+      "cached_prompt_tokens": 1536,
+      "reasoning_tokens": 4770,
+      "successful_requests": 21
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

@@ -1,0 +1,60 @@
+{
+  "claim_id": "CLM-5024",
+  "config": "B",
+  "fault_type": "inflated_amount",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "3cd7711447b9",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T12:15:36+00:00",
+  "seconds": 125.21,
+  "status": "awaiting_review",
+  "route": "human_review",
+  "coverage_status": "covered",
+  "fraud_score": 0.7,
+  "fraud_flags": [
+    "Windshield replacement overpriced"
+  ],
+  "line_decisions": [
+    {
+      "description": "Windshield - replacement",
+      "amount": 33250.0,
+      "admitted": false,
+      "reason": "priced far above market rate"
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 12600.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 7830.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 21248.9,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 36945,
+      "prompt_tokens": 28299,
+      "completion_tokens": 8646,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 5316,
+      "successful_requests": 21
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

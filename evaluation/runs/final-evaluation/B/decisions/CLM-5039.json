@@ -1,0 +1,141 @@
+{
+  "claim_id": "CLM-5039",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5039",
+    "policy_no": "POL-3039",
+    "registration": "HR30FE4929",
+    "incident_date": "2026-02-16",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "front bumper"
+    ],
+    "invoice": {
+      "invoice_no": "INV/395/26",
+      "invoice_date": "2026-02-18",
+      "garage_name": "Suresh Auto Works",
+      "registration": "HR30FE4929",
+      "line_items": [
+        {
+          "description": "Front Bumper - replacement",
+          "amount": 8830.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 3120.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 1640.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 13590.0,
+      "gst": 2446.0,
+      "total": 16036.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Photos not provided. Awaiting visual evidence."
+  },
+  "decision": {
+    "claim_id": "CLM-5039",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Period within policy: 2026\u201101\u201121 to 2027\u201101\u201120",
+      "Section\u202fI, item\u202f6: \u2018Collisions, impacts, being hit by another vehicle, reversing into an object and stone damage are all \u2018accidental external means\u2019.\u2019"
+    ],
+    "fraud_score": 0.0,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 8830.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 3120.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1640.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "The claim is within the policy period and the peril is covered under Section\u202fI, item\u202f6. No exclusions apply to the claimed repairs, and there are no fraud indicators. All invoice lines are admitted for payment."
+  },
+  "settlement": {
+    "admitted_subtotal": 13590.0,
+    "total_depreciation": 0.0,
+    "after_depreciation": 13590.0,
+    "gst": 2446.2,
+    "deductible": 1000.0,
+    "payout": 15036.2,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Front Bumper - replacement",
+        "material": "plastic",
+        "amount": 8830.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 8830.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 3120.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 3120.0
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 1640.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 1640.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Front Bumper - replacement: Rs 8,830  - 0.0% depreciation (Rs 0)  = Rs 8,830\n  Painting and finishing: Rs 3,120  - 0.0% depreciation (Rs 0)  = Rs 3,120\n  Labour charges: Rs 1,640  - 0.0% depreciation (Rs 0)  = Rs 1,640\nSubtotal after depreciation: Rs 13,590.00\nGST: Rs 2,446.20\nLess deductible: Rs 1,000.00\nPayout: Rs 15,036.20"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 15036.2,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.00, 0 line(s) denied, payout Rs 15,036.20 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 15,036.20"
+  ],
+  "id": "c6d17add-7cd7-4d01-b257-344b11fa6dee"
+}

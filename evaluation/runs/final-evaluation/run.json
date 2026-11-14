@@ -1,0 +1,77 @@
+{
+  "created": "2026-11-14T11:29:18+00:00",
+  "stand_in": false,
+  "configs": {
+    "A": {
+      "stand_in": false,
+      "provider": "groq",
+      "model": "openai/openai/gpt-oss-20b",
+      "temperature": 0.1,
+      "llm_retries": 5,
+      "max_rpm": 8,
+      "knowledge": {
+        "results_limit": 3,
+        "score_threshold": 0.6
+      },
+      "intake_prompt_version": "bf9584d794f4",
+      "decision_code": "e18beafe82b7",
+      "fraud_threshold": 0.5,
+      "high_value": 50000,
+      "config": "A",
+      "description": "single LLM, same evidence, same schema",
+      "prompt_version": "f6e5177d44eb",
+      "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails"
+    },
+    "B": {
+      "stand_in": false,
+      "provider": "groq",
+      "model": "openai/openai/gpt-oss-20b",
+      "temperature": 0.1,
+      "llm_retries": 5,
+      "max_rpm": 8,
+      "knowledge": {
+        "results_limit": 3,
+        "score_threshold": 0.6
+      },
+      "intake_prompt_version": "bf9584d794f4",
+      "decision_code": "e18beafe82b7",
+      "fraud_threshold": 0.5,
+      "high_value": 50000,
+      "config": "B",
+      "description": "ClaimSight Phase 2 architecture",
+      "prompt_version": "3cd7711447b9",
+      "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks"
+    }
+  },
+  "not_available": {
+    "C": "ClaimSight + vision is Phase 3; the Damage Analyst does not exist yet"
+  },
+  "final_evaluation": {
+    "used": true,
+    "split": "test",
+    "first_used_at": "2026-11-14T11:29:18+00:00",
+    "selected_on": "2026-11-14",
+    "claims": [
+      "CLM-5020",
+      "CLM-5021",
+      "CLM-5022",
+      "CLM-5023",
+      "CLM-5024",
+      "CLM-5025",
+      "CLM-5026",
+      "CLM-5027",
+      "CLM-5028",
+      "CLM-5029",
+      "CLM-5030",
+      "CLM-5031",
+      "CLM-5032",
+      "CLM-5033",
+      "CLM-5034",
+      "CLM-5035",
+      "CLM-5036",
+      "CLM-5037",
+      "CLM-5038",
+      "CLM-5039"
+    ]
+  }
+}

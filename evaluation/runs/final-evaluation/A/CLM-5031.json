@@ -1,0 +1,58 @@
+{
+  "claim_id": "CLM-5031",
+  "config": "A",
+  "fault_type": "clean",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "f6e5177d44eb",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T12:45:59+00:00",
+  "seconds": 141.89,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.1,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Door Glass - replacement",
+      "amount": 5060.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 1910.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 1030.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 8158.27,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": false,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 7340,
+      "prompt_tokens": 6032,
+      "completion_tokens": 1308,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 914,
+      "successful_requests": 2
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

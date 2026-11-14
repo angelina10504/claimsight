@@ -1,0 +1,72 @@
+{
+  "claim_id": "CLM-5034",
+  "config": "A",
+  "fault_type": "inflated_amount",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "f6e5177d44eb",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T12:58:50+00:00",
+  "seconds": 139.3,
+  "status": "awaiting_review",
+  "route": "human_review",
+  "coverage_status": "covered",
+  "fraud_score": 0.7,
+  "fraud_flags": [
+    "Front Bumper - replacement: billed Rs 23,153, about 2.6x the market price of Rs 9,000"
+  ],
+  "line_decisions": [
+    {
+      "description": "Front Bumper - replacement",
+      "amount": 23153.0,
+      "admitted": false,
+      "reason": "priced far above market rate"
+    },
+    {
+      "description": "Rear Door - replacement",
+      "amount": 13780.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Taillight - replacement",
+      "amount": 4290.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 14570.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 8460.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 40378.76,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": false,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 7883,
+      "prompt_tokens": 6385,
+      "completion_tokens": 1498,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 973,
+      "successful_requests": 2
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

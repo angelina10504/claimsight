@@ -1,0 +1,140 @@
+{
+  "claim_id": "CLM-5031",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5031",
+    "policy_no": "POL-3031",
+    "registration": "HR35AD2245",
+    "incident_date": "2026-06-22",
+    "narrative": "Reversed into a pillar in the basement parking.",
+    "damaged_parts": [
+      "door glass"
+    ],
+    "invoice": {
+      "invoice_no": "INV/901/26",
+      "invoice_date": "2026-06-27",
+      "garage_name": "Sankar Auto Works",
+      "registration": "HR35AD2245",
+      "line_items": [
+        {
+          "description": "Door Glass - replacement",
+          "amount": 5060.0,
+          "material": "glass"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 1910.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 1030.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 8000.0,
+      "gst": 1440.0,
+      "total": 9440.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "No photos provided."
+  },
+  "decision": {
+    "claim_id": "CLM-5031",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "\"Section I item 6: Accidental external means including reversing into an object.\""
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Door Glass - replacement",
+        "amount": 5060.0,
+        "material": "glass",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 1910.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1030.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "The incident is covered as a collision within the policy period. All invoice lines are admitted with no fraud indicators."
+  },
+  "settlement": {
+    "admitted_subtotal": 8000.0,
+    "total_depreciation": 238.75,
+    "after_depreciation": 7761.25,
+    "gst": 1397.02,
+    "deductible": 1000.0,
+    "payout": 8158.27,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Door Glass - replacement",
+        "material": "glass",
+        "amount": 5060.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 5060.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 1910.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 238.75,
+        "payable": 1671.25
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 1030.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 1030.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Door Glass - replacement: Rs 5,060  - 0.0% depreciation (Rs 0)  = Rs 5,060\n  Painting and finishing: Rs 1,910  - 12.5% depreciation (Rs 239)  = Rs 1,671\n  Labour charges: Rs 1,030  - 0.0% depreciation (Rs 0)  = Rs 1,030\nSubtotal after depreciation: Rs 7,761.25\nGST: Rs 1,397.02\nLess deductible: Rs 1,000.00\nPayout: Rs 8,158.27"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 8158.27,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 8,158.27 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 8,158.27"
+  ],
+  "id": "e321ea1c-6510-498a-b7a1-908f55c79d48"
+}

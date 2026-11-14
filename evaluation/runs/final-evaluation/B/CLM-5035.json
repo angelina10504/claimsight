@@ -1,0 +1,70 @@
+{
+  "claim_id": "CLM-5035",
+  "config": "B",
+  "fault_type": "phantom_part",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "3cd7711447b9",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T13:40:44+00:00",
+  "seconds": 127.63,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.1,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Door Glass - replacement",
+      "amount": 4630.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Side Mirror - replacement",
+      "amount": 3100.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Rear Door - replacement",
+      "amount": 13730.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 6350.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 3290.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 26451.81,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 42870,
+      "prompt_tokens": 34620,
+      "completion_tokens": 8250,
+      "cached_prompt_tokens": 1536,
+      "reasoning_tokens": 4773,
+      "successful_requests": 24
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

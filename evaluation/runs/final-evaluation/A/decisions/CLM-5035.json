@@ -1,0 +1,182 @@
+{
+  "claim_id": "CLM-5035",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5035",
+    "policy_no": "POL-3035",
+    "registration": "HR49EP7046",
+    "incident_date": "2026-06-20",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "door glass",
+      "side mirror",
+      "rear door"
+    ],
+    "invoice": {
+      "invoice_no": "INV/222/26",
+      "invoice_date": "2026-06-23",
+      "garage_name": "Dua Auto Works",
+      "registration": "HR49EP7046",
+      "line_items": [
+        {
+          "description": "Door Glass - replacement",
+          "amount": 4630.0,
+          "material": "glass"
+        },
+        {
+          "description": "Side Mirror - replacement",
+          "amount": 3100.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Rear Door - replacement",
+          "amount": 13730.0,
+          "material": "metal"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 6350.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 3290.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 31100.0,
+      "gst": 5598.0,
+      "total": 36698.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Photos not provided. Awaiting visual evidence."
+  },
+  "decision": {
+    "claim_id": "CLM-5035",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I, item 6: By accidental external means"
+    ],
+    "fraud_score": 0.0,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4630.0,
+        "material": "glass",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3100.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 13730.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 6350.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 3290.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "The claim is covered under Section I, item 6 for accidental external means. All invoice lines are admitted with no fraud indicators."
+  },
+  "settlement": {
+    "admitted_subtotal": 31100.0,
+    "total_depreciation": 7835.75,
+    "after_depreciation": 23264.25,
+    "gst": 4187.56,
+    "deductible": 1000.0,
+    "payout": 26451.81,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Door Glass - replacement",
+        "material": "glass",
+        "amount": 4630.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4630.0
+      },
+      {
+        "description": "Side Mirror - replacement",
+        "material": "plastic",
+        "amount": 3100.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 1550.0,
+        "payable": 1550.0
+      },
+      {
+        "description": "Rear Door - replacement",
+        "material": "metal",
+        "amount": 13730.0,
+        "depreciation_rate": 0.4,
+        "depreciation_amount": 5492.0,
+        "payable": 8238.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 6350.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 793.75,
+        "payable": 5556.25
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 3290.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 3290.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Door Glass - replacement: Rs 4,630  - 0.0% depreciation (Rs 0)  = Rs 4,630\n  Side Mirror - replacement: Rs 3,100  - 50.0% depreciation (Rs 1,550)  = Rs 1,550\n  Rear Door - replacement: Rs 13,730  - 40.0% depreciation (Rs 5,492)  = Rs 8,238\n  Painting and finishing: Rs 6,350  - 12.5% depreciation (Rs 794)  = Rs 5,556\n  Labour charges: Rs 3,290  - 0.0% depreciation (Rs 0)  = Rs 3,290\nSubtotal after depreciation: Rs 23,264.25\nGST: Rs 4,187.56\nLess deductible: Rs 1,000.00\nPayout: Rs 26,451.81"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 26451.81,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.00, 0 line(s) denied, payout Rs 26,451.81 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 26,451.81"
+  ],
+  "id": "13e65779-f4fd-4e22-bcd6-e63460e26d6d"
+}

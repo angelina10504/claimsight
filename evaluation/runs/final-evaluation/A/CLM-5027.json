@@ -1,0 +1,76 @@
+{
+  "claim_id": "CLM-5027",
+  "config": "A",
+  "fault_type": "excluded_wear_tear",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "f6e5177d44eb",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T12:25:53+00:00",
+  "seconds": 131.94,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.0,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Door Glass - replacement",
+      "amount": 4680.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Clutch plate wear - replacement",
+      "amount": 6500.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Front Bumper - replacement",
+      "amount": 8110.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Fender - replacement",
+      "amount": 6590.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 9390.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 5930.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 37584.52,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": false,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 7819,
+      "prompt_tokens": 6459,
+      "completion_tokens": 1360,
+      "cached_prompt_tokens": 768,
+      "reasoning_tokens": 940,
+      "successful_requests": 2
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

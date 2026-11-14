@@ -1,0 +1,161 @@
+{
+  "claim_id": "CLM-5032",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5032",
+    "policy_no": "POL-3032",
+    "registration": "HR74SJ6590",
+    "incident_date": "2026-09-07",
+    "narrative": "Reversed into a pillar in the basement parking.",
+    "damaged_parts": [
+      "rear bumper",
+      "bonnet"
+    ],
+    "invoice": {
+      "invoice_no": "INV/851/26",
+      "invoice_date": "2026-09-09",
+      "garage_name": "Bala Auto Works",
+      "registration": "HR74SJ6590",
+      "line_items": [
+        {
+          "description": "Rear Bumper - replacement",
+          "amount": 9280.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Bonnet - replacement",
+          "amount": 12830.0,
+          "material": "metal"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 8270.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 4750.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 35130.0,
+      "gst": 6323.0,
+      "total": 41453.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "No photos provided."
+  },
+  "decision": {
+    "claim_id": "CLM-5032",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I, item 6 \u2013 \u201cAccidental external means: collisions, impacts, being hit by another vehicle, reversing into an object and stone damage.\u201d"
+    ],
+    "fraud_score": 0.0,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 9280.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Bonnet - replacement",
+        "amount": 12830.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 8270.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4750.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "The claim is covered under Section I, item 6. All invoice lines are admitted with no fraud flags. The claim is auto\u2011approved."
+  },
+  "settlement": {
+    "admitted_subtotal": 35130.0,
+    "total_depreciation": 0.0,
+    "after_depreciation": 35130.0,
+    "gst": 6323.4,
+    "deductible": 1000.0,
+    "payout": 40453.4,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Rear Bumper - replacement",
+        "material": "plastic",
+        "amount": 9280.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 9280.0
+      },
+      {
+        "description": "Bonnet - replacement",
+        "material": "metal",
+        "amount": 12830.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 12830.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 8270.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 8270.0
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 4750.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4750.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Rear Bumper - replacement: Rs 9,280  - 0.0% depreciation (Rs 0)  = Rs 9,280\n  Bonnet - replacement: Rs 12,830  - 0.0% depreciation (Rs 0)  = Rs 12,830\n  Painting and finishing: Rs 8,270  - 0.0% depreciation (Rs 0)  = Rs 8,270\n  Labour charges: Rs 4,750  - 0.0% depreciation (Rs 0)  = Rs 4,750\nSubtotal after depreciation: Rs 35,130.00\nGST: Rs 6,323.40\nLess deductible: Rs 1,000.00\nPayout: Rs 40,453.40"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 40453.4,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 4 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.00, 0 line(s) denied, payout Rs 40,453.40 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 40,453.40"
+  ],
+  "id": "291f03ef-805c-4989-8272-47d98be9bb3b"
+}

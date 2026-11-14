@@ -1,0 +1,60 @@
+{
+  "claim_id": "CLM-5024",
+  "config": "A",
+  "fault_type": "inflated_amount",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "f6e5177d44eb",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T12:13:26+00:00",
+  "seconds": 129.7,
+  "status": "awaiting_review",
+  "route": "human_review",
+  "coverage_status": "covered",
+  "fraud_score": 0.7,
+  "fraud_flags": [
+    "Windshield - replacement: billed Rs 33,250, about 3.0x the market price of Rs 11,000"
+  ],
+  "line_decisions": [
+    {
+      "description": "Windshield - replacement",
+      "amount": 33250.0,
+      "admitted": false,
+      "reason": "priced far above market rate"
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 12600.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 7830.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 21248.9,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": false,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 7375,
+      "prompt_tokens": 6099,
+      "completion_tokens": 1276,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 901,
+      "successful_requests": 2
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

@@ -1,0 +1,40 @@
+{
+  "claim_id": "CLM-5036",
+  "policy_no": "POL-3036",
+  "registration": "HR85JN9595",
+  "incident_date": "2026-02-01",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "damaged_parts": [
+    "side mirror"
+  ],
+  "invoice": {
+    "invoice_no": "INV/380/26",
+    "invoice_date": "2026-02-03",
+    "garage_name": "Gole Auto Works",
+    "registration": "HR85JN9595",
+    "line_items": [
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 2930.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 810.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 370.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 4110.0,
+    "gst": 740.0,
+    "total": 4850.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Invoice indicates side mirror replacement only.\nAwaiting claimant photos."
+}

@@ -1,0 +1,58 @@
+{
+  "claim_id": "CLM-5027",
+  "policy_no": "POL-3027",
+  "registration": "HR17LY4388",
+  "incident_date": "2026-10-22",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "damaged_parts": [
+    "door glass",
+    "clutch plate wear",
+    "front bumper",
+    "fender"
+  ],
+  "invoice": {
+    "invoice_no": "INV/865/26",
+    "invoice_date": "2026-10-27",
+    "garage_name": "Batta Auto Works",
+    "registration": "HR17LY4388",
+    "line_items": [
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4680.0,
+        "material": "glass"
+      },
+      {
+        "description": "Clutch plate wear - replacement",
+        "amount": 6500.0,
+        "material": "metal"
+      },
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 8110.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Fender - replacement",
+        "amount": 6590.0,
+        "material": "metal"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 9390.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 5930.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 41200.0,
+    "gst": 7416.0,
+    "total": 48616.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Photos missing; cannot confirm visual damage."
+}

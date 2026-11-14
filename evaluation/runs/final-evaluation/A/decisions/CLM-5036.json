@@ -1,0 +1,107 @@
+{
+  "claim_id": "CLM-5036",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5036",
+    "policy_no": "POL-3036",
+    "registration": "HR85JN9595",
+    "incident_date": "2026-02-01",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "side mirror"
+    ],
+    "invoice": {
+      "invoice_no": "INV/380/26",
+      "invoice_date": "2026-02-03",
+      "garage_name": "Gole Auto Works",
+      "registration": "HR85JN9595",
+      "line_items": [
+        {
+          "description": "Side Mirror - replacement",
+          "amount": 2930.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 810.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 370.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 4110.0,
+      "gst": 740.0,
+      "total": 4850.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Invoice indicates side mirror replacement only.\nAwaiting claimant photos."
+  },
+  "decision": {
+    "claim_id": "CLM-5036",
+    "coverage_status": "excluded",
+    "uncertainty_reasons": [],
+    "is_covered": false,
+    "coverage_reasons": [
+      "incident outside policy period"
+    ],
+    "fraud_score": 0.0,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 2930.0,
+        "material": "plastic",
+        "admitted": false,
+        "reason": "incident outside policy period"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 810.0,
+        "material": "paint",
+        "admitted": false,
+        "reason": "incident outside policy period"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 370.0,
+        "material": "labour",
+        "admitted": false,
+        "reason": "incident outside policy period"
+      }
+    ],
+    "recommended_route": "reject",
+    "summary": "The incident occurred before the policy started, so the claim is excluded. No invoice lines are admitted."
+  },
+  "settlement": {
+    "payout": 0.0,
+    "explanation": "Not covered: no settlement."
+  },
+  "route": "reject",
+  "status": "rejected",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=excluded, fraud_score=0.00, 3 line(s) denied, payout Rs 0.00 (calculator)",
+    "router 2: reject because not covered: incident outside policy period",
+    "rejected: incident outside policy period"
+  ],
+  "id": "bbdb9665-a03e-427b-9dc5-1b419cf371ad"
+}

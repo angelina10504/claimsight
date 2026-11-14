@@ -1,0 +1,52 @@
+{
+  "claim_id": "CLM-5021",
+  "policy_no": "POL-3021",
+  "registration": "HR95IO4228",
+  "incident_date": "2026-10-22",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "damaged_parts": [
+    "grille",
+    "fender",
+    "door glass"
+  ],
+  "invoice": {
+    "invoice_no": "INV/813/26",
+    "invoice_date": "2026-10-26",
+    "garage_name": "Samra Auto Works",
+    "registration": "HR95IO4228",
+    "line_items": [
+      {
+        "description": "Grille - replacement",
+        "amount": 2890.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Fender - replacement",
+        "amount": 6280.0,
+        "material": "metal"
+      },
+      {
+        "description": "Door Glass - replacement",
+        "amount": 5180.0,
+        "material": "glass"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 4670.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 2910.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 21930.0,
+    "gst": 3947.0,
+    "total": 25877.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "No photos provided."
+}

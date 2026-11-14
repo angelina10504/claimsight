@@ -1,0 +1,182 @@
+{
+  "claim_id": "CLM-5037",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5037",
+    "policy_no": "POL-3037",
+    "registration": "HR72TY2680",
+    "incident_date": "2026-09-18",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "front door",
+      "clutch plate wear",
+      "door glass"
+    ],
+    "invoice": {
+      "invoice_no": "INV/510/26",
+      "invoice_date": "2026-09-19",
+      "garage_name": "Nagi Auto Works",
+      "registration": "HR72TY2680",
+      "line_items": [
+        {
+          "description": "Front Door - replacement",
+          "amount": 13550.0,
+          "material": "metal"
+        },
+        {
+          "description": "Clutch plate wear - replacement",
+          "amount": 6500.0,
+          "material": null
+        },
+        {
+          "description": "Door Glass - replacement",
+          "amount": 5240.0,
+          "material": "glass"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 7280.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 5500.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 38070.0,
+      "gst": 6853.0,
+      "total": 44923.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "No photos provided. Awaiting visual evidence."
+  },
+  "decision": {
+    "claim_id": "CLM-5037",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I, item 6: By accidental external means"
+    ],
+    "fraud_score": 0.0,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Front Door - replacement",
+        "amount": 13550.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Clutch plate wear - replacement",
+        "amount": 6500.0,
+        "material": null,
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Door Glass - replacement",
+        "amount": 5240.0,
+        "material": "glass",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 7280.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 5500.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "The incident is covered under Section I item 6 as an accidental external means. All invoice lines are admitted with no fraud flags. Claim will be auto-approved."
+  },
+  "settlement": {
+    "admitted_subtotal": 38070.0,
+    "total_depreciation": 8930.0,
+    "after_depreciation": 29140.0,
+    "gst": 5245.2,
+    "deductible": 1000.0,
+    "payout": 33385.2,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Front Door - replacement",
+        "material": "metal",
+        "amount": 13550.0,
+        "depreciation_rate": 0.4,
+        "depreciation_amount": 5420.0,
+        "payable": 8130.0
+      },
+      {
+        "description": "Clutch plate wear - replacement",
+        "material": "metal",
+        "amount": 6500.0,
+        "depreciation_rate": 0.4,
+        "depreciation_amount": 2600.0,
+        "payable": 3900.0
+      },
+      {
+        "description": "Door Glass - replacement",
+        "material": "glass",
+        "amount": 5240.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 5240.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 7280.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 910.0,
+        "payable": 6370.0
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 5500.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 5500.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Front Door - replacement: Rs 13,550  - 40.0% depreciation (Rs 5,420)  = Rs 8,130\n  Clutch plate wear - replacement: Rs 6,500  - 40.0% depreciation (Rs 2,600)  = Rs 3,900\n  Door Glass - replacement: Rs 5,240  - 0.0% depreciation (Rs 0)  = Rs 5,240\n  Painting and finishing: Rs 7,280  - 12.5% depreciation (Rs 910)  = Rs 6,370\n  Labour charges: Rs 5,500  - 0.0% depreciation (Rs 0)  = Rs 5,500\nSubtotal after depreciation: Rs 29,140.00\nGST: Rs 5,245.20\nLess deductible: Rs 1,000.00\nPayout: Rs 33,385.20"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 33385.2,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.00, 0 line(s) denied, payout Rs 33,385.20 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 33,385.20"
+  ],
+  "id": "878ffe8a-0ebe-4603-8254-1a2e79f85487"
+}

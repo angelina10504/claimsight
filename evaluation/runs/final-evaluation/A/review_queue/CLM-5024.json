@@ -1,0 +1,139 @@
+{
+  "claim_id": "CLM-5024",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5024",
+    "policy_no": "POL-3024",
+    "registration": "HR99LA7291",
+    "incident_date": "2026-10-04",
+    "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+    "damaged_parts": [
+      "windshield"
+    ],
+    "invoice": {
+      "invoice_no": "INV/280/26",
+      "invoice_date": "2026-10-06",
+      "garage_name": "Patil Auto Works",
+      "registration": "HR99LA7291",
+      "line_items": [
+        {
+          "description": "Windshield - replacement",
+          "amount": 33250.0,
+          "material": "glass"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 12600.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 7830.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 53680.0,
+      "gst": 9662.0,
+      "total": 63342.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Only windshield replacement billed.\nNo photos submitted."
+  },
+  "decision": {
+    "claim_id": "CLM-5024",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I item 6: accidental external means"
+    ],
+    "fraud_score": 0.7,
+    "fraud_flags": [
+      "Windshield - replacement: billed Rs 33,250, about 3.0x the market price of Rs 11,000"
+    ],
+    "line_decisions": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 33250.0,
+        "material": "glass",
+        "admitted": false,
+        "reason": "priced far above market rate"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 12600.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 7830.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "human_review",
+    "summary": "The claim is covered as the incident falls under accidental external means. The windshield replacement is not admitted due to excessive pricing. Painting and labour are admitted, and human review is recommended due to the fraud score."
+  },
+  "settlement": {
+    "admitted_subtotal": 20430.0,
+    "total_depreciation": 1575.0,
+    "after_depreciation": 18855.0,
+    "gst": 3393.9,
+    "deductible": 1000.0,
+    "payout": 21248.9,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 12600.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 1575.0,
+        "payable": 11025.0
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 7830.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 7830.0
+      }
+    ],
+    "excluded": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 33250.0,
+        "reason": "priced far above market rate"
+      }
+    ],
+    "explanation": "Admitted lines:\n  Painting and finishing: Rs 12,600  - 12.5% depreciation (Rs 1,575)  = Rs 11,025\n  Labour charges: Rs 7,830  - 0.0% depreciation (Rs 0)  = Rs 7,830\nExcluded lines:\n  Windshield - replacement: Rs 33,250 - priced far above market rate\nSubtotal after depreciation: Rs 18,855.00\nGST: Rs 3,393.90\nLess deductible: Rs 1,000.00\nPayout: Rs 21,248.90"
+  },
+  "route": "human_review",
+  "status": "",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.70, 1 line(s) denied, payout Rs 21,248.90 (calculator)",
+    "router 2: human_review because fraud score 0.70 >= 0.5"
+  ],
+  "id": "e1373230-f799-4fef-97b0-5cc616b663da"
+}

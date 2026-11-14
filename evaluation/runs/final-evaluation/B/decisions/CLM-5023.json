@@ -1,0 +1,139 @@
+{
+  "claim_id": "CLM-5023",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5023",
+    "policy_no": "POL-3023",
+    "registration": "HR20TT5649",
+    "incident_date": "2026-07-10",
+    "narrative": "Reversed into a pillar in the basement parking.",
+    "damaged_parts": [
+      "taillight"
+    ],
+    "invoice": {
+      "invoice_no": "INV/350/26",
+      "invoice_date": "2026-07-11",
+      "garage_name": "Tripathi Auto Works",
+      "registration": "HR20TT5649",
+      "line_items": [
+        {
+          "description": "Taillight - replacement",
+          "amount": 4440.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 1250.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 650.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 6340.0,
+      "gst": 1141.0,
+      "total": 7481.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Invoice and policy match. No missing documents."
+  },
+  "decision": {
+    "claim_id": "CLM-5023",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I item 6 \u2013 accidental external means"
+    ],
+    "fraud_score": 0.0,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Taillight - replacement",
+        "amount": 4440.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 1250.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 650.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "The claim is covered under Section I item 6 for an accidental external means. All invoice lines are admitted with no fraud or price anomalies. The claim is ready for auto approval."
+  },
+  "settlement": {
+    "admitted_subtotal": 6340.0,
+    "total_depreciation": 2376.25,
+    "after_depreciation": 3963.75,
+    "gst": 713.48,
+    "deductible": 1000.0,
+    "payout": 3677.23,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Taillight - replacement",
+        "material": "plastic",
+        "amount": 4440.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 2220.0,
+        "payable": 2220.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 1250.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 156.25,
+        "payable": 1093.75
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 650.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 650.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Taillight - replacement: Rs 4,440  - 50.0% depreciation (Rs 2,220)  = Rs 2,220\n  Painting and finishing: Rs 1,250  - 12.5% depreciation (Rs 156)  = Rs 1,094\n  Labour charges: Rs 650  - 0.0% depreciation (Rs 0)  = Rs 650\nSubtotal after depreciation: Rs 3,963.75\nGST: Rs 713.48\nLess deductible: Rs 1,000.00\nPayout: Rs 3,677.23"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 3677.23,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.00, 0 line(s) denied, payout Rs 3,677.23 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 3,677.23"
+  ],
+  "id": "95ca291b-ec05-4c59-ac21-844eba6dea5d"
+}

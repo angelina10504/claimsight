@@ -1,0 +1,52 @@
+{
+  "claim_id": "CLM-5030",
+  "policy_no": "POL-3030",
+  "registration": "HR89CW3496",
+  "incident_date": "2026-03-15",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "damaged_parts": [
+    "rear bumper",
+    "fender",
+    "taillight"
+  ],
+  "invoice": {
+    "invoice_no": "INV/418/26",
+    "invoice_date": "2026-03-17",
+    "garage_name": "Bhasin Auto Works",
+    "registration": "HR89CW3496",
+    "line_items": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 8440.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Fender - replacement",
+        "amount": 6460.0,
+        "material": "metal"
+      },
+      {
+        "description": "Taillight - replacement",
+        "amount": 4180.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 6500.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4530.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 30110.0,
+    "gst": 5420.0,
+    "total": 35530.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Photos not provided."
+}

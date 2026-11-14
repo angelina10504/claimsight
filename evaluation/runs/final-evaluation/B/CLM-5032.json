@@ -1,0 +1,64 @@
+{
+  "claim_id": "CLM-5032",
+  "config": "B",
+  "fault_type": "clean",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "3cd7711447b9",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T12:52:40+00:00",
+  "seconds": 117.82,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.0,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Rear Bumper - replacement",
+      "amount": 9280.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Bonnet - replacement",
+      "amount": 12830.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 8270.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 4750.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 40453.4,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 36375,
+      "prompt_tokens": 29001,
+      "completion_tokens": 7374,
+      "cached_prompt_tokens": 3840,
+      "reasoning_tokens": 4608,
+      "successful_requests": 21
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

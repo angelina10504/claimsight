@@ -1,0 +1,40 @@
+{
+  "claim_id": "CLM-5039",
+  "policy_no": "POL-3039",
+  "registration": "HR30FE4929",
+  "incident_date": "2026-02-16",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "damaged_parts": [
+    "front bumper"
+  ],
+  "invoice": {
+    "invoice_no": "INV/395/26",
+    "invoice_date": "2026-02-18",
+    "garage_name": "Suresh Auto Works",
+    "registration": "HR30FE4929",
+    "line_items": [
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 8830.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 3120.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1640.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 13590.0,
+    "gst": 2446.0,
+    "total": 16036.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Photos not provided. Awaiting visual evidence."
+}

@@ -1,0 +1,120 @@
+{
+  "claim_id": "CLM-5026",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5026",
+    "policy_no": "POL-3026",
+    "registration": "HR66UQ2269",
+    "incident_date": "2026-02-26",
+    "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+    "damaged_parts": [
+      "grille",
+      "door glass"
+    ],
+    "invoice": {
+      "invoice_no": "INV/319/26",
+      "invoice_date": "2026-03-04",
+      "garage_name": "Khurana Auto Works",
+      "registration": "HR66UQ2269",
+      "line_items": [
+        {
+          "description": "Grille - replacement",
+          "amount": 3020.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Door Glass - replacement",
+          "amount": 4390.0,
+          "material": "glass"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 2020.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 1230.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 10660.0,
+      "gst": 1919.0,
+      "total": 12579.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Invoice and policy match. Awaiting photos."
+  },
+  "decision": {
+    "claim_id": "CLM-5026",
+    "coverage_status": "excluded",
+    "uncertainty_reasons": [],
+    "is_covered": false,
+    "coverage_reasons": [
+      "Policy period: incident outside coverage period"
+    ],
+    "fraud_score": 0.0,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Grille - replacement",
+        "amount": 3020.0,
+        "material": "plastic",
+        "admitted": false,
+        "reason": "incident outside coverage period"
+      },
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4390.0,
+        "material": "glass",
+        "admitted": false,
+        "reason": "incident outside coverage period"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2020.0,
+        "material": "paint",
+        "admitted": false,
+        "reason": "incident outside coverage period"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1230.0,
+        "material": "labour",
+        "admitted": false,
+        "reason": "incident outside coverage period"
+      }
+    ],
+    "recommended_route": "reject",
+    "summary": "The incident occurred before the policy started, so the claim is excluded. All invoice lines are rejected. No fraud detected."
+  },
+  "settlement": {
+    "payout": 0.0,
+    "explanation": "Not covered: no settlement."
+  },
+  "route": "reject",
+  "status": "rejected",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 4 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=excluded, fraud_score=0.00, 4 line(s) denied, payout Rs 0.00 (calculator)",
+    "router 2: reject because not covered: Policy period: incident outside coverage period",
+    "rejected: Policy period: incident outside coverage period"
+  ],
+  "id": "df6f02d4-6034-47cb-9a08-9a0428b99e1e"
+}

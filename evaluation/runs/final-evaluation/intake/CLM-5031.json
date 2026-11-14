@@ -1,0 +1,40 @@
+{
+  "claim_id": "CLM-5031",
+  "policy_no": "POL-3031",
+  "registration": "HR35AD2245",
+  "incident_date": "2026-06-22",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "damaged_parts": [
+    "door glass"
+  ],
+  "invoice": {
+    "invoice_no": "INV/901/26",
+    "invoice_date": "2026-06-27",
+    "garage_name": "Sankar Auto Works",
+    "registration": "HR35AD2245",
+    "line_items": [
+      {
+        "description": "Door Glass - replacement",
+        "amount": 5060.0,
+        "material": "glass"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 1910.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1030.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 8000.0,
+    "gst": 1440.0,
+    "total": 9440.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "No photos provided."
+}

@@ -1,0 +1,46 @@
+{
+  "claim_id": "CLM-5026",
+  "policy_no": "POL-3026",
+  "registration": "HR66UQ2269",
+  "incident_date": "2026-02-26",
+  "narrative": "A two-wheeler struck the vehicle at a traffic signal.",
+  "damaged_parts": [
+    "grille",
+    "door glass"
+  ],
+  "invoice": {
+    "invoice_no": "INV/319/26",
+    "invoice_date": "2026-03-04",
+    "garage_name": "Khurana Auto Works",
+    "registration": "HR66UQ2269",
+    "line_items": [
+      {
+        "description": "Grille - replacement",
+        "amount": 3020.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4390.0,
+        "material": "glass"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2020.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1230.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 10660.0,
+    "gst": 1919.0,
+    "total": 12579.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Invoice and policy match. Awaiting photos."
+}

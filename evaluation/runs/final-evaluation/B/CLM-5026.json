@@ -1,0 +1,64 @@
+{
+  "claim_id": "CLM-5026",
+  "config": "B",
+  "fault_type": "date_outside_policy",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "3cd7711447b9",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T12:23:59+00:00",
+  "seconds": 113.75,
+  "status": "rejected",
+  "route": "reject",
+  "coverage_status": "excluded",
+  "fraud_score": 0.0,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Grille - replacement",
+      "amount": 3020.0,
+      "admitted": false,
+      "reason": "incident outside policy period"
+    },
+    {
+      "description": "Door Glass - replacement",
+      "amount": 4390.0,
+      "admitted": false,
+      "reason": "incident outside policy period"
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 2020.0,
+      "admitted": false,
+      "reason": "incident outside policy period"
+    },
+    {
+      "description": "Labour charges",
+      "amount": 1230.0,
+      "admitted": false,
+      "reason": "incident outside policy period"
+    }
+  ],
+  "proposed_payout": 0.0,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 36867,
+      "prompt_tokens": 28977,
+      "completion_tokens": 7890,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 5286,
+      "successful_requests": 21
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

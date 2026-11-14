@@ -1,0 +1,182 @@
+{
+  "claim_id": "CLM-5025",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5025",
+    "policy_no": "POL-3025",
+    "registration": "HR68WQ3184",
+    "incident_date": "2026-10-12",
+    "narrative": "Reversed into a pillar in the basement parking.",
+    "damaged_parts": [
+      "fender",
+      "front door",
+      "rear door"
+    ],
+    "invoice": {
+      "invoice_no": "INV/365/26",
+      "invoice_date": "2026-10-16",
+      "garage_name": "Dash Auto Works",
+      "registration": "HR68WQ3184",
+      "line_items": [
+        {
+          "description": "Fender - replacement",
+          "amount": 6700.0,
+          "material": "metal"
+        },
+        {
+          "description": "Front Door - replacement",
+          "amount": 14000.0,
+          "material": "metal"
+        },
+        {
+          "description": "Rear Door - replacement",
+          "amount": 14270.0,
+          "material": "metal"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 13440.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 7720.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 56130.0,
+      "gst": 10103.0,
+      "total": 66233.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "No photos provided."
+  },
+  "decision": {
+    "claim_id": "CLM-5025",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I, item 6 \u2013 Accidental external means (reversing into a pillar)"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Fender - replacement",
+        "amount": 6700.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Front Door - replacement",
+        "amount": 14000.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 14270.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 13440.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 7720.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "The claim is covered under Section I item 6 for accidental external means. All invoice lines are admitted and no fraud indicators are present."
+  },
+  "settlement": {
+    "admitted_subtotal": 56130.0,
+    "total_depreciation": 15668.0,
+    "after_depreciation": 40462.0,
+    "gst": 7283.16,
+    "deductible": 1000.0,
+    "payout": 46745.16,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Fender - replacement",
+        "material": "metal",
+        "amount": 6700.0,
+        "depreciation_rate": 0.4,
+        "depreciation_amount": 2680.0,
+        "payable": 4020.0
+      },
+      {
+        "description": "Front Door - replacement",
+        "material": "metal",
+        "amount": 14000.0,
+        "depreciation_rate": 0.4,
+        "depreciation_amount": 5600.0,
+        "payable": 8400.0
+      },
+      {
+        "description": "Rear Door - replacement",
+        "material": "metal",
+        "amount": 14270.0,
+        "depreciation_rate": 0.4,
+        "depreciation_amount": 5708.0,
+        "payable": 8562.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 13440.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 1680.0,
+        "payable": 11760.0
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 7720.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 7720.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Fender - replacement: Rs 6,700  - 40.0% depreciation (Rs 2,680)  = Rs 4,020\n  Front Door - replacement: Rs 14,000  - 40.0% depreciation (Rs 5,600)  = Rs 8,400\n  Rear Door - replacement: Rs 14,270  - 40.0% depreciation (Rs 5,708)  = Rs 8,562\n  Painting and finishing: Rs 13,440  - 12.5% depreciation (Rs 1,680)  = Rs 11,760\n  Labour charges: Rs 7,720  - 0.0% depreciation (Rs 0)  = Rs 7,720\nSubtotal after depreciation: Rs 40,462.00\nGST: Rs 7,283.16\nLess deductible: Rs 1,000.00\nPayout: Rs 46,745.16"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 46745.16,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 46,745.16 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 46,745.16"
+  ],
+  "id": "96a66527-aed1-4410-b89b-7bc58024ea9b"
+}

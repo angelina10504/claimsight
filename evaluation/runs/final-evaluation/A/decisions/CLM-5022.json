@@ -1,0 +1,161 @@
+{
+  "claim_id": "CLM-5022",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5022",
+    "policy_no": "POL-3022",
+    "registration": "HR96WL3851",
+    "incident_date": "2026-09-29",
+    "narrative": "Reversed into a pillar in the basement parking.",
+    "damaged_parts": [
+      "rear door",
+      "front bumper"
+    ],
+    "invoice": {
+      "invoice_no": "INV/552/26",
+      "invoice_date": "2026-10-03",
+      "garage_name": "Chakrabarti Auto Works",
+      "registration": "HR96WL3851",
+      "line_items": [
+        {
+          "description": "Rear Door - replacement",
+          "amount": 12680.0,
+          "material": "metal"
+        },
+        {
+          "description": "Front Bumper - replacement",
+          "amount": 8470.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 7780.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 4290.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 33220.0,
+      "gst": 5980.0,
+      "total": 39200.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "No photos submitted. Awaiting photo evidence."
+  },
+  "decision": {
+    "claim_id": "CLM-5022",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I, item 6 \u2013 accidental external means such as reversing into an object are covered"
+    ],
+    "fraud_score": 0.0,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Rear Door - replacement",
+        "amount": 12680.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 8470.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 7780.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4290.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "The incident is covered under Section I, item 6 as an accidental external impact. All invoice lines are admitted with no fraud indicators."
+  },
+  "settlement": {
+    "admitted_subtotal": 33220.0,
+    "total_depreciation": 10279.5,
+    "after_depreciation": 22940.5,
+    "gst": 4129.29,
+    "deductible": 1000.0,
+    "payout": 26069.79,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Rear Door - replacement",
+        "material": "metal",
+        "amount": 12680.0,
+        "depreciation_rate": 0.4,
+        "depreciation_amount": 5072.0,
+        "payable": 7608.0
+      },
+      {
+        "description": "Front Bumper - replacement",
+        "material": "plastic",
+        "amount": 8470.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 4235.0,
+        "payable": 4235.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 7780.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 972.5,
+        "payable": 6807.5
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 4290.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4290.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Rear Door - replacement: Rs 12,680  - 40.0% depreciation (Rs 5,072)  = Rs 7,608\n  Front Bumper - replacement: Rs 8,470  - 50.0% depreciation (Rs 4,235)  = Rs 4,235\n  Painting and finishing: Rs 7,780  - 12.5% depreciation (Rs 972)  = Rs 6,808\n  Labour charges: Rs 4,290  - 0.0% depreciation (Rs 0)  = Rs 4,290\nSubtotal after depreciation: Rs 22,940.50\nGST: Rs 4,129.29\nLess deductible: Rs 1,000.00\nPayout: Rs 26,069.79"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 26069.79,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 4 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.00, 0 line(s) denied, payout Rs 26,069.79 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 26,069.79"
+  ],
+  "id": "2462b586-cba8-4cbb-84df-0d4f9682cbd8"
+}

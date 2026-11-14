@@ -1,0 +1,46 @@
+{
+  "claim_id": "CLM-5022",
+  "policy_no": "POL-3022",
+  "registration": "HR96WL3851",
+  "incident_date": "2026-09-29",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "damaged_parts": [
+    "rear door",
+    "front bumper"
+  ],
+  "invoice": {
+    "invoice_no": "INV/552/26",
+    "invoice_date": "2026-10-03",
+    "garage_name": "Chakrabarti Auto Works",
+    "registration": "HR96WL3851",
+    "line_items": [
+      {
+        "description": "Rear Door - replacement",
+        "amount": 12680.0,
+        "material": "metal"
+      },
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 8470.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 7780.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4290.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 33220.0,
+    "gst": 5980.0,
+    "total": 39200.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "No photos submitted. Awaiting photo evidence."
+}

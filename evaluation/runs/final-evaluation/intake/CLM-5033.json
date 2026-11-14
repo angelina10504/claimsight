@@ -1,0 +1,40 @@
+{
+  "claim_id": "CLM-5033",
+  "policy_no": "POL-3033",
+  "registration": "HR85DS5397",
+  "incident_date": "2026-10-22",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "damaged_parts": [
+    "side mirror"
+  ],
+  "invoice": {
+    "invoice_no": "INV/129/26",
+    "invoice_date": "2026-10-25",
+    "garage_name": "Raghavan Auto Works",
+    "registration": "HR85DS5397",
+    "line_items": [
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3330.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 950.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 580.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 4860.0,
+    "gst": 875.0,
+    "total": 5735.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Only side mirror replacement billed.\nNo other parts listed."
+}

@@ -1,0 +1,52 @@
+{
+  "claim_id": "CLM-5035",
+  "policy_no": "POL-3035",
+  "registration": "HR49EP7046",
+  "incident_date": "2026-06-20",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "damaged_parts": [
+    "door glass",
+    "side mirror",
+    "rear door"
+  ],
+  "invoice": {
+    "invoice_no": "INV/222/26",
+    "invoice_date": "2026-06-23",
+    "garage_name": "Dua Auto Works",
+    "registration": "HR49EP7046",
+    "line_items": [
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4630.0,
+        "material": "glass"
+      },
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3100.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 13730.0,
+        "material": "metal"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 6350.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 3290.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 31100.0,
+    "gst": 5598.0,
+    "total": 36698.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Photos not provided. Awaiting visual evidence."
+}

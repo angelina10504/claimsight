@@ -1,0 +1,52 @@
+{
+  "claim_id": "CLM-5025",
+  "policy_no": "POL-3025",
+  "registration": "HR68WQ3184",
+  "incident_date": "2026-10-12",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "damaged_parts": [
+    "fender",
+    "front door",
+    "rear door"
+  ],
+  "invoice": {
+    "invoice_no": "INV/365/26",
+    "invoice_date": "2026-10-16",
+    "garage_name": "Dash Auto Works",
+    "registration": "HR68WQ3184",
+    "line_items": [
+      {
+        "description": "Fender - replacement",
+        "amount": 6700.0,
+        "material": "metal"
+      },
+      {
+        "description": "Front Door - replacement",
+        "amount": 14000.0,
+        "material": "metal"
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 14270.0,
+        "material": "metal"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 13440.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 7720.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 56130.0,
+    "gst": 10103.0,
+    "total": 66233.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "No photos provided."
+}

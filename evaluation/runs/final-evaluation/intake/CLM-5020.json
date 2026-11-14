@@ -1,0 +1,46 @@
+{
+  "claim_id": "CLM-5020",
+  "policy_no": "POL-3020",
+  "registration": "HR32KV5349",
+  "incident_date": "2026-06-23",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "damaged_parts": [
+    "door glass",
+    "grille"
+  ],
+  "invoice": {
+    "invoice_no": "INV/145/26",
+    "invoice_date": "2026-06-26",
+    "garage_name": "Das Auto Works",
+    "registration": "HR32KV5349",
+    "line_items": [
+      {
+        "description": "Door Glass - replacement",
+        "amount": 4730.0,
+        "material": "glass"
+      },
+      {
+        "description": "Grille - replacement",
+        "amount": 3070.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 2080.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 1690.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 11570.0,
+    "gst": 2083.0,
+    "total": 13653.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Awaiting assessor review. All documents present."
+}

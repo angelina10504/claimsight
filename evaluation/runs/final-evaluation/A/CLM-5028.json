@@ -1,0 +1,66 @@
+{
+  "claim_id": "CLM-5028",
+  "config": "A",
+  "fault_type": "duplicate_claim",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "f6e5177d44eb",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T12:31:55+00:00",
+  "seconds": 141.96,
+  "status": "awaiting_review",
+  "route": "human_review",
+  "coverage_status": "covered",
+  "fraud_score": 0.9,
+  "fraud_flags": [
+    "duplicate claim for same parts within 12 days"
+  ],
+  "line_decisions": [
+    {
+      "description": "Door Glass - replacement",
+      "amount": 4730.0,
+      "admitted": false,
+      "reason": "same damage already claimed"
+    },
+    {
+      "description": "Grille - replacement",
+      "amount": 3070.0,
+      "admitted": false,
+      "reason": "same damage already claimed"
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 2080.0,
+      "admitted": false,
+      "reason": "same damage already claimed"
+    },
+    {
+      "description": "Labour charges",
+      "amount": 1690.0,
+      "admitted": false,
+      "reason": "same damage already claimed"
+    }
+  ],
+  "proposed_payout": 0.0,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": false,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 8229,
+      "prompt_tokens": 6269,
+      "completion_tokens": 1960,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 1100,
+      "successful_requests": 2
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

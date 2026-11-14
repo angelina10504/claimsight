@@ -1,0 +1,58 @@
+{
+  "claim_id": "CLM-5039",
+  "config": "B",
+  "fault_type": "clean",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "3cd7711447b9",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T13:25:22+00:00",
+  "seconds": 110.83,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.0,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Front Bumper - replacement",
+      "amount": 8830.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 3120.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 1640.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 15036.2,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 35289,
+      "prompt_tokens": 28071,
+      "completion_tokens": 7218,
+      "cached_prompt_tokens": 7680,
+      "reasoning_tokens": 4296,
+      "successful_requests": 21
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

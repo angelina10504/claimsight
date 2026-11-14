@@ -1,0 +1,58 @@
+{
+  "claim_id": "CLM-5036",
+  "config": "A",
+  "fault_type": "date_outside_policy",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "f6e5177d44eb",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "no tool calls; results of check_policy_period, check_part_prices and find_prior_claims given in the prompt; policy wording through Knowledge; no task guardrails",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T13:08:57+00:00",
+  "seconds": 139.52,
+  "status": "rejected",
+  "route": "reject",
+  "coverage_status": "excluded",
+  "fraud_score": 0.0,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Side Mirror - replacement",
+      "amount": 2930.0,
+      "admitted": false,
+      "reason": "incident outside policy period"
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 810.0,
+      "admitted": false,
+      "reason": "incident outside policy period"
+    },
+    {
+      "description": "Labour charges",
+      "amount": 370.0,
+      "admitted": false,
+      "reason": "incident outside policy period"
+    }
+  ],
+  "proposed_payout": 0.0,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": false,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 7592,
+      "prompt_tokens": 6019,
+      "completion_tokens": 1573,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 1227,
+      "successful_requests": 2
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

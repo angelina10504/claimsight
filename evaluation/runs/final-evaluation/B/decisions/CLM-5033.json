@@ -1,0 +1,141 @@
+{
+  "claim_id": "CLM-5033",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5033",
+    "policy_no": "POL-3033",
+    "registration": "HR85DS5397",
+    "incident_date": "2026-10-22",
+    "narrative": "Reversed into a pillar in the basement parking.",
+    "damaged_parts": [
+      "side mirror"
+    ],
+    "invoice": {
+      "invoice_no": "INV/129/26",
+      "invoice_date": "2026-10-25",
+      "garage_name": "Raghavan Auto Works",
+      "registration": "HR85DS5397",
+      "line_items": [
+        {
+          "description": "Side Mirror - replacement",
+          "amount": 3330.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 950.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 580.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 4860.0,
+      "gst": 875.0,
+      "total": 5735.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Only side mirror replacement billed.\nNo other parts listed."
+  },
+  "decision": {
+    "claim_id": "CLM-5033",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Policy period 2026\u201107\u201107 to 2027\u201107\u201106",
+      "Section I, item 6 \u2013 accidental external means"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3330.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 950.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 580.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "The claim is covered under the policy period and peril. All invoice lines are admitted. No fraud or price anomalies detected."
+  },
+  "settlement": {
+    "admitted_subtotal": 4860.0,
+    "total_depreciation": 1783.75,
+    "after_depreciation": 3076.25,
+    "gst": 553.73,
+    "deductible": 1000.0,
+    "payout": 2629.98,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Side Mirror - replacement",
+        "material": "plastic",
+        "amount": 3330.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 1665.0,
+        "payable": 1665.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 950.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 118.75,
+        "payable": 831.25
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 580.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 580.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Side Mirror - replacement: Rs 3,330  - 50.0% depreciation (Rs 1,665)  = Rs 1,665\n  Painting and finishing: Rs 950  - 12.5% depreciation (Rs 119)  = Rs 831\n  Labour charges: Rs 580  - 0.0% depreciation (Rs 0)  = Rs 580\nSubtotal after depreciation: Rs 3,076.25\nGST: Rs 553.73\nLess deductible: Rs 1,000.00\nPayout: Rs 2,629.98"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 2629.98,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 3 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 2,629.98 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 2,629.98"
+  ],
+  "id": "f4b9d7e7-36f6-4fbe-872a-bf524fe33efa"
+}

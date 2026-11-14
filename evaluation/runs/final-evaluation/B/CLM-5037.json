@@ -1,0 +1,70 @@
+{
+  "claim_id": "CLM-5037",
+  "config": "B",
+  "fault_type": "excluded_wear_tear",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "3cd7711447b9",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": false,
+  "code_version": "cba6338-dirty",
+  "started_at": "2026-11-14T13:16:07+00:00",
+  "seconds": 125.39,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.1,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Front Door - replacement",
+      "amount": 13550.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Clutch plate wear - replacement",
+      "amount": 6500.0,
+      "admitted": false,
+      "reason": "wear and tear exclusion (Additional Information\u202fe: \u201cAny claim which is related to loss or damage due to wear and tear\u201d)"
+    },
+    {
+      "description": "Door Glass - replacement",
+      "amount": 5240.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 7280.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 5500.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 28783.2,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 38631,
+      "prompt_tokens": 29553,
+      "completion_tokens": 9078,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 6456,
+      "successful_requests": 21
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

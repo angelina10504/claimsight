@@ -1,0 +1,40 @@
+{
+  "claim_id": "CLM-5024",
+  "policy_no": "POL-3024",
+  "registration": "HR99LA7291",
+  "incident_date": "2026-10-04",
+  "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+  "damaged_parts": [
+    "windshield"
+  ],
+  "invoice": {
+    "invoice_no": "INV/280/26",
+    "invoice_date": "2026-10-06",
+    "garage_name": "Patil Auto Works",
+    "registration": "HR99LA7291",
+    "line_items": [
+      {
+        "description": "Windshield - replacement",
+        "amount": 33250.0,
+        "material": "glass"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 12600.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 7830.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 53680.0,
+    "gst": 9662.0,
+    "total": 63342.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Only windshield replacement billed.\nNo photos submitted."
+}

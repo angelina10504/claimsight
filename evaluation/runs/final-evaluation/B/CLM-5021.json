@@ -1,0 +1,70 @@
+{
+  "claim_id": "CLM-5021",
+  "config": "B",
+  "fault_type": "clean",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-20b",
+  "prompt_version": "3cd7711447b9",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": false,
+  "code_version": "6b86794-dirty",
+  "started_at": "2026-11-14T12:00:34+00:00",
+  "seconds": 147.59,
+  "status": "approved",
+  "route": "auto_approve",
+  "coverage_status": "covered",
+  "fraud_score": 0.0,
+  "fraud_flags": [],
+  "line_decisions": [
+    {
+      "description": "Grille - replacement",
+      "amount": 2890.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Fender - replacement",
+      "amount": 6280.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Door Glass - replacement",
+      "amount": 5180.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 4670.0,
+      "admitted": true,
+      "reason": ""
+    },
+    {
+      "description": "Labour charges",
+      "amount": 2910.0,
+      "admitted": true,
+      "reason": ""
+    }
+  ],
+  "proposed_payout": 19519.32,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 41997,
+      "prompt_tokens": 34437,
+      "completion_tokens": 7560,
+      "cached_prompt_tokens": 0,
+      "reasoning_tokens": 4266,
+      "successful_requests": 24
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

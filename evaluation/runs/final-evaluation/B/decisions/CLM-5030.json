@@ -1,0 +1,184 @@
+{
+  "claim_id": "CLM-5030",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5030",
+    "policy_no": "POL-3030",
+    "registration": "HR89CW3496",
+    "incident_date": "2026-03-15",
+    "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+    "damaged_parts": [
+      "rear bumper",
+      "fender",
+      "taillight"
+    ],
+    "invoice": {
+      "invoice_no": "INV/418/26",
+      "invoice_date": "2026-03-17",
+      "garage_name": "Bhasin Auto Works",
+      "registration": "HR89CW3496",
+      "line_items": [
+        {
+          "description": "Rear Bumper - replacement",
+          "amount": 8440.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Fender - replacement",
+          "amount": 6460.0,
+          "material": "metal"
+        },
+        {
+          "description": "Taillight - replacement",
+          "amount": 4180.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 6500.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 4530.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 30110.0,
+      "gst": 5420.0,
+      "total": 35530.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Photos not provided."
+  },
+  "decision": {
+    "claim_id": "CLM-5030",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section\u202fI, item\u202f6"
+    ],
+    "fraud_score": 0.7,
+    "fraud_flags": [
+      "Mismatch between claimed parts and incident description"
+    ],
+    "line_decisions": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 8440.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Fender - replacement",
+        "amount": 6460.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Taillight - replacement",
+        "amount": 4180.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 6500.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4530.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "human_review",
+    "summary": "The claim is covered under Section\u202fI, item\u202f6 for accidental external means. However, the parts listed (rear bumper, fender, taillight) do not match the incident description of a front stone impact, raising a fraud concern. Human review is recommended."
+  },
+  "settlement": {
+    "admitted_subtotal": 30110.0,
+    "total_depreciation": 0.0,
+    "after_depreciation": 30110.0,
+    "gst": 5419.8,
+    "deductible": 1000.0,
+    "payout": 34529.8,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Rear Bumper - replacement",
+        "material": "plastic",
+        "amount": 8440.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 8440.0
+      },
+      {
+        "description": "Fender - replacement",
+        "material": "metal",
+        "amount": 6460.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 6460.0
+      },
+      {
+        "description": "Taillight - replacement",
+        "material": "plastic",
+        "amount": 4180.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4180.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 6500.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 6500.0
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 4530.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 4530.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Rear Bumper - replacement: Rs 8,440  - 0.0% depreciation (Rs 0)  = Rs 8,440\n  Fender - replacement: Rs 6,460  - 0.0% depreciation (Rs 0)  = Rs 6,460\n  Taillight - replacement: Rs 4,180  - 0.0% depreciation (Rs 0)  = Rs 4,180\n  Painting and finishing: Rs 6,500  - 0.0% depreciation (Rs 0)  = Rs 6,500\n  Labour charges: Rs 4,530  - 0.0% depreciation (Rs 0)  = Rs 4,530\nSubtotal after depreciation: Rs 30,110.00\nGST: Rs 5,419.80\nLess deductible: Rs 1,000.00\nPayout: Rs 34,529.80"
+  },
+  "route": "human_review",
+  "status": "awaiting_review",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.70, 0 line(s) denied, payout Rs 34,529.80 (calculator)",
+    "router 2: human_review because fraud score 0.70 >= 0.5",
+    "paused: queued for an adjuster (data/review_queue)"
+  ],
+  "id": "93b78528-630a-4cea-8b3d-e37a5da481f1"
+}

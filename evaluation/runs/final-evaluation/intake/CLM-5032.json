@@ -1,0 +1,46 @@
+{
+  "claim_id": "CLM-5032",
+  "policy_no": "POL-3032",
+  "registration": "HR74SJ6590",
+  "incident_date": "2026-09-07",
+  "narrative": "Reversed into a pillar in the basement parking.",
+  "damaged_parts": [
+    "rear bumper",
+    "bonnet"
+  ],
+  "invoice": {
+    "invoice_no": "INV/851/26",
+    "invoice_date": "2026-09-09",
+    "garage_name": "Bala Auto Works",
+    "registration": "HR74SJ6590",
+    "line_items": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 9280.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Bonnet - replacement",
+        "amount": 12830.0,
+        "material": "metal"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 8270.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4750.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 35130.0,
+    "gst": 6323.0,
+    "total": 41453.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "No photos provided."
+}
