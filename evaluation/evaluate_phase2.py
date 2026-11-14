@@ -82,6 +82,31 @@ from tools.assessment_tools import (         # noqa: E402
     find_prior_claims,
 )
 
+
+def _raise_ollama_embed_timeout(seconds: int = 600) -> None:
+    """chromadb's OllamaEmbeddingFunction embeds the whole policy wording (129
+    chunks) in one /api/embed call with a 60s HTTP timeout. On CPU that sits
+    right at the edge, so config B - whose coverage task runs async - fails
+    intermittently with 'timed out in upsert', while config A squeaks under.
+    Raise the timeout. This changes nothing about the embeddings, the retrieval
+    or the result, only how long we are willing to wait; config.py and the crew
+    files are untouched, so no recorded prompt_version/decision_code changes."""
+    try:
+        from chromadb.utils.embedding_functions.ollama_embedding_function import (
+            OllamaEmbeddingFunction)
+    except Exception:
+        return
+    original = OllamaEmbeddingFunction.__init__
+
+    def __init__(self, *args, **kwargs):
+        kwargs["timeout"] = max(int(kwargs.get("timeout") or 0), seconds)
+        original(self, *args, **kwargs)
+
+    OllamaEmbeddingFunction.__init__ = __init__
+
+
+_raise_ollama_embed_timeout()
+
 RUNS = ROOT / "evaluation" / "runs"
 MANIFEST = ROOT / "data" / "manifest.json"
 CONFIGS = ("A", "B", "C")
