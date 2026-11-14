@@ -101,6 +101,44 @@ class StopRun(Exception):
     """The run cannot go on today. Everything finished so far is saved."""
 
 
+class KeyPool:
+    """The Groq API keys to rotate through as each reaches its daily limit, so
+    one calendar day's run can draw on several free accounts' allowances.
+
+    Reads GROQ_API_KEYS (comma-separated) if set, otherwise the single
+    GROQ_API_KEY. config.get_llm() reads os.environ['GROQ_API_KEY'] afresh for
+    every crew it builds, so setting it here is how the next claim (or the retry
+    of the current one) picks up the new key. Keys are never logged or recorded:
+    settings_for() does not include them, so rotating keys never trips the
+    resume guard."""
+
+    def __init__(self):
+        raw = os.getenv("GROQ_API_KEYS") or os.getenv("GROQ_API_KEY") or ""
+        self.keys = [k.strip() for k in raw.split(",") if k.strip()]
+        self.i = 0
+        self._activate()
+
+    @property
+    def count(self) -> int:
+        return len(self.keys)
+
+    @property
+    def position(self) -> str:
+        return f"{self.i + 1}/{self.count}" if self.keys else "0/0"
+
+    def _activate(self) -> None:
+        if self.keys:
+            os.environ["GROQ_API_KEY"] = self.keys[self.i]
+
+    def rotate(self) -> bool:
+        """Switch to the next key if there is one. Returns whether it moved."""
+        if self.i + 1 < len(self.keys):
+            self.i += 1
+            self._activate()
+            return True
+        return False
+
+
 # ---------------------------------------------------------------- config A
 SINGLE_LLM_ROLE = "Motor Claims Assessor"
 SINGLE_LLM_GOAL = ("Decide coverage, weigh any sign of fraud and decide every invoice "
@@ -595,10 +633,9 @@ def run_unit(run: Run, config: str, entry: dict, settings: dict, steps=None) -> 
                    "attempts": previous.get("attempts", 0) + 1, "error": reason,
                    "llm_errors": kinds, "seconds": seconds,
                    "tokens_reported": usage}, config, f"{claim_id}.error.json")
-        if "daily_token_limit" in kinds or "tokens per day" in reason.lower():
-            raise StopRun(f"the provider's daily token limit was reached on {claim_id} "
-                          f"(config {config}). Run the same command again tomorrow.")
-        return {"claim_id": claim_id, "config": config, "error": reason}
+        daily_limit = "daily_token_limit" in kinds or "tokens per day" in reason.lower()
+        return {"claim_id": claim_id, "config": config, "error": reason,
+                **({"daily_limit": True} if daily_limit else {})}
 
     state = flow.state.model_dump()
     decision, settlement = state.get("decision") or {}, state.get("settlement") or {}
@@ -647,7 +684,9 @@ def evaluate(run: Run, configs=AVAILABLE, claims=None, daily_tokens=DEFAULT_DAIL
         entries = select_claims(claims)
     if final_evaluation:
         run.note_final_evaluation(entries)
+    keys = KeyPool()
     ran, failed, stopped, in_a_row = [], [], None, 0
+    spent_this_key = 0
     try:
         for entry in entries:
             for config in configs:
@@ -656,16 +695,38 @@ def evaluate(run: Run, configs=AVAILABLE, claims=None, daily_tokens=DEFAULT_DAIL
                 if max_units is not None and len(ran) + len(failed) >= max_units:
                     raise StopRun(f"stopped after {max_units} unit(s), as asked")
                 model = settings[config]["model"]
-                if daily_tokens:
-                    need = run.estimate(config, entry["claim_id"])
-                    spent = run.spent_today(model)
-                    if spent + need > daily_tokens:
+                # Run this unit, rotating to the next key whenever the current
+                # one's allowance is reached - the local per-key --budget, or the
+                # provider's own daily limit. StopRun only once every key is spent.
+                while True:
+                    if daily_tokens:
+                        need = run.estimate(config, entry["claim_id"])
+                        if spent_this_key + need > daily_tokens:
+                            if keys.rotate():
+                                say(f"  per-key budget reached ({spent_this_key:,}/"
+                                    f"{daily_tokens:,}); switching to key {keys.position}")
+                                spent_this_key = 0
+                                continue
+                            raise StopRun(
+                                f"today's budget: {spent_this_key:,} of {daily_tokens:,} "
+                                f"tokens on {model} (key {keys.position}), and the next "
+                                f"claim needs about {need:,}. Run the same command again "
+                                f"tomorrow.")
+                    before = run.spent_today(model)
+                    result = run_unit(run, config, entry, settings[config],
+                                      steps=(steps or {}).get(config))
+                    spent_this_key += run.spent_today(model) - before
+                    if result.get("daily_limit"):
+                        if keys.rotate():
+                            say(f"  key hit its provider daily limit; switching to key "
+                                f"{keys.position} and retrying {entry['claim_id']}")
+                            spent_this_key = 0
+                            continue
                         raise StopRun(
-                            f"today's budget: {spent:,} of {daily_tokens:,} tokens spent on "
-                            f"{model}, and the next claim needs about {need:,}. "
-                            f"Run the same command again tomorrow.")
-                result = run_unit(run, config, entry, settings[config],
-                                  steps=(steps or {}).get(config))
+                            f"the provider's daily token limit was reached on "
+                            f"{entry['claim_id']} (config {config}) and every provided key "
+                            f"is spent. Run the same command again tomorrow.")
+                    break
                 if "error" in result:
                     failed.append(result)
                     in_a_row += 1

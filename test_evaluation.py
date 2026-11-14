@@ -335,6 +335,44 @@ def main() -> None:
         not ep.Run("final-evaluation", stand_in=False).path("run.json").exists()
         and data_listing() == before_budget)
 
+    print("\n7c. Rotating keys as each hits its daily limit\n")
+    os.environ["GROQ_API_KEYS"] = "key-aaa,key-bbb,key-ccc"
+    try:
+        rot = ep.Run("rotate", stand_in=True)
+        seen = []
+
+        def exhaust_first_two(inputs, verbose):
+            seen.append(os.environ.get("GROQ_API_KEY"))
+            if len(seen) <= 2:            # the first two keys are "spent"
+                monitoring.current().record("llm_call_failed", kind="daily_token_limit",
+                                            error="Rate limit reached ... tokens per day (TPD)")
+                raise RuntimeError("Assessment crew returned no valid AssessmentDecision")
+            return ep.stand_in_assessment(inputs, verbose, config="B")
+
+        rotated, _ = quiet(ep.evaluate, rot, configs=("B",), daily_tokens=0,
+                           entries=ep.select_claims()[:1],
+                           steps={"B": (ep.stand_in_intake, exhaust_first_two)})
+        run("a key hitting its daily limit rotates to the next and retries the claim",
+            seen == ["key-aaa", "key-bbb", "key-ccc"]
+            and rot.done("B", "CLM-5000") and len(rotated["ran"]) == 1, str(seen))
+
+        os.environ["GROQ_API_KEYS"] = "key-1,key-2"
+        allspent = ep.Run("allspent", stand_in=True)
+
+        def always_daily(inputs, verbose):
+            monitoring.current().record("llm_call_failed", kind="daily_token_limit",
+                                        error="tokens per day (TPD)")
+            raise RuntimeError("no valid AssessmentDecision")
+
+        res2, _ = quiet(ep.evaluate, allspent, configs=("B",), daily_tokens=0,
+                        entries=ep.select_claims()[:1],
+                        steps={"B": (ep.stand_in_intake, always_daily)})
+        run("when every key is spent the run stops cleanly, the claim left for tomorrow",
+            res2["stopped"] and "every provided key is spent" in res2["stopped"]
+            and not allspent.done("B", "CLM-5000"), res2["stopped"])
+    finally:
+        os.environ.pop("GROQ_API_KEYS", None)
+
     # ---------------------------------------------------------------- scoring
     print("\n8. Scoring\n")
     truths = {"CLM-1": {"fault_type": "clean", "is_covered": True, "is_fraudulent": False,
