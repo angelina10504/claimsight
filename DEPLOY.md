@@ -31,6 +31,50 @@ platforms' secret stores, as below.
 
 ---
 
+## Part 0 — verify the suite offline first
+
+Everything below runs with `CLAIMSIGHT_OFFLINE=1` and spends **zero provider
+tokens**. Install `uv` (`irm https://astral.sh/uv/install.ps1 | iex` on Windows,
+`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux), then
+`uv sync`, then run each `CLAIMSIGHT_OFFLINE=1 uv run python test_*.py`.
+
+Last verified run (offline, zero tokens), all at their expected counts:
+
+| suite | count | | suite | count |
+|---|---|---|---|---|
+| monitoring | 3/3 | | routing | 28/28 |
+| settlement | 64/64 | | llm_limits | 28/28 |
+| audit | 39/39 | | dataset | 27/27 |
+| a2a | 5/5 | | photo_flow | 26/26 |
+| report | 58/58 | | privacy | 23/23 |
+| evidence_flow | 56/56 | | mcp | 4/4 + 4/4 |
+| observability | 49/49 | | evaluation | 55/55 |
+| vision | 34/34 | | | |
+
+Environment notes learned while running these (they differ from a plain macOS
+checkout):
+
+- **Windows console/file encoding.** Set `PYTHONUTF8=1`. Without it, suites that
+  print `₹` or read UTF-8 fixtures (`audit`, `evaluation`, parts of `dashboard`)
+  die with a `cp1252` codec error. No effect on Linux/macOS.
+- **`vision` needs tiktoken's `cl100k_base` vocab offline.** `litellm` fetches it
+  from the network when the LLM object is built, and `test_vision.py` bans all
+  sockets. Warm it once with network available
+  (`uv run python -c "import tiktoken; tiktoken.get_encoding('cl100k_base')"`) so
+  it lands in the cache; `litellm` reads its own bundled
+  `litellm_core_utils/tokenizers/` dir, so copy the cached vocab file there if it
+  is missing. It is a static BPE file, not a provider token.
+- **`guardrails` spawns `./claimsight_tools` as a stdio MCP child**, a `#!/bin/sh`
+  launcher. It runs in the Linux image (and on macOS) but **not** directly on a
+  Windows host (`WinError 193`). The Docker build `chmod +x`'s it, so the
+  container is unaffected.
+- **`dashboard` reads saved runtime fixtures** from `data/logs/` and
+  `data/decisions/` (both gitignored). It passes only on a checkout where a prior
+  real pipeline run has populated them; it cannot be regenerated offline because
+  the assessment crew needs the provider. Not needed for deployment.
+
+---
+
 ## Part A — the A2A server on Hugging Face Spaces (Docker SDK, free tier)
 
 ### A1. Create the Space
