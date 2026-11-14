@@ -1,3 +1,13 @@
+---
+title: ClaimSight A2A
+emoji: 🚗
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 9999
+pinned: false
+---
+
 # ClaimSight
 
 Multi-agent adjudication of motor insurance claims, built on **CrewAI** and

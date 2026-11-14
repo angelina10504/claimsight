@@ -75,7 +75,49 @@ checkout):
 
 ---
 
-## Part A — the A2A server on Hugging Face Spaces (Docker SDK, free tier)
+> ## ⚠️ What actually happened on deployment day (2026-11-14) — read this first
+>
+> **Hugging Face no longer hosts Docker Spaces on the free tier.** Creating the
+> Space returned `402 Payment Required`: *"Static Spaces are free for everyone,
+> but hosting Gradio and Docker Spaces on free cpu-basic requires a PRO
+> subscription."* (~$9/month). The Dockerfile, the README front matter
+> (`sdk: docker`, `app_port: 9999`), the Space creation and the `A2A_PUBLIC_URL`
+> wiring are all correct and ready — the only blocker is HF billing. The HF path
+> in Part A below works **as soon as the account is HF PRO**.
+>
+> **What was deployed instead (free, no account, no payment):** the A2A server
+> was run locally (keyless — `GROQ_API_KEY=""` — so it serves the public agent
+> card but cannot spend tokens) and exposed with a **free Cloudflare quick
+> tunnel** (`cloudflared tunnel --url http://127.0.0.1:9999`, no signup). This
+> produced a real public agent-card URL — the Requirement 11 proof:
+>
+> ```
+> $ curl https://hormone-creations-breaks-nancy.trycloudflare.com/.well-known/agent-card.json
+> {"name":"claimsight_adjudicator", ... ,"supportedInterfaces":[{"url":
+> "https://hormone-creations-breaks-nancy.trycloudflare.com","protocolBinding":
+> "JSONRPC","protocolVersion":"1.0"}], ... }
+> # supportedInterfaces[0].url == the public URL ✅
+> ```
+>
+> **Caveat:** a `trycloudflare.com` URL is **ephemeral** — it is live only while
+> this machine runs the server + the tunnel, and a new URL is issued each run.
+> It proves the server and card work publicly; it is **not** a persistent cloud
+> box. To re-create it: start the server with `A2A_PUBLIC_URL` set to the tunnel
+> URL, then run the tunnel (chicken-and-egg: start the tunnel first to learn the
+> URL, then restart the server advertising it).
+>
+> **STEP 3 (local assistant → server) was not completed:** the ADK assistant is
+> Gemini and needs `GOOGLE_API_KEY` (absent here), and a *live* assessment needs
+> the server to hold `GROQ_API_KEY` (deliberately absent). Both are **Angelina's
+> secrets to add** — not a Requirement 11 blocker.
+>
+> **Still needs Angelina for a live/persistent deploy:** (a) an HF PRO
+> subscription *or* a free-tier container host that still exists (e.g. Koyeb,
+> Render — they need a signup, which can't be automated); (b) `GROQ_API_KEY` as a
+> Space **secret** so the server can assess live; (c) optionally `GOOGLE_API_KEY`
+> locally to drive the ADK assistant against it.
+
+## Part A — the A2A server on Hugging Face Spaces (Docker SDK, **now PRO-only**)
 
 ### A1. Create the Space
 1. huggingface.co → your avatar → **New Space**.
