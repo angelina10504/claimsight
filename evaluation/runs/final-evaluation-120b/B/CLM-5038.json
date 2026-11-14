@@ -1,0 +1,73 @@
+{
+  "claim_id": "CLM-5038",
+  "config": "B",
+  "fault_type": "duplicate_claim",
+  "split": "test",
+  "model": "openai/openai/gpt-oss-120b",
+  "prompt_version": "3cd7711447b9",
+  "intake_prompt_version": "bf9584d794f4",
+  "decision_code": "e18beafe82b7",
+  "tool_configuration": "tools called directly: Policy Analyst check_policy_period; Fraud Analyst check_part_prices, find_prior_claims; policy wording through Knowledge; task guardrails on all three tasks",
+  "stand_in": false,
+  "code_version": "6627f6d-dirty",
+  "started_at": "2026-11-14T15:00:20+00:00",
+  "seconds": 118.71,
+  "status": "awaiting_review",
+  "route": "human_review",
+  "coverage_status": "covered",
+  "fraud_score": 0.9,
+  "fraud_flags": [
+    "Duplicate claim for same parts (CLM-5030)",
+    "Inconsistent damage location with reported incident"
+  ],
+  "line_decisions": [
+    {
+      "description": "Rear Bumper - replacement",
+      "amount": 8440.0,
+      "admitted": false,
+      "reason": "same damage already claimed"
+    },
+    {
+      "description": "Fender - replacement",
+      "amount": 6460.0,
+      "admitted": false,
+      "reason": "same damage already claimed"
+    },
+    {
+      "description": "Taillight - replacement",
+      "amount": 4180.0,
+      "admitted": false,
+      "reason": "same damage already claimed"
+    },
+    {
+      "description": "Painting and finishing",
+      "amount": 6500.0,
+      "admitted": false,
+      "reason": "same damage already claimed"
+    },
+    {
+      "description": "Labour charges",
+      "amount": 4530.0,
+      "admitted": false,
+      "reason": "same damage already claimed"
+    }
+  ],
+  "proposed_payout": 0.0,
+  "coverage_doubts": [],
+  "payout_doubts": [],
+  "guardrail_flags": [],
+  "intake_reused": true,
+  "tokens": {
+    "assessment": {
+      "total_tokens": 38736,
+      "prompt_tokens": 30702,
+      "completion_tokens": 8034,
+      "cached_prompt_tokens": 768,
+      "reasoning_tokens": 4305,
+      "successful_requests": 21
+    }
+  },
+  "llm_errors": [],
+  "retried_llm_failures": 0,
+  "trace_id": null
+}

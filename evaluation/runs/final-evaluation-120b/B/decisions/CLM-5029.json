@@ -1,0 +1,163 @@
+{
+  "claim_id": "CLM-5029",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5029",
+    "policy_no": "POL-3029",
+    "registration": "HR37QN8449",
+    "incident_date": "2026-09-30",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "bonnet",
+      "side mirror"
+    ],
+    "invoice": {
+      "invoice_no": "INV/765/26",
+      "invoice_date": "2026-10-02",
+      "garage_name": "Rout Auto Works",
+      "registration": "HR37QN8449",
+      "line_items": [
+        {
+          "description": "Bonnet - replacement",
+          "amount": 13330.0,
+          "material": "metal"
+        },
+        {
+          "description": "Side Mirror - replacement",
+          "amount": 3080.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 5940.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 2320.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 24670.0,
+      "gst": 4441.0,
+      "total": 29111.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Invoice matches policy. Awaiting photos."
+  },
+  "decision": {
+    "claim_id": "CLM-5029",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Incident occurred within policy period",
+      "Collision covered under Section I item 6",
+      "No exclusions applicable to any invoice line"
+    ],
+    "fraud_score": 0.1,
+    "fraud_flags": [],
+    "line_decisions": [
+      {
+        "description": "Bonnet - replacement",
+        "amount": 13330.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3080.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 5940.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 2320.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "auto_approve",
+    "summary": "All invoice lines are covered and admitted. No fraud indicators were found and the claim falls within the policy period. The claim can be auto\u2011approved."
+  },
+  "settlement": {
+    "admitted_subtotal": 24670.0,
+    "total_depreciation": 5615.0,
+    "after_depreciation": 19055.0,
+    "gst": 3429.9,
+    "deductible": 1000.0,
+    "payout": 21484.9,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Bonnet - replacement",
+        "material": "metal",
+        "amount": 13330.0,
+        "depreciation_rate": 0.25,
+        "depreciation_amount": 3332.5,
+        "payable": 9997.5
+      },
+      {
+        "description": "Side Mirror - replacement",
+        "material": "plastic",
+        "amount": 3080.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 1540.0,
+        "payable": 1540.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 5940.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 742.5,
+        "payable": 5197.5
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 2320.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 2320.0
+      }
+    ],
+    "excluded": [],
+    "explanation": "Admitted lines:\n  Bonnet - replacement: Rs 13,330  - 25.0% depreciation (Rs 3,332)  = Rs 9,998\n  Side Mirror - replacement: Rs 3,080  - 50.0% depreciation (Rs 1,540)  = Rs 1,540\n  Painting and finishing: Rs 5,940  - 12.5% depreciation (Rs 742)  = Rs 5,198\n  Labour charges: Rs 2,320  - 0.0% depreciation (Rs 0)  = Rs 2,320\nSubtotal after depreciation: Rs 19,055.00\nGST: Rs 3,429.90\nLess deductible: Rs 1,000.00\nPayout: Rs 21,484.90"
+  },
+  "route": "auto_approve",
+  "status": "approved",
+  "final_payout": 21484.9,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: Intake Officer said complete=False; the completeness check overrides it",
+    "intake: 4 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.10, 0 line(s) denied, payout Rs 21,484.90 (calculator)",
+    "router 2: auto_approve because covered, low fraud risk, normal value",
+    "auto-approved: pay Rs 21,484.90"
+  ],
+  "id": "285a8b7e-91a3-4446-8b11-1eeb10291430"
+}

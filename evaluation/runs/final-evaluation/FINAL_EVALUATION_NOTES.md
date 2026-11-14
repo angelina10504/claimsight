@@ -53,3 +53,26 @@ weaker tool-call reliability vs gpt-oss-120b is itself a finding.
 
 Error evidence is preserved per claim in `B/CLM-5029.error.json`,
 `B/CLM-5034.error.json`, `B/CLM-5038.error.json` (`llm_errors: ["malformed_tool_call"]`).
+
+## Supplement — the 3 stragglers completed on gpt-oss-120b
+
+To show the 3 are completable with a stronger model (and that the failure is 20b
+tool-calling, not the pipeline), they were re-run on **gpt-oss-120b** in a
+**separate** run folder, `evaluation/runs/final-evaluation-120b/`, so the main
+20b numbers above stay pure and uniform. Both configs ran on 120b there.
+
+- **All 3 completed first try, zero tool-call errors** (120b handles the
+  `find_prior_claims` call reliably). Per-claim model recorded as
+  `openai/openai/gpt-oss-120b`.
+- Outcomes: CLM-5029 auto_approve (A & B); CLM-5034 and CLM-5038 human_review
+  (A & B). On these 3: coverage accuracy 100%, fraud precision/recall 100%,
+  line-item F1 1.000, payout error Rs 0.00. (Correct-decision rate reads 33% only
+  because 2 of the 3 are escalations by design on an n=3 set.)
+- 120b costs more per claim (~38k assessment tokens for B vs ~39k on 20b here,
+  but with higher reasoning) and, on the free tier, has its own separate daily
+  token quota from 20b.
+
+**Net:** every one of the 20 held-out claims now has a config-B assessment —
+17 on gpt-oss-20b (`final-evaluation/`) plus 3 on gpt-oss-120b
+(`final-evaluation-120b/`). The headline A-vs-B comparison uses the 17 uniform
+20b claims; the 120b set is a labelled supplement, not mixed into those numbers.

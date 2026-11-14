@@ -1,0 +1,131 @@
+┌───────────────────────────── 🌊 Flow Execution ─────────────────────────────┐
+│                                                                             │
+│  Starting Flow Execution                                                    │
+│  Name: ClaimFlow                                                            │
+│  ID: 3a092cb4-12ab-4908-9ae6-e55bc5da6c6a                                   │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────── 🌊 Flow Started ──────────────────────────────┐
+│                                                                             │
+│  Flow Started                                                               │
+│  Name: ClaimFlow                                                            │
+│  ID: 3a092cb4-12ab-4908-9ae6-e55bc5da6c6a                                   │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────── 🔄 Flow Method Running ───────────────────────────┐
+│                                                                             │
+│  Method: intake                                                             │
+│  Status: Running                                                            │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  [CLM-5034] intake: reused saved Intake crew output
+  [CLM-5034] intake: 5 invoice lines, complete=True
+  [CLM-5034] router 1: file complete -> assessment
+┌───────────────────────── ✅ Flow Method Completed ──────────────────────────┐
+│                                                                             │
+│  Method: intake                                                             │
+│  Status: Completed                                                          │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────── 🔄 Flow Method Running ───────────────────────────┐
+│                                                                             │
+│  Method: check_complete                                                     │
+│  Status: Running                                                            │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────── ✅ Flow Method Completed ──────────────────────────┐
+│                                                                             │
+│  Method: check_complete                                                     │
+│  Status: Completed                                                          │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+  [CLM-5034] assessment: Policy Analyst and Fraud Analyst running in parallel
+
+┌────────────────────────── 🔄 Flow Method Running ───────────────────────────┐
+│                                                                             │
+│  Method: assess                                                             │
+│  Status: Running                                                            │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  [CLM-5034] assessment: coverage=covered, fraud_score=0.70, 1 line(s) denied, payout Rs 40,378.76 (calculator)
+┌───────────────────────── ✅ Flow Method Completed ──────────────────────────┐
+│                                                                             │
+│  Method: assess                                                             │
+│  Status: Completed                                                          │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+  [CLM-5034] router 2: human_review because fraud score 0.70 >= 0.5
+
+┌────────────────────────── 🔄 Flow Method Running ───────────────────────────┐
+│                                                                             │
+│  Method: route_claim                                                        │
+│  Status: Running                                                            │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────── ✅ Flow Method Completed ──────────────────────────┐
+│                                                                             │
+│  Method: route_claim                                                        │
+│  Status: Completed                                                          │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+----------------------------------------------------------------------
+HUMAN REVIEW  CLM-5034
+----------------------------------------------------------------------
+coverage      covered
+              - Period inside policy period
+              - Peril covered under Section I, Item 6
+              - No excluded lines
+fraud score   0.70
+              - Front Bumper - replacement overpriced
+  DENY Front Bumper - replacement: Rs 23,153  (priced far above market rate)
+  PAY  Rear Door - replacement: Rs 13,780
+  PAY  Taillight - replacement: Rs 4,290
+  PAY  Painting and finishing: Rs 14,570
+  PAY  Labour charges: Rs 8,460
+proposed payout  Rs 40,378.76
+summary       The claim is covered under Section I Item 6, but the front bumper cost is significantly above market and has been flagged as overpriced, so that line is denied. All other repair items are admitted. Fraud risk is medium with a score of 0.7, requiring human review.
+
+┌────────────────────────── 🔄 Flow Method Running ───────────────────────────┐
+│                                                                             │
+│  Method: send_to_adjuster                                                   │
+│  Status: Running                                                            │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  [CLM-5034] paused: queued for an adjuster (data/review_queue)
+┌───────────────────────── ✅ Flow Method Completed ──────────────────────────┐
+│                                                                             │
+│  Method: send_to_adjuster                                                   │
+│  Status: Completed                                                          │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────── ✅ Flow Completion ─────────────────────────────┐
+│                                                                             │
+│  Flow Execution Completed                                                   │
+│  Name: ClaimFlow                                                            │
+│  ID: 3a092cb4-12ab-4908-9ae6-e55bc5da6c6a                                   │
+│                                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+

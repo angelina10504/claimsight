@@ -1,0 +1,46 @@
+{
+  "claim_id": "CLM-5029",
+  "policy_no": "POL-3029",
+  "registration": "HR37QN8449",
+  "incident_date": "2026-09-30",
+  "narrative": "Collided with a divider while taking a turn in the rain.",
+  "damaged_parts": [
+    "bonnet",
+    "side mirror"
+  ],
+  "invoice": {
+    "invoice_no": "INV/765/26",
+    "invoice_date": "2026-10-02",
+    "garage_name": "Rout Auto Works",
+    "registration": "HR37QN8449",
+    "line_items": [
+      {
+        "description": "Bonnet - replacement",
+        "amount": 13330.0,
+        "material": "metal"
+      },
+      {
+        "description": "Side Mirror - replacement",
+        "amount": 3080.0,
+        "material": "plastic"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 5940.0,
+        "material": "paint"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 2320.0,
+        "material": "labour"
+      }
+    ],
+    "subtotal": 24670.0,
+    "gst": 4441.0,
+    "total": 29111.0
+  },
+  "photo_damage": [],
+  "is_complete": false,
+  "missing_fields": [],
+  "notes": "Invoice matches policy. Awaiting photos."
+}

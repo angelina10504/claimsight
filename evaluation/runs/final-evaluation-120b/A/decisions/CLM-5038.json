@@ -1,0 +1,168 @@
+{
+  "claim_id": "CLM-5038",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5038",
+    "policy_no": "POL-3030",
+    "registration": "HR89CW3496",
+    "incident_date": "2026-03-27",
+    "narrative": "Stone impact on the highway damaged the front of the vehicle.",
+    "damaged_parts": [
+      "rear bumper",
+      "fender",
+      "taillight"
+    ],
+    "invoice": {
+      "invoice_no": "INV/682/26",
+      "invoice_date": "2026-03-29",
+      "garage_name": "Kalla Auto Works",
+      "registration": "HR89CW3496",
+      "line_items": [
+        {
+          "description": "Rear Bumper - replacement",
+          "amount": 8440.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Fender - replacement",
+          "amount": 6460.0,
+          "material": "metal"
+        },
+        {
+          "description": "Taillight - replacement",
+          "amount": 4180.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 6500.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 4530.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 30110.0,
+      "gst": 5420.0,
+      "total": 35530.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "All required documents received."
+  },
+  "decision": {
+    "claim_id": "CLM-5038",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Section I, item 6: accidental external means (stone impact)"
+    ],
+    "fraud_score": 0.9,
+    "fraud_flags": [
+      "possible duplicate claim for same parts"
+    ],
+    "line_decisions": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 8440.0,
+        "material": "plastic",
+        "admitted": false,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Fender - replacement",
+        "amount": 6460.0,
+        "material": "metal",
+        "admitted": false,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Taillight - replacement",
+        "amount": 4180.0,
+        "material": "plastic",
+        "admitted": false,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 6500.0,
+        "material": "paint",
+        "admitted": false,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4530.0,
+        "material": "labour",
+        "admitted": false,
+        "reason": "same damage already claimed"
+      }
+    ],
+    "recommended_route": "human_review",
+    "summary": "The incident is covered under Section I as an accidental external means. However, the same parts were claimed in a prior claim (CLM-5030) only 12 days earlier, indicating a duplicate claim. All invoice lines are therefore not admitted and the case requires human review due to high fraud risk."
+  },
+  "settlement": {
+    "admitted_subtotal": 0.0,
+    "total_depreciation": 0.0,
+    "after_depreciation": 0.0,
+    "gst": 0.0,
+    "deductible": 1000.0,
+    "payout": 0.0,
+    "capped_at_idv": false,
+    "lines": [],
+    "excluded": [
+      {
+        "description": "Rear Bumper - replacement",
+        "amount": 8440.0,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Fender - replacement",
+        "amount": 6460.0,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Taillight - replacement",
+        "amount": 4180.0,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 6500.0,
+        "reason": "same damage already claimed"
+      },
+      {
+        "description": "Labour charges",
+        "amount": 4530.0,
+        "reason": "same damage already claimed"
+      }
+    ],
+    "explanation": "Admitted lines:\nExcluded lines:\n  Rear Bumper - replacement: Rs 8,440 - same damage already claimed\n  Fender - replacement: Rs 6,460 - same damage already claimed\n  Taillight - replacement: Rs 4,180 - same damage already claimed\n  Painting and finishing: Rs 6,500 - same damage already claimed\n  Labour charges: Rs 4,530 - same damage already claimed\nSubtotal after depreciation: Rs 0.00\nGST: Rs 0.00\nLess deductible: Rs 1,000.00\nPayout: Rs 0.00"
+  },
+  "route": "human_review",
+  "status": "awaiting_review",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: running Intake crew",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.90, 5 line(s) denied, payout Rs 0.00 (calculator)",
+    "router 2: human_review because fraud score 0.90 >= 0.5",
+    "paused: queued for an adjuster (data/review_queue)"
+  ],
+  "id": "a454fb8a-aa4e-47c2-babe-875115f01341"
+}

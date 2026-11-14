@@ -1,0 +1,183 @@
+{
+  "claim_id": "CLM-5034",
+  "use_saved_intake": true,
+  "interactive": false,
+  "verbose": false,
+  "intake": {
+    "claim_id": "CLM-5034",
+    "policy_no": "POL-3034",
+    "registration": "HR53JS5581",
+    "incident_date": "2026-10-22",
+    "narrative": "Collided with a divider while taking a turn in the rain.",
+    "damaged_parts": [
+      "front bumper",
+      "rear door",
+      "taillight"
+    ],
+    "invoice": {
+      "invoice_no": "INV/911/26",
+      "invoice_date": "2026-10-26",
+      "garage_name": "Chhabra Auto Works",
+      "registration": "HR53JS5581",
+      "line_items": [
+        {
+          "description": "Front Bumper - replacement",
+          "amount": 23153.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Rear Door - replacement",
+          "amount": 13780.0,
+          "material": "metal"
+        },
+        {
+          "description": "Taillight - replacement",
+          "amount": 4290.0,
+          "material": "plastic"
+        },
+        {
+          "description": "Painting and finishing",
+          "amount": 14570.0,
+          "material": "paint"
+        },
+        {
+          "description": "Labour charges",
+          "amount": 8460.0,
+          "material": "labour"
+        }
+      ],
+      "subtotal": 64253.0,
+      "gst": 11566.0,
+      "total": 75819.0
+    },
+    "photo_damage": [],
+    "is_complete": true,
+    "missing_fields": [],
+    "notes": "Invoice matches policy registration. Awaiting photos if needed."
+  },
+  "decision": {
+    "claim_id": "CLM-5034",
+    "coverage_status": "covered",
+    "uncertainty_reasons": [],
+    "is_covered": true,
+    "coverage_reasons": [
+      "Period inside policy period",
+      "Peril covered under Section I, Item 6",
+      "No excluded lines"
+    ],
+    "fraud_score": 0.7,
+    "fraud_flags": [
+      "Front Bumper - replacement overpriced"
+    ],
+    "line_decisions": [
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 23153.0,
+        "material": "plastic",
+        "admitted": false,
+        "reason": "priced far above market rate"
+      },
+      {
+        "description": "Rear Door - replacement",
+        "amount": 13780.0,
+        "material": "metal",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Taillight - replacement",
+        "amount": 4290.0,
+        "material": "plastic",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Painting and finishing",
+        "amount": 14570.0,
+        "material": "paint",
+        "admitted": true,
+        "reason": ""
+      },
+      {
+        "description": "Labour charges",
+        "amount": 8460.0,
+        "material": "labour",
+        "admitted": true,
+        "reason": ""
+      }
+    ],
+    "recommended_route": "human_review",
+    "summary": "The claim is covered under Section I Item 6, but the front bumper cost is significantly above market and has been flagged as overpriced, so that line is denied. All other repair items are admitted. Fraud risk is medium with a score of 0.7, requiring human review."
+  },
+  "settlement": {
+    "admitted_subtotal": 41100.0,
+    "total_depreciation": 6033.25,
+    "after_depreciation": 35066.75,
+    "gst": 6312.01,
+    "deductible": 1000.0,
+    "payout": 40378.76,
+    "capped_at_idv": false,
+    "lines": [
+      {
+        "description": "Rear Door - replacement",
+        "material": "metal",
+        "amount": 13780.0,
+        "depreciation_rate": 0.15,
+        "depreciation_amount": 2067.0,
+        "payable": 11713.0
+      },
+      {
+        "description": "Taillight - replacement",
+        "material": "plastic",
+        "amount": 4290.0,
+        "depreciation_rate": 0.5,
+        "depreciation_amount": 2145.0,
+        "payable": 2145.0
+      },
+      {
+        "description": "Painting and finishing",
+        "material": "paint",
+        "amount": 14570.0,
+        "depreciation_rate": 0.125,
+        "depreciation_amount": 1821.25,
+        "payable": 12748.75
+      },
+      {
+        "description": "Labour charges",
+        "material": "labour",
+        "amount": 8460.0,
+        "depreciation_rate": 0.0,
+        "depreciation_amount": 0.0,
+        "payable": 8460.0
+      }
+    ],
+    "excluded": [
+      {
+        "description": "Front Bumper - replacement",
+        "amount": 23153.0,
+        "reason": "priced far above market rate"
+      }
+    ],
+    "explanation": "Admitted lines:\n  Rear Door - replacement: Rs 13,780  - 15.0% depreciation (Rs 2,067)  = Rs 11,713\n  Taillight - replacement: Rs 4,290  - 50.0% depreciation (Rs 2,145)  = Rs 2,145\n  Painting and finishing: Rs 14,570  - 12.5% depreciation (Rs 1,821)  = Rs 12,749\n  Labour charges: Rs 8,460  - 0.0% depreciation (Rs 0)  = Rs 8,460\nExcluded lines:\n  Front Bumper - replacement: Rs 23,153 - priced far above market rate\nSubtotal after depreciation: Rs 35,066.75\nGST: Rs 6,312.01\nLess deductible: Rs 1,000.00\nPayout: Rs 40,378.76"
+  },
+  "route": "human_review",
+  "status": "awaiting_review",
+  "final_payout": 0.0,
+  "guardrail_flags": [],
+  "coverage_doubts": [],
+  "evidence_applied": [],
+  "payout_doubts": [],
+  "photo_check": {},
+  "photo_doubts": [],
+  "resumed": false,
+  "trail": [
+    "intake: reused saved Intake crew output",
+    "intake: 5 invoice lines, complete=True",
+    "router 1: file complete -> assessment",
+    "assessment: Policy Analyst and Fraud Analyst running in parallel",
+    "assessment: coverage=covered, fraud_score=0.70, 1 line(s) denied, payout Rs 40,378.76 (calculator)",
+    "router 2: human_review because fraud score 0.70 >= 0.5",
+    "paused: queued for an adjuster (data/review_queue)"
+  ],
+  "id": "3a092cb4-12ab-4908-9ae6-e55bc5da6c6a"
+}
