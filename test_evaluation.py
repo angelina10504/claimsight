@@ -74,6 +74,11 @@ def _raises_systemexit(fn) -> bool:
 
 
 def main() -> None:
+    # Hermetic key pool: ignore whatever GROQ_API_KEYS the real .env carries, so
+    # the budget and daily-limit tests see a single key and stop deterministically
+    # instead of rotating. The rotation test (7c) sets its own multi-key pool.
+    os.environ["GROQ_API_KEYS"] = "offline-stub-key"
+    os.environ.pop("GROQ_API_KEY", None)
     passed = total = 0
 
     def run(name, condition, detail=""):
@@ -302,9 +307,13 @@ def main() -> None:
     run("--claims N takes the first N test claims in manifest order, reproducibly",
         first20 == test_ids[:20]
         and first20 == [e["claim_id"] for e in ep.select_for_run("20", True)])
-    run("a count beyond the split, or a non-number, is refused",
-        _raises_systemexit(lambda: ep.select_for_run("41", True))
-        and _raises_systemexit(lambda: ep.select_for_run("CLM-5020", True)))
+    run("a count beyond the split is refused",
+        _raises_systemexit(lambda: ep.select_for_run("41", True)))
+    run("specific test claim ids can be selected, but only from the sealed split",
+        [e["claim_id"] for e in ep.select_for_run("CLM-5021,CLM-5020", True)]
+        == ["CLM-5021", "CLM-5020"]
+        and _raises_systemexit(lambda: ep.select_for_run("CLM-5000", True))   # dev, refused
+        and _raises_systemexit(lambda: ep.select_for_run("CLM-9999", True)))  # unknown
 
     # the run records that the flag was used, which claims, and the date
     recorded = ep.Run("final-rec", stand_in=True)
@@ -336,6 +345,13 @@ def main() -> None:
         and data_listing() == before_budget)
 
     print("\n7c. Rotating keys as each hits its daily limit\n")
+    # Hermetic monitor state: earlier sections leave monitors in _running, which
+    # disables current()'s sole-running fallback (harmless in a real run, but the
+    # stand-in steps below call monitoring.current() directly to simulate a
+    # provider daily-limit, so they need current() to resolve).
+    monitoring._active_var.set(None)
+    monitoring._by_thread.clear()
+    monitoring._running.clear()
     os.environ["GROQ_API_KEYS"] = "key-aaa,key-bbb,key-ccc"
     try:
         rot = ep.Run("rotate", stand_in=True)
@@ -371,7 +387,7 @@ def main() -> None:
             res2["stopped"] and "every provided key is spent" in res2["stopped"]
             and not allspent.done("B", "CLM-5000"), res2["stopped"])
     finally:
-        os.environ.pop("GROQ_API_KEYS", None)
+        os.environ["GROQ_API_KEYS"] = "offline-stub-key"   # back to the hermetic single key
 
     # ---------------------------------------------------------------- scoring
     print("\n8. Scoring\n")

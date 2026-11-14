@@ -470,8 +470,14 @@ def select_for_run(claims_arg: str, final_evaluation: bool) -> list:
     try:
         n = int(text)
     except ValueError:
-        raise SystemExit("with --final-evaluation, --claims is a count N (the first N "
-                         "test claims in manifest order), not a list of ids")
+        # a comma-separated list of specific test-claim ids. Still sealed-split
+        # only: a non-test id is refused, so this cannot reach dev or fixtures.
+        wanted = [c.strip() for c in text.split(",") if c.strip()]
+        by_id = {e["claim_id"]: e for e in pool}
+        bad = [c for c in wanted if c not in by_id]
+        if bad:
+            raise SystemExit(f"not held-out test claims, so not evaluated: {', '.join(bad)}")
+        return [by_id[c] for c in wanted]
     if not 1 <= n <= len(pool):
         raise SystemExit(f"--claims must be between 1 and {len(pool)} for the test split")
     return pool[:n]
