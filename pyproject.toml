@@ -16,6 +16,11 @@ dependencies = [
     "weasyprint>=70.0",
     "ollama>=0.6.3",
     "google-adk[a2a]>=2.13.0",
+    # CrewAI's "google" embeddings provider (used in the cloud, where there is no
+    # local ollama - see src/crews/assessment_crew.py) goes through chromadb's
+    # GoogleGenerativeAiEmbeddingFunction, which imports this legacy SDK. The ADK
+    # side uses the newer google-genai; both can coexist.
+    "google-generativeai>=0.8.0",
     "langfuse<5",
     "openinference-instrumentation-crewai>=1.1.21",
     "openinference-instrumentation-openai>=0.1.66",

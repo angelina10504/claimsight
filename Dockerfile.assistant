@@ -1,0 +1,54 @@
+# ClaimSight Claimant Assistant (Google ADK) - the claimant-facing agent.
+#
+# This is the SECOND of the two deployed services (the first is the CrewAI A2A
+# server, built by ./Dockerfile). It serves ADK's web chat UI, so a grader can
+# open a public URL, type "assess claim CLM-5000", and watch the ADK assistant
+# hand the work to the CrewAI system over A2A - both running in the cloud, with
+# nothing on the laptop. See RENDER_DEPLOY.md.
+#
+# Build:  docker build -f Dockerfile.assistant -t claimsight-assistant .
+# Run:    docker run --rm -p 8080:8080 \
+#             -e GOOGLE_API_KEY=... \
+#             -e CLAIMSIGHT_A2A_URL=https://claimsight-a2a.onrender.com \
+#             claimsight-assistant
+# Open:   http://localhost:8080   (pick "claimant_assistant" in the UI)
+#
+# No secret is baked in. GOOGLE_API_KEY (the free Google AI Studio key that
+# drives the Gemini assistant) and CLAIMSIGHT_A2A_URL (the deployed A2A server's
+# public URL, whose agent card the assistant reads) are injected at run time.
+
+# Same uv + Python 3.12 base and the same uv.lock as the A2A image, so both
+# services resolve identical dependencies.
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Dependencies first, in their own layer. google-adk[a2a] (the assistant and the
+# RemoteA2aAgent transport) and crewai are both in the lock; the project itself
+# is not installed - the code runs from the working tree.
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-install-project --no-dev
+
+# The assistant package (agents/claimant_assistant) plus src/ - the assistant
+# spawns src/mcp_server.py as a stdio child for get_claim_status/get_claim_report
+# and reads the shared guardrails module - and the committed claim fixtures those
+# tools read. The .dockerignore keeps secrets, caches and the VehiDE images out.
+COPY . .
+
+# Put the venv's python first on PATH so the `adk` CLI and the bare `python` the
+# MCP child is launched with are this project's interpreter.
+ENV VIRTUAL_ENV=/app/.venv \
+    PATH="/app/.venv/bin:$PATH"
+RUN mkdir -p data/logs data/decisions data/review_queue data/intake data/evidence data/reports
+
+# ADK's web UI. It binds 0.0.0.0 so the platform can route to it, and takes the
+# port from $PORT when the platform injects one (Render, Cloud Run), else 8080.
+# "agents" is the directory ADK scans for agent packages; it finds
+# claimant_assistant via agents/claimant_assistant/__init__.py.
+ENV ASSISTANT_PORT=8080
+EXPOSE 8080
+CMD ["sh", "-c", "exec adk web --host 0.0.0.0 --port \"${PORT:-$ASSISTANT_PORT}\" agents"]

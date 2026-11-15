@@ -46,8 +46,28 @@ from tools.assessment_tools import (                         # noqa: E402
     PriorClaimsTool,
 )
 
-# Local embeddings, as in test_policy_knowledge.py, so the index is reused
-EMBEDDER = {"provider": "ollama", "config": {"model_name": "nomic-embed-text"}}
+# Embeddings for the Policy Analyst's clause retrieval (RAG over the policy
+# wording). Two homes, chosen by CLAIMSIGHT_EMBEDDER so the same code serves
+# both:
+#   ollama (default) - local nomic-embed-text, as in test_policy_knowledge.py,
+#                      so the offline tests and the privacy demo reuse that index
+#                      and need no cloud key.
+#   google           - Gemini's gemini-embedding-001, for a cloud deployment
+#                      (Render, etc.) where there is no local ollama. It reads
+#                      the SAME GOOGLE_API_KEY the ADK assistant already uses, so
+#                      one free Google AI Studio key covers assistant + RAG.
+# The two produce different-dimension vectors, so each builds its own index on
+# first run; a container has no ollama index to clash with. See RENDER_DEPLOY.md.
+def _embedder() -> dict:
+    if os.getenv("CLAIMSIGHT_EMBEDDER", "ollama").lower() == "google":
+        return {"provider": "google", "config": {
+            "model_name": "gemini-embedding-001",
+            "api_key": os.getenv("GOOGLE_API_KEY"),
+        }}
+    return {"provider": "ollama", "config": {"model_name": "nomic-embed-text"}}
+
+
+EMBEDDER = _embedder()
 
 USE_MCP = os.getenv("USE_MCP", "true").lower() != "false"
 
