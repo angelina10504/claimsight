@@ -111,10 +111,17 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
     guardrails.install()       # tool-result checks and PII redaction on every LLM call
     llm = get_llm("text")
 
+    # Bigger chunks than the usual 1200: the policy wording is ~129 KB, so small
+    # chunks mean ~130 embedding calls the first time the index is built, which
+    # trips a free embeddings tier's per-minute rate limit (the Gemini 429 seen
+    # on Render). At 6000 chars it is ~22 chunks / ~23 calls - under a normal
+    # free RPM - while staying within the embedding model's input-token limit.
+    # Only the first claim builds the index; later claims reuse it and embed just
+    # the query. Retrieval still returns the top knowledge_limits() passages.
     policy_wording = TextFileKnowledgeSource(
         file_paths=["policy_wording.txt"],
-        chunk_size=1200,
-        chunk_overlap=200,
+        chunk_size=6000,
+        chunk_overlap=300,
     )
 
     # Same role string as the Step 1 test, so CrewAI reuses that embedded index
