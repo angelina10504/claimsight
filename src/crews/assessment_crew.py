@@ -60,7 +60,12 @@ from tools.assessment_tools import (                         # noqa: E402
 # first run; a container has no ollama index to clash with. See RENDER_DEPLOY.md.
 def _embedder() -> dict:
     if os.getenv("CLAIMSIGHT_EMBEDDER", "ollama").lower() == "google":
-        return {"provider": "google", "config": {
+        # Must be "google-generativeai", not the "google" factory alias: when the
+        # embedder is attached to an Agent it is validated against the typed
+        # provider-spec union (GenerativeAiProviderSpec), whose provider literal
+        # is exactly "google-generativeai". The short alias only works in the
+        # standalone build_embedder_from_dict factory, not here.
+        return {"provider": "google-generativeai", "config": {
             "model_name": "gemini-embedding-001",
             "api_key": os.getenv("GOOGLE_API_KEY"),
         }}
