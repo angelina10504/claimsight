@@ -35,12 +35,11 @@ services:
       # The Groq key the crews call (free tier). Paste it in the dashboard.
       - key: GROQ_API_KEY
         sync: false
-      # Use Gemini for the policy-clause embeddings instead of local ollama,
-      # which does not exist in a container. Reads GOOGLE_API_KEY below.
+      # Policy-clause embeddings run IN the container (chromadb MiniLM via
+      # onnxruntime): no API key, no quota, no rate limits, no local ollama.
+      # This is why the server needs no GOOGLE_API_KEY.
       - key: CLAIMSIGHT_EMBEDDER
-        value: google
-      - key: GOOGLE_API_KEY
-        sync: false
+        value: onnx
       # The public URL the agent card advertises; the assistant reads the card
       # and then calls this, so it MUST be this service's real public URL.
       - key: A2A_PUBLIC_URL

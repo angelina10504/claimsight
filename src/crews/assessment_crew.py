@@ -59,7 +59,17 @@ from tools.assessment_tools import (                         # noqa: E402
 # The two produce different-dimension vectors, so each builds its own index on
 # first run; a container has no ollama index to clash with. See RENDER_DEPLOY.md.
 def _embedder() -> dict:
-    if os.getenv("CLAIMSIGHT_EMBEDDER", "ollama").lower() == "google":
+    choice = os.getenv("CLAIMSIGHT_EMBEDDER", "ollama").lower()
+    if choice == "onnx":
+        # In-container embeddings: chromadb's default all-MiniLM-L6-v2 run through
+        # onnxruntime on CPU. No API key, no quota, no rate limits and no local
+        # ollama - so it works in a free cloud container and is the robust cloud
+        # default. The ~80 MB model is fetched once at first use. This is what
+        # RENDER_DEPLOY.md and render.yaml select for the deployed server.
+        return {"provider": "onnx", "config": {}}
+    if choice == "google":
+        # Gemini embeddings. Kept as an option, but the free tier's embedding
+        # quota is easily exhausted (429), so onnx is preferred for the demo.
         # Must be "google-generativeai", not the "google" factory alias: when the
         # embedder is attached to an Agent it is validated against the typed
         # provider-spec union (GenerativeAiProviderSpec), whose provider literal
