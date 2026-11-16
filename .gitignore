@@ -51,9 +51,17 @@ db/
 dashboard/.runtime/
 
 # The VehiDE dataset images (~2.3 GB) are not redistributed here.
-# The annotations and the 11 photos used by the photo claims ARE committed.
-# Download the images and place them as:
+# The validation annotations and the 11 photos used by the photo claims ARE
+# committed. Download the images and place them as:
 #   data/photos/vehiDE/image/image/          (11,621 training images)
 #   data/photos/vehiDE/validation/validation/ (2,324 validation images)
 data/photos/vehiDE/image/
 data/photos/vehiDE/validation/
+
+# The VehiDE TRAINING annotations (35 MB) are not committed either: over the
+# 10 MB per-file limit of a Hugging Face Space push, and nothing at run time
+# reads them. Their only reader is make_photo_labels.py, which has already run;
+# its output, data/photo_labels.json, IS committed. To re-run it, take
+# 0Train_via_annos.json from the same VehiDE dataset download as the images
+# above and place it at this path.
+data/photos/vehiDE/0Train_via_annos.json

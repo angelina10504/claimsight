@@ -117,6 +117,49 @@ checkout):
 > Space **secret** so the server can assess live; (c) optionally `GOOGLE_API_KEY`
 > locally to drive the ADK assistant against it.
 
+> ## Fixes prepared for a non-root platform, not applied — Render does not require them
+>
+> Requirement 11 is deployed on **Render** (see `RENDER_DEPLOY.md`), which runs
+> the container as root, and the `Dockerfile` here is the one that deployment
+> uses. A 2026-11-16 review found that this image would **not** work on Hugging
+> Face as-is, because HF runs every container as **uid 1000**. The fixes below
+> were written and tested, then deliberately **not applied**: Render redeploys
+> on every push to `main`, and a working deployment is not worth risking for a
+> platform blocked by billing. Apply them only if the A2A server is moved to HF
+> (PRO) or to another host that runs containers as a non-root user.
+>
+> 1. **Run as uid 1000 with a real home directory.** Today `/app` is root-owned
+>    and uid 1000 has no passwd entry, so `$HOME` is `/`. The server writes
+>    `data/{decisions,logs,intake,evidence,review_queue,reports}`, and CrewAI
+>    puts the `@persist` checkpoint DB (`flow_states.db`) and the Chroma
+>    knowledge index under `appdirs.user_data_dir` → `$HOME/.local/share/app/`.
+>    crewai's chromadb constants module creates that directory **at import
+>    time**, so the server would crash before it binds. Fix: `useradd -m -u 1000
+>    user`, `chown user /app`, `USER user`, `ENV HOME=/home/user`, and
+>    `COPY --chown=user:user` for both COPY steps.
+> 2. **`UV_NO_CACHE=1`** on the `uv sync` step. Without it, uv's download cache
+>    stays inside the dependency layer and roughly doubles the image.
+> 3. **`.dockerignore` patterns as `**/<name>`.** A pattern with no `**/`
+>    matches only at the build-context root, so nested `__pycache__/` and
+>    `.DS_Store` currently enter the image. Also exclude `.sf/`, `.claude/` and
+>    `.streamlit/secrets.toml`.
+>
+> Verified on 2026-11-16 with the fixes applied: `docker build --platform
+> linux/amd64` succeeded (543 MB image, 10 MB build context, so VehiDE was
+> excluded). Run with `--user 1000:1000`, no keys and no `.env`, the container
+> served the agent card, the MCP launcher started, every runtime directory was
+> writable, and `flow_states.db` landed in `/home/user/.local/share/app/`.
+>
+> The patch is in a **local git stash** on Angelina's machine ("Req 11:
+> non-root/HF Docker fixes (prepared, not applied)"); see `git stash list`. It
+> also holds a comment-only correction to `src/crews/assessment_crew.py` (the
+> deployed embedder is `google`, not `onnx`).
+>
+> Also for HF: a Space push rejects files over 10 MB without LFS/Xet.
+> `data/photos/vehiDE/0Train_via_annos.json` (35 MB) is no longer tracked, but
+> it is still in git history, so push an **orphan branch** holding only the
+> current tree to the Space remote rather than rewriting GitHub history.
+
 ## Part A — the A2A server on Hugging Face Spaces (Docker SDK, **now PRO-only**)
 
 ### A1. Create the Space
