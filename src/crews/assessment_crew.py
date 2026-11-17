@@ -132,7 +132,10 @@ def build_assessment_crew(verbose: bool = True, monitor=None) -> Crew:
             "You interpret the Private Car Package Policy for a claims team. You never answer "
             "from general knowledge: if the wording does not say it, you say it is not stated. "
             "Section I lists the insured perils and the depreciation on parts. The exclusions "
-            "start with 'The Company shall not be liable to make any payment in respect of'."
+            "start with 'The Company shall not be liable to make any payment in respect of'. "
+            "An IMT endorsement or add-on applies only within the scope named in its own "
+            "heading (e.g. 'Applicable to all Commercial Vehicles'); never apply one outside "
+            "that scope to this policy, whose form is given as policy_form."
         ),
         llm=llm,
         **tool_access("check_policy_period"),

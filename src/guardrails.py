@@ -31,6 +31,7 @@ Every guardrail decision is written to the claim's monitoring log.
 
 import json
 import re
+from pathlib import Path
 from typing import Any, List, Optional, Tuple
 
 import monitoring
@@ -359,11 +360,44 @@ def decision_guardrail(output: Any) -> Tuple[bool, Any]:
                  note="the refusal is not backed by a clause in the policy; "
                       "the router will send this claim to a person")
 
+    # A clause that exists but cannot APPLY to this policy - a commercial-vehicle
+    # endorsement on a private car, an add-on nobody bought - is sent back for
+    # another attempt, unlike an unverifiable one above: the agent has the right
+    # facts in front of it and only needs to stop relying on the wrong clause.
+    import clause_scope
+    policy = _policy_from(getattr(output, "description", ""))
+    form = clause_scope.policy_form(policy)
+    for reason in d.get("coverage_reasons") or []:
+        for why in clause_scope.inapplicable(reason, policy):
+            problems.append(f"a coverage_reason cites a clause that cannot apply: {why} "
+                            f"Judge coverage only under clauses that apply to a {form}")
+    for line in lines:
+        if not line.get("admitted"):
+            for why in clause_scope.inapplicable(line.get("reason") or "", policy):
+                problems.append(f"'{line.get('description')}' is denied on a clause that cannot "
+                                f"apply: {why} Decide this line only under clauses that apply "
+                                f"to a {form}")
+    if any("cannot apply" in p for p in problems):
+        _log("clause_scope", passed=False, problems=[p for p in problems if "cannot apply" in p][:3])
+
     if problems:
         _log("decision", passed=False, problems=problems)
         return False, "Fix these problems in your decision: " + " | ".join(problems)
     _log("decision", passed=True)
     return True, output
+
+
+def _policy_from(description: str) -> dict:
+    """The policy record for the claim this task is about, read the way the Flow
+    reads it (claim file -> policy_no -> policy file). {} if it cannot be found."""
+    match = re.search(r"\bCLM-\d{4}\b", description or "")
+    root = Path(__file__).resolve().parent.parent / "data"
+    try:
+        claim = json.loads((root / "claims" / f"{match.group(0)}.json").read_text()) if match else {}
+        policy_no = claim.get("policy_no")
+        return json.loads((root / "policies" / f"{policy_no}.json").read_text()) if policy_no else {}
+    except (OSError, json.JSONDecodeError):
+        return {}
 
 
 # ---------------------------------------------------------------- 2 + 4. CrewAI hooks

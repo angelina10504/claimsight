@@ -27,6 +27,8 @@ from pathlib import Path
 from typing import List, Optional
 
 SRC = Path(__file__).resolve().parent
+sys.path.insert(0, str(SRC))
+import clause_scope                                       # noqa: E402
 ROOT = SRC.parent
 WORDING = ROOT / "knowledge" / "policy_wording.txt"
 
@@ -95,11 +97,15 @@ def _significant(text: str) -> set:
             if w not in STOP_WORDS}
 
 
-def check(reason: str, verdict: str = "excluded", text: Optional[str] = None) -> dict:
-    """Examine one coverage reason. Returns the three findings and the evidence.
+def check(reason: str, verdict: str = "excluded", text: Optional[str] = None,
+          policy: Optional[dict] = None) -> dict:
+    """Examine one coverage reason. Returns the three findings and the evidence,
+    plus a fourth: whether the cited clause can APPLY to this policy.
 
     `verdict` is the conclusion the reason is being used to support, so that a
-    passage granting cover is not accepted as grounds for refusing a claim."""
+    passage granting cover is not accepted as grounds for refusing a claim.
+    `policy` is the policy record, used for add-ons it says were purchased."""
+    text_is_default = text is None
     text = wording() if text is None else " ".join(text.lower().split())
     reason = reason or ""
     low = " ".join(reason.lower().split())
@@ -208,7 +214,19 @@ def check(reason: str, verdict: str = "excluded", text: Optional[str] = None) ->
         supports = True
         why = "the citation was found in the policy"
 
-    if not cited:
+    # Existing text is not enough: the clause must also be one that can apply to
+    # this policy (clause_scope.py). A commercial-vehicle exclusion quoted
+    # word-for-word against a private car exists, and still cannot be grounds.
+    # Only the default wording carries the scope map; a test's own text does not.
+    scope_notes = clause_scope.inapplicable(reason, policy) if text_is_default else []
+    if scope_notes:
+        supports = False
+
+    if scope_notes:
+        # the reason reproduces a scoped clause (by name or verbatim, quoted or
+        # not); that it cannot apply is the finding that matters
+        note = scope_notes[0]
+    elif not cited:
         note = "no clause or quotation given, only the agent's own words"
     elif missing:
         note = "; ".join(missing[:2])
@@ -219,6 +237,7 @@ def check(reason: str, verdict: str = "excluded", text: Optional[str] = None) ->
 
     return {"reason": reason, "identifiers": identifiers, "cited": cited,
             "source_verified": source_verified, "supports_conclusion": supports,
+            "applicable": not scope_notes, "scope_notes": scope_notes,
             "passages": found, "missing": missing, "note": note}
 
 

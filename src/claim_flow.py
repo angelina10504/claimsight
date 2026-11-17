@@ -34,6 +34,7 @@ ROOT = SRC.parent
 sys.path.insert(0, str(SRC))
 
 import citations                             # noqa: E402
+import clause_scope                          # noqa: E402
 import evidence                              # noqa: E402
 import guardrails                            # noqa: E402
 import observability                         # noqa: E402
@@ -213,6 +214,15 @@ def cites_policy(reason: str) -> bool:
     return citations.cites_policy(reason)
 
 
+def _policy_record(policy_no) -> dict:
+    """The policy schedule, for the add-ons it records as purchased. {} if absent."""
+    path = POLICIES / f"{policy_no}.json"
+    try:
+        return json.loads(path.read_text()) if policy_no and path.exists() else {}
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
 def coverage_doubts(intake: dict, decision: dict) -> list:
     """Reasons NOT to act on the coverage verdict without a person.
 
@@ -223,12 +233,26 @@ def coverage_doubts(intake: dict, decision: dict) -> list:
     if not status:                      # a decision saved before this field existed
         status = "covered" if decision.get("is_covered") else "excluded"
     reasons = [r for r in (decision.get("coverage_reasons") or []) if r]
+    policy = _policy_record(intake.get("policy_no"))
 
     if status == "uncertain":
         said = (decision.get("uncertainty_reasons") or ["no reason given"])[0]
         return [f"the Policy Analyst could not establish coverage: {said}"]
     if status != "excluded":
-        return []
+        # A covered claim can still be cut short line by line. A line denied on
+        # a clause from the scoped set (an endorsement or add-on whose heading
+        # limits who it applies to) goes to a person: that is the IMT 21 error,
+        # a commercial-vehicle exclusion applied to a private car. Lines denied
+        # on base-policy clauses, prices or duplicates are not escalated here.
+        doubts = []
+        for line in decision.get("line_decisions") or []:
+            if line.get("admitted") is False:
+                cited = clause_scope.cited_blocks(line.get("reason") or "")
+                if cited:
+                    why = (clause_scope.inapplicable(line.get("reason") or "", policy)
+                           or [f"{cited[0]} is an endorsement or add-on with a limited scope"])
+                    doubts.append(f"'{line.get('description')}' was denied on {cited[0]}: {why[0]}")
+        return doubts
 
     # Outside the cover dates is arithmetic, not judgement: the tool settles it
     # and no clause is needed.
@@ -244,7 +268,7 @@ def coverage_doubts(intake: dict, decision: dict) -> list:
     # verified clause listing what the policy covers argues the other way.
     notes = []
     for reason in reasons:
-        verdict = citations.check(reason, verdict="excluded")
+        verdict = citations.check(reason, verdict="excluded", policy=policy)
         if verdict["source_verified"] and verdict["supports_conclusion"]:
             return []
         notes.append(verdict["note"])
@@ -305,7 +329,10 @@ def assessment_inputs(intake: dict) -> dict:
         "narrative": intake.get("narrative") or "",
         "damaged_parts": json.dumps(intake.get("damaged_parts", [])),
         "line_items": json.dumps(lines, indent=1),
-        "policy": json.dumps({k: policy[k] for k in POLICY_FIELDS}, indent=1),
+        # policy_form first: the analyst must know what class of policy it is
+        # judging, since the wording also carries commercial-vehicle endorsements
+        "policy": json.dumps({"policy_form": clause_scope.policy_form(policy),
+                              **{k: policy[k] for k in POLICY_FIELDS}}, indent=1),
     }
 
 
