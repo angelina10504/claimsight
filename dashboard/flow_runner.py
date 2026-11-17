@@ -43,6 +43,26 @@ FINAL = {"approved", "rejected", "awaiting_evidence", "awaiting_review",
 # Popen is looked up through this module so a test can replace it.
 Popen = subprocess.Popen
 
+# Read-only deployments. A dashboard on a public URL must never start the Flow:
+# a live run spends Groq tokens, and "the service has no key" is configuration,
+# not a guard - one variable added later would reopen it. So live runs are
+# refused in code when either
+#   CLAIMSIGHT_DASHBOARD_READONLY is set to 1/true/yes/on, or
+#   the process is on a hosting platform: Render sets RENDER=true on every
+#   service, Cloud Run sets K_SERVICE.
+# A hosted dashboard is read-only whatever else is set; there is deliberately
+# no variable that switches it back on there. Locally neither marker exists,
+# so `uv run streamlit run dashboard/app.py` keeps live mode as before.
+READONLY_VAR = "CLAIMSIGHT_DASHBOARD_READONLY"
+PLATFORM_MARKERS = ("RENDER", "K_SERVICE")
+READONLY_MESSAGE = ("Live runs are disabled on this deployment: it shows saved results only.")
+
+
+def read_only() -> bool:
+    if os.getenv(READONLY_VAR, "").strip().lower() in {"1", "true", "yes", "on"}:
+        return True
+    return any(os.getenv(marker) for marker in PLATFORM_MARKERS)
+
 
 def _data() -> dict:
     data = ROOT / "data"
@@ -107,6 +127,8 @@ def current() -> Optional[dict]:
 
 def start(claim_id: str, reuse_intake: bool = True) -> tuple:
     """Begin one run. Returns (started, message). Never raises for a refusal."""
+    if read_only():                      # checked before the lock, the backup or Popen
+        return False, READONLY_MESSAGE
     if not eligible(claim_id):
         return False, "Only development claims can be run live."
     RUNTIME.mkdir(parents=True, exist_ok=True)

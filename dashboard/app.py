@@ -99,9 +99,14 @@ with st.sidebar:
     st.write("")
     page = st.radio("Navigate", PAGES, key="page", label_visibility="collapsed")
     st.divider()
-    mode = st.radio("Mode", MODES, key="mode",
-                    help="Presentation reads saved results and calls no model. "
-                         "Live assessment can run the real Flow for one claim.")
+    if flow_runner.read_only():
+        # A hosted or explicitly read-only dashboard: no mode control at all.
+        mode = MODES[0]
+        st.caption("Read-only deployment · saved results only · live runs are disabled")
+    else:
+        mode = st.radio("Mode", MODES, key="mode",
+                        help="Presentation reads saved results and calls no model. "
+                             "Live assessment can run the real Flow for one claim.")
     if mode == MODES[0]:
         st.caption("Saved results only · no model calls · nothing is overwritten")
     else:
@@ -549,6 +554,8 @@ def _start_live(claim_id: str) -> None:
 
 
 def live_panel(claim_id: str) -> None:
+    if flow_runner.read_only():          # never reached from the UI then; kept as a backstop
+        return
     ui.section("Live assessment", "uses Groq tokens")
     run = flow_runner.current()
     if run and not run.get("broken"):

@@ -62,3 +62,20 @@ services:
       # Where the assistant finds the CrewAI system: the A2A service's public URL.
       - key: CLAIMSIGHT_A2A_URL
         value: https://claimsight-a2a.onrender.com
+
+  # ---------------------------------------------------------------- Streamlit dashboard
+  # Presentation mode: replays saved results, calls no model. Deliberately has
+  # NO GROQ_API_KEY / GOOGLE_API_KEY - with a Groq key, the dashboard's "Live
+  # assessment" mode would let any visitor spend tokens. No secrets at all.
+  - type: web
+    name: claimsight-dashboard
+    runtime: docker
+    dockerfilePath: ./Dockerfile.dashboard
+    plan: free
+    region: oregon
+    healthCheckPath: /_stcore/health
+    envVars:
+      # Belt and braces: also set in Dockerfile.dashboard. Turns off Langfuse
+      # and the vision model client inside the dashboard container.
+      - key: CLAIMSIGHT_OFFLINE
+        value: "1"

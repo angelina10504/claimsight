@@ -7,7 +7,7 @@ of the car it is on. So this script fills in the damage types from the
 dataset and leaves "parts" empty for a person to fill in by looking at the
 photo. A hint is given where the damage type narrows the part down.
 
-Run:  uv run python make_photo_labels.py data/annotations/0Train_via_annos.json
+Run:  uv run python make_photo_labels.py data/photos/vehiDE/0Train_via_annos.json
 """
 
 import json
