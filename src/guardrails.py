@@ -248,10 +248,33 @@ def find_pii(text: str) -> dict:
     return {k: v for k, v in found.items() if v}
 
 
-def redact_pii(text: str) -> Tuple[str, int]:
+# Indian vehicle registration numbers. NOT part of PII_PATTERNS on purpose: the
+# agents need the registration (the intake check compares the invoice's with the
+# policy's, and test_privacy.py asserts it reaches them), and redact_pii runs on
+# every message sent to a model. It is masked only on the way OUT of the system -
+# observability spans - via redact_pii(text, outbound=True).
+#   standard  HR38UE8148, MH 12 AB 1234, KA-01-HH-1234, DL 3C AB 1234, GJ01A1234
+#   BH series 22 BH 1234 AA
+# Restricted to real state/UT codes, so CLM-6001, POL-6001, INV/833/26 or a GSTIN
+# (which starts with digits) are not mistaken for a plate.
+_STATE_CODES = ("AN|AP|AR|AS|BR|CG|CH|DD|DL|DN|GA|GJ|HP|HR|JH|JK|KA|KL|LA|LD|MH|ML|MN|MP|"
+                "MZ|NL|OD|OR|PB|PY|RJ|SK|TN|TR|TS|UA|UK|UP|WB")
+REGISTRATION_PATTERN = re.compile(
+    rf"(?<![A-Za-z0-9])(?:"
+    rf"(?:{_STATE_CODES})[\s-]?\d{{1,2}}[A-Z]?[\s-]?[A-Z]{{0,3}}[\s-]?\d{{4}}"
+    rf"|\d{{2}}[\s-]?BH[\s-]?\d{{4}}[\s-]?[A-Z]{{1,2}}"
+    rf")(?![A-Za-z0-9])")
+
+
+def redact_pii(text: str, outbound: bool = False) -> Tuple[str, int]:
+    """Mask phone numbers, Aadhaar numbers and emails. With outbound=True (text
+    leaving the system, e.g. trace spans) vehicle registrations are masked too."""
     count = 0
     for kind, r in PII_PATTERNS.items():
         text, n = r.subn(f"[{kind} redacted]", text)
+        count += n
+    if outbound:
+        text, n = REGISTRATION_PATTERN.subn("[registration redacted]", text)
         count += n
     return text, count
 

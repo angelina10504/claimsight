@@ -84,10 +84,11 @@ _memory = None          # set when spans are kept in memory instead of sent
 
 # ---------------------------------------------------------------- scrubbing
 def _scrub(value):
-    """Mask phone numbers, emails and Aadhaar-like numbers in one attribute."""
+    """Mask phone numbers, emails, Aadhaar-like numbers and vehicle registrations
+    in one attribute. Spans leave the system, so the outbound set applies."""
     import guardrails
     if isinstance(value, str) and len(value) > 3:
-        cleaned, found = guardrails.redact_pii(value)
+        cleaned, found = guardrails.redact_pii(value, outbound=True)
         return cleaned if found else value
     return value
 
@@ -119,6 +120,11 @@ def scrub_attributes(attributes: dict, send_content: bool = True) -> dict:
         elif isinstance(value, str) and not send_content and len(value) > 200:
             # a long string under an unremarkable key is still content
             out[key] = f"[{len(value)} characters not sent]"
+        elif isinstance(value, str):
+            # Content on: a string under an unremarkable key (e.g. CrewAI's
+            # crew_tasks, a JSON dump of every task description) is still
+            # scrubbed. _scrub leaves text without personal data untouched.
+            out[key] = _scrub(value)
         else:
             out[key] = value
     return out

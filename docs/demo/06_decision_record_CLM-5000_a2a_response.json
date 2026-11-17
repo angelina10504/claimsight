@@ -1,0 +1,83 @@
+[
+  {
+    "task": {
+      "id": "c15f74a2-38b5-4cea-8e91-d2f479126f4c",
+      "contextId": "06eb0563-8e94-472e-82e3-b0499655b440",
+      "status": {
+        "state": "TASK_STATE_COMPLETED",
+        "message": {
+          "messageId": "16fc7607-9879-4245-bf83-e7415100e794",
+          "contextId": "06eb0563-8e94-472e-82e3-b0499655b440",
+          "taskId": "c15f74a2-38b5-4cea-8e91-d2f479126f4c",
+          "role": "ROLE_AGENT",
+          "parts": [
+            {
+              "text": "Claim CLM-5000: The policy wording did not settle whether this incident is covered, so a claims officer will decide. No payment has been authorised yet: a claims adjuster is still reviewing the claim. As assessed it would come to Rs 41,869.40, which may change."
+            }
+          ]
+        },
+        "timestamp": "2026-11-17T21:23:51.003771Z"
+      },
+      "artifacts": [
+        {
+          "artifactId": "360b8326-81d8-4022-a5e0-fd93e04d9f1b",
+          "name": "summary",
+          "parts": [
+            {
+              "text": "Claim CLM-5000: The policy wording did not settle whether this incident is covered, so a claims officer will decide. No payment has been authorised yet: a claims adjuster is still reviewing the claim. As assessed it would come to Rs 41,869.40, which may change."
+            }
+          ]
+        },
+        {
+          "artifactId": "27942104-1311-40e9-8a15-72f2f65288b6",
+          "name": "decision",
+          "parts": [
+            {
+              "data": {
+                "missing_evidence": [],
+                "status": "awaiting_review",
+                "guardrail_flags": [],
+                "payout": 0.0,
+                "route": "human_review",
+                "fraud_score": 0.1,
+                "explanation": "The policy wording did not settle whether this incident is covered, so a claims officer will decide. No payment has been authorised yet: a claims adjuster is still reviewing the claim. As assessed it would come to Rs 41,869.40, which may change.",
+                "coverage_status": "uncertain",
+                "coverage_doubts": [
+                  "the Policy Analyst could not establish coverage: Unable to confirm that rear door and bumper damage corresponds to the reported front impact incident; additional evidence (photos, repair assessment) needed to establish coverage."
+                ],
+                "denied_lines": [],
+                "claim_id": "CLM-5000",
+                "proposed_payout": 41869.4,
+                "is_covered": false
+              }
+            }
+          ]
+        }
+      ],
+      "history": [
+        {
+          "messageId": "1f475fbe-cdb1-411c-b89f-bc6c6dff1114",
+          "contextId": "06eb0563-8e94-472e-82e3-b0499655b440",
+          "taskId": "c15f74a2-38b5-4cea-8e91-d2f479126f4c",
+          "role": "ROLE_USER",
+          "parts": [
+            {
+              "text": "Please assess claim CLM-5000"
+            }
+          ]
+        },
+        {
+          "messageId": "75ccebf0-9a83-47d9-b6ac-5c46df2286ab",
+          "contextId": "06eb0563-8e94-472e-82e3-b0499655b440",
+          "taskId": "c15f74a2-38b5-4cea-8e91-d2f479126f4c",
+          "role": "ROLE_AGENT",
+          "parts": [
+            {
+              "text": "Assessing CLM-5000: intake, coverage and fraud checks..."
+            }
+          ]
+        }
+      ]
+    }
+  }
+]
