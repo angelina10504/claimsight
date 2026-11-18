@@ -26,7 +26,9 @@ crew timings and token use, and the final outcome.
 
 import contextvars
 import json
+import os
 import re
+import tempfile
 import threading
 import time
 from datetime import datetime
@@ -36,6 +38,59 @@ from typing import Any, Dict, Optional, Set
 ROOT = Path(__file__).resolve().parent.parent
 LOGS = ROOT / "data" / "logs"
 MAX_TEXT = 600          # characters kept from long outputs
+
+# Sharing a finished log with the other services. In the cloud the dashboard and
+# the assistant run in their own containers and cannot see this one's disk, so
+# a claim assessed there showed "No monitoring log is saved" and every agent as
+# "Not run yet". The log is still written to the local disk event by event (the
+# hot path is unchanged); when the run finishes, the completed file is copied
+# ONCE into CLAIMSIGHT_LOG_ARCHIVE, a folder the deployment mounts from the
+# shared bucket and the other services mount read-only as data/logs. Unset (any
+# local run) means no copy. A copy that fails or hangs is reported and ignored:
+# it must never cost the claim its decision, which is written after this.
+LOG_ARCHIVE_ENV = "CLAIMSIGHT_LOG_ARCHIVE"
+LOG_UPLOAD_TIMEOUT_S = float(os.getenv("CLAIMSIGHT_LOG_UPLOAD_TIMEOUT", "20"))
+
+
+def _copy_atomically(source: Path, folder: Path) -> None:
+    """Copy source into folder so a reader never sees a half-written log: write
+    a hidden .tmp beside the target, then rename it over the target."""
+    target = folder / source.name
+    handle, temporary = tempfile.mkstemp(dir=str(folder), prefix=f".{source.name}.",
+                                         suffix=".tmp")
+    try:
+        with os.fdopen(handle, "wb") as f:
+            f.write(source.read_bytes())
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temporary, target)
+    except BaseException:
+        Path(temporary).unlink(missing_ok=True)
+        raise
+
+
+def archive_log(path: Path, timeout: Optional[float] = None) -> str:
+    """Copy a finished claim log to the shared folder. Never raises.
+
+    Returns "off" (no folder configured), "uploaded", "timed out" or
+    "failed: <reason>". The copy runs on its own thread so a stalled mount
+    delays the claim by at most the timeout and never blocks it for good."""
+    folder = os.getenv(LOG_ARCHIVE_ENV, "").strip()
+    if not folder:
+        return "off"
+    outcome: Dict[str, str] = {}
+
+    def copy() -> None:
+        try:
+            _copy_atomically(Path(path), Path(folder))
+            outcome["status"] = "uploaded"
+        except Exception as exc:                       # noqa: BLE001
+            outcome["status"] = f"failed: {type(exc).__name__}: {_short(str(exc))}"
+
+    worker = threading.Thread(target=copy, name="claimsight-log-archive", daemon=True)
+    worker.start()
+    worker.join(LOG_UPLOAD_TIMEOUT_S if timeout is None else timeout)
+    return outcome.get("status", "timed out")
 
 # Every count the provider reports for a crew. A reasoning model spends tokens
 # that never appear in the completion, and cached prompt tokens are charged
@@ -232,6 +287,21 @@ class ClaimMonitor:
             _running.discard(self)
             if _by_thread.get(threading.get_ident()) is self:
                 del _by_thread[threading.get_ident()]
+        # Every terminal path (approve, review, reject, evidence request, a
+        # failed step) ends here, so this is the one place the log is shared.
+        try:
+            shared = archive_log(self.path)
+        except Exception as exc:                       # noqa: BLE001 - belt and braces
+            shared = f"failed: {type(exc).__name__}"
+        if shared != "off":
+            print(f"[{self.claim_id}] log archive: {shared}", flush=True)
+            if shared != "uploaded":
+                # Local only: the shared copy is already out of date, which is
+                # fine, because this line exists for whoever debugs the upload.
+                try:
+                    self.record("log_archive_failed", outcome=shared)
+                except Exception:                      # noqa: BLE001
+                    pass
         return summary
 
 
