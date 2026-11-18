@@ -245,6 +245,24 @@ def main() -> None:
           any("IMT 21" in f for f in flow.state.guardrail_flags), str(flow.state.guardrail_flags)[:300])
     check("queued in the review queue", (claim_flow.REVIEW_QUEUE / "CLM-5014.json").exists())
 
+    print("\nC. The dashboard shows an escalated claim as escalated, not as assessed\n")
+    sys.path.insert(0, str(ROOT / "dashboard"))
+    import data_adapter as da                       # noqa: E402
+    log14 = log_events("CLM-5014")                  # the real log the replay wrote
+    steps = da.timeline(log14)
+    text = " | ".join(f"{s['title']}: {s['detail']}" for s in steps)
+    stages = da.flow_stages(log14)["stages"] if "stages" in da.flow_stages(log14) else da.flow_stages(log14)
+    stage_text = json.dumps(stages)
+    check("no fraud score of 0.00 is shown for it", "fraud_score=0.00" not in text + stage_text)
+    check("it says the fraud score was not assessed", "fraud score not assessed" in text + stage_text)
+    check("the escalation is a step of its own, not an 'Error'",
+          any(s["title"].startswith("No valid decision") for s in steps)
+          and not any(s["title"] == "Error" for s in steps))
+    check("no Flow stage is marked as failed", '"fail"' not in stage_text, stage_text[:300])
+    log06 = log_events("CLM-5006")
+    text06 = " | ".join(s["detail"] for s in da.timeline(log06))
+    check("a claim that WAS assessed still shows its score", "fraud_score=0.10" in text06)
+
     print(f"\n{passed}/{total} safety checks as expected")
     sys.exit(0 if passed == total else 1)
 

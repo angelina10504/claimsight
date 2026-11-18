@@ -409,10 +409,26 @@ def tool_name(raw) -> str:
     return reporting._tool_name(str(raw or ""))
 
 
+def assessment_escalated(log: List[dict]) -> bool:
+    """Did the Assessment crew run out of guardrail retries, so the claim went
+    to a person with no decision? (The Flow logs this as kind=guardrail_exhausted.)"""
+    return any(e.get("event") == "flow" and e.get("kind") == "guardrail_exhausted" for e in log)
+
+
+def fraud_display(text: str, log: List[dict]) -> str:
+    """When the assessment never completed, the record's fraud_score holds 0.0
+    only because the field is numeric. Shown as a number it reads as "assessed
+    and clean", so it is shown as not assessed instead."""
+    if assessment_escalated(log):
+        return re.sub(r"fraud_score=\d+(?:\.\d+)?", "fraud score not assessed", text)
+    return text
+
+
 def timeline(log: List[dict]) -> List[dict]:
     """The log as steps a person can follow. Each step keeps the raw entry for
     the expandable detail; the page decides what to show."""
     steps = []
+    escalated = assessment_escalated(log)
     for e in log:
         kind, at = e.get("event"), e.get("elapsed_s")
         step = None
@@ -429,7 +445,10 @@ def timeline(log: List[dict]) -> List[dict]:
                         message.split(": ", 1)[-1], "info")
             elif message.startswith("assessment: coverage="):
                 step = ("settle", "Settlement calculated (Python)",
-                        message.split("assessment: ", 1)[-1], "good")
+                        fraud_display(message.split("assessment: ", 1)[-1], log), "good")
+            elif e.get("kind") == "guardrail_exhausted":
+                step = ("guard", "No valid decision after every retry: escalated to a person",
+                        message.split("escalating to a person: ", 1)[-1], "warn")
             elif "parallel" in message:
                 step = ("crew", "Policy Analyst and Fraud Analyst start in parallel",
                         "Assessment crew", "info")
@@ -468,6 +487,8 @@ def timeline(log: List[dict]) -> List[dict]:
         elif kind == "llm_call_failed":
             step = ("fail", "Model call failed and was retried",
                     str(e.get("kind", "")).replace("_", " "), "warn")
+        elif kind == "error" and escalated and e.get("where") == "assessment":
+            continue                        # handled: shown as the escalation step instead
         elif kind in ("error", "tool_error"):
             step = ("fail", "Error", str(e.get("where") or e.get("tool") or ""), "bad")
         elif kind == "run_finished":
@@ -757,7 +778,10 @@ def flow_stages(log: List[dict], state: Optional[dict] = None) -> dict:
         return text.split(sep, 1)[-1] if text else ""
 
     finished = next((e for e in reversed(log) if e.get("event") == "run_finished"), None)
-    errors = [e for e in log if e.get("event") == "error"]
+    escalated = assessment_escalated(log)
+    # An assessment that ran out of guardrail retries was escalated, not failed.
+    errors = [e for e in log if e.get("event") == "error"
+              and not (escalated and e.get("where") == "assessment")]
     intake_line = next((m for m in messages if m.startswith("intake: ") and "invoice lines" in m), None)
     reused = first("intake: reused")
     gate = first("router 1:")
@@ -774,9 +798,11 @@ def flow_stages(log: List[dict], state: Optional[dict] = None) -> dict:
         else ("now", "Intake crew running") if log else ("todo", ""),
         "gate": ("done", after(gate)) if gate else ("todo", ""),
         "assessment": ("done", "Policy and Fraud Analysts in parallel, then the Lead") if assessed
+        else ("done", "no valid decision after every retry: escalated to a person") if escalated
         else ("now", "Policy and Fraud Analysts running in parallel") if parallel
         else ("todo", ""),
-        "settlement": ("done", after(settled, "assessment: ")) if settled else ("todo", ""),
+        "settlement": ("done", fraud_display(after(settled, "assessment: "), log))
+        if settled else ("todo", ""),
         "router": ("done", after(routed)) if routed else ("todo", ""),
         "outcome": ("done", status_label((finished or {}).get("status") or "")[0])
         if finished else ("todo", ""),
