@@ -23,7 +23,7 @@ import re
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
 from crewai.flow.flow import Flow, listen, router, start
 from crewai.flow.persistence import persist
@@ -223,6 +223,107 @@ def _policy_record(policy_no) -> dict:
         return {}
 
 
+def submitted_incident_date(claim_id: Optional[str]) -> Optional[str]:
+    """The incident date as the claimant SUBMITTED it (data/claims/<id>.json).
+
+    The intake's incident_date is the Intake Officer's copy of this, made by a
+    model; the period decision must not rest on a model's transcription."""
+    path = CLAIMS / f"{claim_id}.json"
+    try:
+        return json.loads(path.read_text()).get("incident_date") if claim_id and path.exists() else None
+    except (json.JSONDecodeError, OSError):
+        return None
+
+
+def policy_period(intake: dict) -> dict:
+    """check_policy_period, run in code on the submitted date (the intake's copy
+    only when the claim file has none, e.g. a date supplied later as evidence)."""
+    date = submitted_incident_date(intake.get("claim_id")) or intake.get("incident_date")
+    return check_policy_period(intake.get("policy_no") or "", date)
+
+
+PERIOD_DENIAL = "outside the policy period (checked in code)"
+
+
+def enforce_policy_period(intake: dict, decision: dict) -> Tuple[dict, Optional[dict]]:
+    """An incident outside the cover dates cannot be covered, whatever a model says.
+
+    Runs AFTER the crew, on the decision it returned. The Policy Analyst calls
+    the same tool, but its answer passes through two models before it reaches the
+    router, and on 18 Nov a guardrail retry loop turned a correct rejection of
+    CLM-5006 (37 days before cover) into "covered" on a sentence the policy does
+    not contain. So the tool's answer is enforced here, where no model is involved.
+
+    Only a definite within_period=False acts. A tool error (no policy on file, an
+    unreadable date) is not knowledge that the claim is out of cover, and changes
+    nothing. Returns (decision, override); override is None when nothing changed
+    the verdict, otherwise it records what the model had said."""
+    period = policy_period(intake)
+    if period.get("within_period") is not False:
+        return decision, None
+    before = (decision.get("coverage_status") or
+              ("covered" if decision.get("is_covered") else "excluded")).lower()
+    reason = (f"Policy period: the incident on {period['incident_date']} is outside the "
+              f"cover from {period['policy_start']} to {period['policy_end']}"
+              f"{' (' + period['note'] + ')' if period.get('note') else ''}. "
+              f"Checked in code by check_policy_period.")
+    enforced = {
+        **decision,
+        "coverage_status": "excluded",
+        "is_covered": False,
+        "coverage_reasons": [reason],
+        "uncertainty_reasons": [],
+        "line_decisions": [{**line, "admitted": False, "reason": PERIOD_DENIAL}
+                           for line in decision.get("line_decisions") or []],
+        "recommended_route": "reject",
+    }
+    if before == "excluded":
+        return enforced, None              # the model already said so; nothing overridden
+    override = {"model_coverage_status": before,
+                "model_coverage_reasons": list(decision.get("coverage_reasons") or []),
+                "period": period}
+    enforced["period_override"] = override
+    return enforced, override
+
+
+# CrewAI raises a plain Exception with this wording when a task's guardrail has
+# rejected the first output and every retry ("Task failed guardrail validation
+# after 2 retries. Last error: ...").
+GUARDRAIL_EXHAUSTED = re.compile(r"Task failed .*validation after \d+ retries")
+
+
+def guardrail_exhausted(exc: BaseException) -> bool:
+    return bool(GUARDRAIL_EXHAUSTED.search(str(exc)))
+
+
+def exhausted_decision(intake: dict, exc: BaseException) -> Tuple[dict, str]:
+    """The decision record for a claim no agent could produce a valid decision for.
+
+    It decides nothing: coverage is "uncertain", every line is provisionally
+    admitted so the adjuster sees what the claim would pay, and the fraud risk is
+    marked as NOT assessed (the score field holds 0.0 only because it is numeric).
+    Returns (decision, the reason a person must look)."""
+    last = str(exc).split("Last error:", 1)[-1].strip() if "Last error:" in str(exc) else str(exc)
+    why = (f"the Assessment crew could not produce a decision that passed validation "
+           f"after every retry. Last problem: {last[:300]}")
+    lines = (intake.get("invoice") or {}).get("line_items") or []
+    return {
+        "claim_id": intake.get("claim_id"),
+        "coverage_status": "uncertain",
+        "is_covered": False,
+        "coverage_reasons": [],
+        "uncertainty_reasons": [why],
+        "fraud_score": 0.0,
+        "fraud_flags": ["fraud risk NOT assessed: the assessment did not complete"],
+        "line_decisions": [{"description": l.get("description"), "amount": l.get("amount"),
+                            "material": l.get("material"), "admitted": True,
+                            "reason": "provisional: not assessed"} for l in lines],
+        "recommended_route": "human_review",
+        "summary": "No valid decision was produced; a person must assess this claim.",
+        "guardrail_exhausted": True,
+    }, why
+
+
 def coverage_doubts(intake: dict, decision: dict) -> list:
     """Reasons NOT to act on the coverage verdict without a person.
 
@@ -256,8 +357,7 @@ def coverage_doubts(intake: dict, decision: dict) -> list:
 
     # Outside the cover dates is arithmetic, not judgement: the tool settles it
     # and no clause is needed.
-    period = check_policy_period(intake.get("policy_no") or "",
-                                 intake.get("incident_date"))
+    period = policy_period(intake)
     if period.get("within_period") is False:
         return []
 
@@ -454,15 +554,19 @@ class ClaimFlow(Flow[ClaimState]):
         if monitor:
             monitor.record("flow", message=message, **fields)
 
-    def guarded(self, step: str, fn, *args):
-        """Run a crew step; log any error with where it happened, then re-raise."""
+    def guarded(self, step: str, fn, *args, handled=None):
+        """Run a crew step; log any error with where it happened, then re-raise.
+
+        `handled` names errors the caller will deal with and carry on from (the
+        run is not over, so the log is not finished as failed)."""
         try:
             return fn(*args)
         except Exception as exc:
             monitor = monitoring.current()
             if monitor:
                 monitor.error(step, exc)
-                monitor.finish(status="failed", failed_at=step)
+                if not (handled and handled(exc)):
+                    monitor.finish(status="failed", failed_at=step)
             raise
 
     def screen_claimant_text(self) -> None:
@@ -563,8 +667,31 @@ class ClaimFlow(Flow[ClaimState]):
     @listen("complete")
     def assess(self):
         self.log("assessment: Policy Analyst and Fraud Analyst running in parallel")
-        self.state.decision = self.guarded("assessment", run_assessment_step,
-                                           assessment_inputs(self.state.intake), self.state.verbose)
+        try:
+            self.state.decision = self.guarded("assessment", run_assessment_step,
+                                               assessment_inputs(self.state.intake),
+                                               self.state.verbose, handled=guardrail_exhausted)
+        except Exception as exc:
+            if not guardrail_exhausted(exc):
+                raise                      # infrastructure and other errors fail as before
+            # No agent produced a decision the guardrail would accept. That is a
+            # claim a person must see, not a failure: escalate with the reason.
+            self.state.decision, why = exhausted_decision(self.state.intake, exc)
+            self.log(f"assessment: guardrail exhausted; escalating to a person: {why}",
+                     kind="guardrail_exhausted")
+            if policy_period(self.state.intake).get("within_period") is not False:
+                self.state.guardrail_flags.append(why)
+            # (outside the cover dates the claim is rejected below in code, which
+            # needs no model decision at all)
+
+        # The cover dates are enforced in code, after every model has spoken.
+        self.state.decision, override = enforce_policy_period(self.state.intake,
+                                                              self.state.decision)
+        if override:
+            self.log(f"policy period enforced in code: the model said "
+                     f"'{override['model_coverage_status']}', but the incident is outside "
+                     f"the cover dates ({override['period'].get('note', '')}); coverage set "
+                     f"to excluded", kind="period_override")
         d = self.state.decision
         status = (d.get("coverage_status") or
                   ("covered" if d.get("is_covered") else "excluded")).lower()
