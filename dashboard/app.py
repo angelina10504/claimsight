@@ -664,7 +664,7 @@ def page_evidence() -> None:
             "stopped, re-running only what the new evidence affects.</div>")
     ui.banner("Controlled offline demonstration: the real Flow, evidence checks and resume "
               "logic, with the two crews replaced by the fixed stand-ins from "
-              "test_evidence_flow.py. No model is called, and it runs in its own workspace, so "
+              "tests/test_evidence_flow.py. No model is called, and it runs in its own workspace, so "
               "no saved claim is touched.", "info", "◆")
 
     # Nothing runs when the page opens: the sandbox is read or driven only by
@@ -752,9 +752,9 @@ def page_evidence() -> None:
     st.write("")
     c1, c2 = st.columns([1, 2])
     if c1.button("Run the evidence-cycle checks now", key="sb-tests"):
-        with st.spinner("Running test_evidence_flow.py offline"):
+        with st.spinner("Running tests/test_evidence_flow.py offline"):
             try:
-                done = subprocess.run([sys.executable, str(ROOT / "test_evidence_flow.py")],
+                done = subprocess.run([sys.executable, str(ROOT / "tests" / "test_evidence_flow.py")],
                                       cwd=str(ROOT), capture_output=True, text=True, timeout=300,
                                       env=offline_env())
                 summary = [l for l in done.stdout.splitlines() if "checks as expected" in l]
@@ -763,7 +763,7 @@ def page_evidence() -> None:
                 st.session_state["sb-tests"] = "the checks did not finish"
     if st.session_state.get("sb-tests"):
         c2.success(st.session_state["sb-tests"] + " (offline, stand-in crews)")
-    st.caption("Live version: CLM-9002, built with `test_evidence_flow.py --make-demo-claim`, "
+    st.caption("Live version: CLM-9002, built with `tests/test_evidence_flow.py --make-demo-claim`, "
                "runs the same cycle in the terminal with Groq for the reassessment.")
 
 

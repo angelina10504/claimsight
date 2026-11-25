@@ -63,7 +63,7 @@ def score(claim_id: str, intake) -> None:
 def main() -> None:
     claim_id = sys.argv[1] if len(sys.argv) > 1 else "CLM-5000"
     if not (CLAIMS / f"{claim_id}.json").exists():
-        sys.exit(f"No such claim: {claim_id}. Run generate_data.py first.")
+        sys.exit(f"No such claim: {claim_id}. Run scripts/generate_data.py first.")
 
     print(f"Running intake on {claim_id} using {describe()}\n")
     intake = run_intake(claim_id)

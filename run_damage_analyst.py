@@ -38,7 +38,7 @@ def claim_ids(args) -> list:
     if wanted:
         return wanted
     if not PHOTO_MANIFEST.exists():
-        sys.exit("data/photo_manifest.json not found. Run generate_photo_claims.py first.")
+        sys.exit("data/photo_manifest.json not found. Run scripts/generate_photo_claims.py first.")
     return [e["claim_id"] for e in json.loads(PHOTO_MANIFEST.read_text())]
 
 

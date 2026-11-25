@@ -177,8 +177,8 @@ measure of how often they disagree.
 ## Two safety fixes made after the confirmatory check
 
 These fixes change outcomes, so they are drift from the evaluated build as
-well. Both are tested offline in `test_safety_fixes.py` (33 checks, no tokens).
-The tests replay the real 120b outputs saved in `test_fixtures/replay/` through
+well. Both are tested offline in `tests/test_safety_fixes.py` (33 checks, no tokens).
+The tests replay the real 120b outputs saved in `tests/fixtures/replay/` through
 the real `decision_guardrail` and the Flow's own steps.
 
 **A. The policy period is enforced in code, after the crew**
@@ -232,7 +232,7 @@ granted on an invented quote.
 
 **The evidence:** CLM-5006 on gpt-oss-120b, 18 Nov 2026 (Langfuse trace
 `4c628b6d0afbb8084b6c877123f50d95`; all three outputs in
-`test_fixtures/replay/CLM-5006_120b_lead_attempts.json`). The Assessment Lead's
+`tests/fixtures/replay/CLM-5006_120b_lead_attempts.json`). The Assessment Lead's
 three outputs and what the guardrail did with them:
 
 1. **Attempt 1:** `coverage_status: "excluded"`, `recommended_route: "reject"`.

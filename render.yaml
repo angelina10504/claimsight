@@ -1,10 +1,12 @@
-# Render Blueprint for ClaimSight - the whole system, fully in the cloud.
+# Alternative Render Blueprint for ClaimSight. Current Cloud Run notes:
+# docs/deployment/README.md (external storage/mount settings are configured separately).
 #
-# Two web services, both free tier, both from Docker:
+# Three web services, all free tier, all from Docker:
 #   claimsight-a2a         the CrewAI back office behind the A2A protocol
 #                          (./Dockerfile -> src/a2a_server.py + the 6 MCP tools)
 #   claimsight-assistant   the Google ADK claimant assistant, ADK web chat UI
 #                          (./Dockerfile.assistant -> adk web agents)
+#   claimsight-dashboard   read-only Streamlit workspace (./Dockerfile.dashboard)
 #
 # This satisfies the assessment rule that nothing runs from the laptop: the
 # grader opens the assistant's public URL, which calls the A2A service, which
@@ -13,14 +15,14 @@
 # How to use: push this repo to GitHub, then on Render: New + -> Blueprint ->
 # pick this repo. Render reads this file and creates both services. You then
 # paste the three secrets (see sync:false below) in each service's Environment
-# tab. Full click-through: RENDER_DEPLOY.md.
+# tab. Full click-through: docs/deployment/RENDER.md.
 #
 # NOTE on the URLs below: a Render service is reachable at
 #   https://<service-name>.onrender.com
 # The name is taken if someone else already used it, in which case Render adds a
 # suffix. After the FIRST deploy, check each service's real URL at the top of its
 # page and, if it differs, correct A2A_PUBLIC_URL and CLAIMSIGHT_A2A_URL to match
-# (then redeploy the affected service). RENDER_DEPLOY.md walks through this.
+# (then redeploy the affected service). docs/deployment/RENDER.md walks through this.
 
 services:
   # ---------------------------------------------------------------- CrewAI A2A server

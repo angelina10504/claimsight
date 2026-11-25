@@ -56,5 +56,5 @@ EXPOSE 9999
 
 # A platform that injects $PORT (Cloud Run, Render) wins; otherwise A2A_PORT is
 # used. On Hugging Face Spaces the platform routes to the port declared as
-# app_port in the Space README, which DEPLOY.md sets to 9999 to match.
+# app_port in the Space README, which docs/deployment/HUGGING_FACE.md sets to 9999 to match.
 CMD ["sh", "-c", "export A2A_PORT=\"${PORT:-$A2A_PORT}\"; exec python src/a2a_server.py"]

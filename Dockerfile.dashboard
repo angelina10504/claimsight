@@ -35,7 +35,7 @@ ENV VIRTUAL_ENV=/app/.venv \
 RUN mkdir -p data/logs data/decisions data/review_queue data/intake data/evidence data/reports
 
 # .streamlit/config.toml pins server.address to 127.0.0.1 for local use (and
-# test_dashboard.py asserts it stays that way). Command-line flags override the
+# tests/test_dashboard.py asserts it stays that way). Command-line flags override the
 # config file, so the container binds 0.0.0.0 on the platform's $PORT here
 # without touching the local workflow. 8501 is Streamlit's usual default.
 ENV DASHBOARD_PORT=8501

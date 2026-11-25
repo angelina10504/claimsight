@@ -54,7 +54,7 @@ def _redirect():
     import evidence
     import monitoring
     import reporting
-    import test_evidence_flow as fixtures
+    from tests import test_evidence_flow as fixtures
 
     claim_flow.CLAIMS = WORKSPACE / "claims"
     claim_flow.INTAKE = WORKSPACE / "intake"

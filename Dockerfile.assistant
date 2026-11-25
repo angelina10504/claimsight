@@ -4,7 +4,7 @@
 # server, built by ./Dockerfile). It serves ADK's web chat UI, so a grader can
 # open a public URL, type "assess claim CLM-5000", and watch the ADK assistant
 # hand the work to the CrewAI system over A2A - both running in the cloud, with
-# nothing on the laptop. See RENDER_DEPLOY.md.
+# nothing on the laptop. See docs/deployment/RENDER.md.
 #
 # Build:  docker build -f Dockerfile.assistant -t claimsight-assistant .
 # Run:    docker run --rm -p 8080:8080 \

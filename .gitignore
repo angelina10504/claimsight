@@ -37,6 +37,8 @@ data/reports/
 .DS_Store
 .idea/
 .vscode/
+.sf/
+.sfdx/
 *.swp
 server.log
 *.local

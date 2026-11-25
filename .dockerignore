@@ -16,6 +16,8 @@
 .gitignore
 .idea/
 .vscode/
+.sf/
+.sfdx/
 .DS_Store
 *.swp
 server.log
@@ -52,3 +54,8 @@ dashboard/.runtime/
 # Gitignored and not redistributed. The annotations and the 11 claim photos
 # live elsewhere under data/photos/ and ARE kept.
 data/photos/vehiDE/
+
+# Research records and screenshots are kept in Git for the viva, not the image.
+evaluation/runs/
+docs/demo/
+docs/archive/
